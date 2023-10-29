@@ -1,0 +1,55 @@
+stages:
+  # dag:
+  #   cmd: dvc dag --md > dag.md
+
+  download_data:
+    cmd: wget ${data_url} -O ${data_all}
+    deps:
+      - ${data_url}
+    outs:
+      - ${data_all}
+
+  report_data:
+    cmd: python src/report_data.py
+    deps:
+      - src/report_data.py
+      - ${data_all}
+    outs:
+      - ${report_data_html}:
+          cache: False
+
+  split_data:
+    cmd: python src/split_data.py
+    deps:
+      - src/split_data.py
+      - ${data_all}
+    outs:
+      - ${data_train}
+      - ${data_test}
+
+  train_model:
+    cmd: python src/train_model.py
+    deps:
+      - src/train_model.py
+      - ${data_train}
+    outs:
+      - ${model_dst}
+
+  test_model:
+    cmd: 
+      - python src/predict.py
+      - python src/report_cls.py
+    deps:
+      - src/predict.py
+      - src/report_cls.py
+      - ${data_test}
+      - ${model_dst}
+    outs:
+      - ${data_test_pred}:
+          cache: False
+      - ${data_train_pred}:
+          cache: False
+      - ${report_cls_html}:
+          cache: False
+    metrics:
+      - ${metrics}

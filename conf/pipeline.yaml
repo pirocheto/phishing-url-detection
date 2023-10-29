@@ -1,0 +1,12 @@
+defaults:
+  - classifier: GaussianNB
+  - calibration: Isotonic
+
+calibration:
+  estimator: ${classifier}
+
+pipeline:
+  _target_: sklearn.pipeline.make_pipeline
+  _args_:
+    - ${calibration}
+      
