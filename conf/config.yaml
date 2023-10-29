@@ -1,0 +1,39 @@
+defaults:
+  - pipeline.yaml
+
+data_url: https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+
+data_dir: data
+data_all: ${data_dir}/all.csv
+data_train: ${data_dir}/train.csv
+data_test: ${data_dir}/test.csv
+data_train_pred: ${data_dir}/train_pred.csv
+data_test_pred: ${data_dir}/test_pred.csv
+
+
+results_dir: results
+
+models_dir: ${results_dir}/models
+model_dst: ${models_dir}/model.pkl
+
+report_dir: ${results_dir}/reports
+
+report_data_html: ${report_dir}/data_report.html
+report_data_json: ${report_dir}/data_report.json
+
+report_cls_html: ${report_dir}/cls_report.html
+report_cls_json: ${report_dir}/cls_report.json
+
+metrics: ${results_dir}/metrics.yaml
+
+column_mapping:
+  id: url
+  target: status
+  pos_label: phishing
+  prediction: phishing
+  
+
+train_test_split: 
+  test_size: 0.33
+  random_state: 42
+  shuffle: true

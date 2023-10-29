@@ -1,0 +1,109 @@
+schema: '2.0'
+stages:
+  download_data:
+    cmd: wget 
+      https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+      -O data/all.csv
+    deps:
+    - path: 
+        https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+      hash: md5
+      checksum: '"6dbb847da1445c6e0bbdd4384878a6415cbeb462afe134c88ba4492e0e6c0c13"'
+      size: 3661166
+    outs:
+    - path: data/all.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+  report_data:
+    cmd: python src/report_data.py
+    deps:
+    - path: data/all.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/report_data.py
+      hash: md5
+      md5: 2d478369251db1be45153e2ebb8c8bd2
+      size: 465
+    outs:
+    - path: results/reports/data_report.html
+      hash: md5
+      md5: f2ac1912bcd7946e3e98f65419aaab19
+      size: 6170380
+  split_data:
+    cmd: python src/split_data.py
+    deps:
+    - path: data/all.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/split_data.py
+      hash: md5
+      md5: 4d5836ae6cae9d40daea962aa53ed67c
+      size: 433
+    outs:
+    - path: data/test.csv
+      hash: md5
+      md5: 1ab33f0e67f2b269f66a241178d566b4
+      size: 1201664
+    - path: data/train.csv
+      hash: md5
+      md5: de0274753f5d64f0729034afae01c814
+      size: 2446644
+  train_model:
+    cmd: python src/train_model.py
+    deps:
+    - path: data/train.csv
+      hash: md5
+      md5: de0274753f5d64f0729034afae01c814
+      size: 2446644
+    - path: src/train_model.py
+      hash: md5
+      md5: 984daf5164ae7fd7a31660b6faabea62
+      size: 447
+    outs:
+    - path: results/models/model.pkl
+      hash: md5
+      md5: 12fa4f0309f7c266cc04a74cb6950efa
+      size: 34391
+  test_model:
+    cmd:
+    - python src/predict.py
+    - python src/report_cls.py
+    deps:
+    - path: data/test.csv
+      hash: md5
+      md5: 1ab33f0e67f2b269f66a241178d566b4
+      size: 1201664
+    - path: results/models/model.pkl
+      hash: md5
+      md5: 12fa4f0309f7c266cc04a74cb6950efa
+      size: 34391
+    - path: src/predict.py
+      hash: md5
+      md5: 8830a2d582e8ebf6fcfe6b25a34abadc
+      size: 640
+    - path: src/report_cls.py
+      hash: md5
+      md5: 1ac472bd37fa60cf0606edec1451e925
+      size: 792
+    outs:
+    - path: data/test_pred.csv
+      hash: md5
+      md5: c3951edee7256a0b203a37de38fc3439
+      size: 1273501
+    - path: data/train_pred.csv
+      hash: md5
+      md5: 41c4dfb21fa549fee913799ef491afba
+      size: 2592391
+    - path: results/metrics.yaml
+      hash: md5
+      md5: eb517122eac187314007b77259a9a520
+      size: 262
+    - path: results/reports/cls_report.html
+      hash: md5
+      md5: 46ea23419140f2ae3af0bc03b6983713
+      size: 3995374
+  dag:
+    cmd: dvc dag --md > dag.md

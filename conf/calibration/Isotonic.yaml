@@ -1,0 +1,3 @@
+_target_: sklearn.calibration.CalibratedClassifierCV
+method: isotonic
+cv: 5

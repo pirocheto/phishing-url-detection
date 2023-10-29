@@ -1,0 +1,3 @@
+_target_: sklearn.calibration.CalibratedClassifierCV
+method: sigmoid
+cv: 5

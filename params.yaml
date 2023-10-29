@@ -1,0 +1,41 @@
+classifier:
+  _target_: sklearn.naive_bayes.GaussianNB
+calibration:
+  _target_: sklearn.calibration.CalibratedClassifierCV
+  method: isotonic
+  cv: 5
+  estimator:
+    _target_: sklearn.naive_bayes.GaussianNB
+pipeline:
+  _target_: sklearn.pipeline.make_pipeline
+  _args_:
+  - _target_: sklearn.calibration.CalibratedClassifierCV
+    method: isotonic
+    cv: 5
+    estimator:
+      _target_: sklearn.naive_bayes.GaussianNB
+data_url: https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+data_dir: data
+data_all: data/all.csv
+data_train: data/train.csv
+data_test: data/test.csv
+data_train_pred: data/train_pred.csv
+data_test_pred: data/test_pred.csv
+results_dir: results
+models_dir: results/models
+model_dst: results/models/model.pkl
+report_dir: results/reports
+report_data_html: results/reports/data_report.html
+report_data_json: results/reports/data_report.json
+report_cls_html: results/reports/cls_report.html
+report_cls_json: results/reports/cls_report.json
+metrics: results/metrics.yaml
+column_mapping:
+  id: url
+  target: status
+  pos_label: phishing
+  prediction: phishing
+train_test_split:
+  test_size: 0.33
+  random_state: 42
+  shuffle: true
