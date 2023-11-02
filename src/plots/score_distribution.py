@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sns
 
 
-def plot(y_scores, y_true, labels, ax):
+def plot_score_distribution(y_scores, y_true, labels, ax):
     y_scores = np.array(y_scores)
     data1 = y_scores[np.where(y_true == labels[0])]
     data2 = y_scores[np.where(y_true == labels[1])]

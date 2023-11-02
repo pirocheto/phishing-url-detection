@@ -19,7 +19,7 @@ def normalize_values(values):
     return normalized_values
 
 
-def plot(feature_importance, ax):
+def plot_feature_importance(feature_importance, ax):
     feature_importance = dict(
         sorted(feature_importance.items(), key=lambda feat: feat[1])
     )

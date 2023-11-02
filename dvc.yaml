@@ -1,6 +1,4 @@
 stages:
-  # dag:
-  #   cmd: dvc dag --md > dag.md
 
   download_data:
     cmd: wget ${data_url} -O ${data_all}
@@ -12,21 +10,22 @@ stages:
     outs:
       - ${data_all}
 
-  report_data:
-    cmd: python src/report_data.py
-    params:
-      - data_all
-      - column_mapping
-      - report_data_html
-    deps:
-      - src/report_data.py
-      - ${data_all}
-    outs:
-      - ${report_data_html}:
-          cache: False
+  # report_data:
+  #   cmd: python src/report_data.py
+  #   params:
+  #     - data_all
+  #     - column_mapping
+  #     - report_data_html
+  #   deps:
+  #     - src/report_data.py
+  #     - ${data_all}
+  #   outs:
+  #     - ${report_data_html}:
+  #         cache: False
 
   split_data:
     cmd: python src/split_data.py
+    # TO DO: add plots related to split (e.g. data_proportion.png)
     params: 
       - train_test_split
       - data_all
@@ -56,7 +55,9 @@ stages:
     cmd: 
       - python src/predict.py
       - python src/report_cls.py
-      - python src/feature_importance.py
+      # - python src/feature_importance.py
+      # TO DO: remove params, deps and outs related to src/feature_importance.py
+      # TO DO: add plots related to test (e.g. feature_importance.png, confusion_matrix.png, roc_curve.png, score_distribution.png)
     params: 
       - data_test
       - data_train

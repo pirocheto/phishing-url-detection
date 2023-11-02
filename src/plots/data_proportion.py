@@ -1,37 +1,35 @@
 import matplotlib.pyplot as plt
 
 
-def plot(data, labels, ax):
+def plot_data_proportion(data, labels, ax):
     bar_width = 0.7
 
     labels_x = ("Train rows", "Test rows")
-    values_legitimate = data[0]
-    values_phishing = data[1]
 
     b_0 = ax.bar(
         labels_x,
-        values_legitimate,
+        data[0],
         label=labels[0],
         width=bar_width,
     )
 
     b_1 = ax.bar(
         labels_x,
-        values_phishing,
+        data[1],
         label=labels[1],
-        bottom=values_legitimate,
+        bottom=data[0],
         width=bar_width,
     )
 
     ax.bar_label(
         b_0,
-        labels=values_legitimate,
+        labels=data[0],
         label_type="center",
         color=plt.rcParams["figure.facecolor"],
     )
     ax.bar_label(
         b_1,
-        labels=values_phishing,
+        labels=data[1],
         label_type="center",
         color=plt.rcParams["figure.facecolor"],
     )
