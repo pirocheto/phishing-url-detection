@@ -4,7 +4,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from sklearn.metrics import confusion_matrix
 
 
-def plot(y_pred, y_true, labels, ax):
+def plot_confusion_matrix(y_pred, y_true, labels, ax):
     prop_cycle = plt.rcParams["axes.prop_cycle"]
     colors = prop_cycle.by_key()["color"]
 
