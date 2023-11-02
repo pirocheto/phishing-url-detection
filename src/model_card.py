@@ -1,7 +1,10 @@
+from datetime import datetime
+
 import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pygit2
 import yaml
 
 from plots.advantages import plot as plot_advantages
@@ -68,6 +71,19 @@ data_proportion = np.transpose(
     ]
 )
 
+date = datetime.now()
+algo_name = params["classifier"]["_target_"].split(".")[-1]
+repo = pygit2.Repository(".")
+last_commit_hash = str(repo.head.target)
+details = [
+    ("Author", "Pirocheto"),
+    ("Date", date.strftime("%Y/%m/%d")),
+    ("Time", date.now().strftime("%H:%M:%S")),
+    ("Model Version", last_commit_hash[:8]),
+    ("Algorithm", algo_name),
+    ("License", "Apache 2.0"),
+]
+
 advantages = [
     "Very fast",
     "Very light",
@@ -105,7 +121,7 @@ intented_users = (
 plot_metrics(metrics, subplots["metrics"])
 plot_intended_use(intented_uses, intented_users, subplots["intended_use"])
 plot_data_proportion(data_proportion, labels, subplots["data_proportion"])
-plot_details(subplots["details"])
+plot_details(details, subplots["details"])
 plot_data(data_pres, subplots["data"])
 plot_roc_curve(y_scores, y_true, pos_label, subplots["roc_curve"])
 plot_score_distribution(y_scores, y_true, labels, subplots["score_distribution"])

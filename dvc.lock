@@ -119,8 +119,8 @@ stages:
       size: 34391
     - path: src/feature_importance.py
       hash: md5
-      md5: 6af1e5474e76447a2b1f5714a0a29f65
-      size: 934
+      md5: 66e820d74ac1525e8d15c1e2b83cfc32
+      size: 975
     - path: src/predict.py
       hash: md5
       md5: 46f96f52da848828d8a58e4219452570
@@ -151,15 +151,15 @@ stages:
       size: 2667246
     - path: results/feature_importance.yaml
       hash: md5
-      md5: fa7c581d0a8236870eafb42f3f781ec7
-      size: 2099
+      md5: 4ade588766b0b45003518f1c7b21ab9a
+      size: 2098
     - path: results/metrics.yaml
       hash: md5
       md5: eb517122eac187314007b77259a9a520
       size: 262
     - path: results/reports/cls_report.html
       hash: md5
-      md5: c401606728a34dee4fe0450e304856fd
+      md5: 830ece521dd8d10e9d959edd4109da45
       size: 3995374
   dag:
     cmd: dvc dag --md > dag.md
@@ -211,16 +211,16 @@ stages:
       size: 2667246
     - path: results/feature_importance.yaml
       hash: md5
-      md5: fa7c581d0a8236870eafb42f3f781ec7
-      size: 2099
+      md5: 4ade588766b0b45003518f1c7b21ab9a
+      size: 2098
     - path: src/model_card.py
       hash: md5
-      md5: 6912285bd4c399fd8a8272ba674fc98e
-      size: 5443
+      md5: 58d1505232c402d9b64ed57b45230c1a
+      size: 5888
     - path: src/plots
       hash: md5
-      md5: 9d886cb786fc1c9c5cdd5a5ef5631610.dir
-      size: 26768
+      md5: 4aedeef9c74ea2f50410dc83ed1f725c.dir
+      size: 26430
       nfiles: 23
     params:
       params.yaml:
@@ -234,5 +234,5 @@ stages:
     outs:
     - path: results/models/model_card.png
       hash: md5
-      md5: ab8eb6d4722078117bdc24d99654e9e3
-      size: 1167504
+      md5: b6ba0e07e6e21f424a187e8971efbf60
+      size: 1169354
