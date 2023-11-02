@@ -19,7 +19,9 @@ result = permutation_importance(
     pipeline,
     X_train,
     y_train,
-    n_repeats=15,
+    scoring="f1_macro",
+    n_repeats=10,
+    # n_jobs=-1,
     random_state=42,
 )
 
