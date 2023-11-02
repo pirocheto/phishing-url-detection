@@ -10,6 +10,11 @@ stages:
       hash: md5
       checksum: '"6dbb847da1445c6e0bbdd4384878a6415cbeb462afe134c88ba4492e0e6c0c13"'
       size: 3661166
+    params:
+      params.yaml:
+        data_all: data/all.csv
+        data_url: 
+          https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
     outs:
     - path: data/all.csv
       hash: md5
@@ -26,11 +31,20 @@ stages:
       hash: md5
       md5: 2d478369251db1be45153e2ebb8c8bd2
       size: 465
+    params:
+      params.yaml:
+        column_mapping:
+          id: url
+          target: status
+          pos_label: phishing
+          prediction: phishing
+        data_all: data/all.csv
+        report_data_html: results/reports/data_report.html
     outs:
     - path: results/reports/data_report.html
       hash: md5
-      md5: f2ac1912bcd7946e3e98f65419aaab19
-      size: 6170380
+      md5: ccb49a64672738756090068cf4faa440
+      size: 6170406
   split_data:
     cmd: python src/split_data.py
     deps:
@@ -42,6 +56,15 @@ stages:
       hash: md5
       md5: 4d5836ae6cae9d40daea962aa53ed67c
       size: 433
+    params:
+      params.yaml:
+        data_all: data/all.csv
+        data_test: data/test.csv
+        data_train: data/train.csv
+        train_test_split:
+          test_size: 0.33
+          random_state: 42
+          shuffle: true
     outs:
     - path: data/test.csv
       hash: md5
@@ -60,8 +83,21 @@ stages:
       size: 2446644
     - path: src/train_model.py
       hash: md5
-      md5: 984daf5164ae7fd7a31660b6faabea62
-      size: 447
+      md5: cf50b41e1e99300a09ce5dfeb615fcda
+      size: 458
+    params:
+      params.yaml:
+        column_mapping.target: status
+        data_train: data/train.csv
+        model_dst: results/models/model.pkl
+        pipeline:
+          _target_: sklearn.pipeline.make_pipeline
+          _args_:
+          - _target_: sklearn.calibration.CalibratedClassifierCV
+            method: isotonic
+            cv: 5
+            estimator:
+              _target_: sklearn.naive_bayes.GaussianNB
     outs:
     - path: results/models/model.pkl
       hash: md5
@@ -71,6 +107,7 @@ stages:
     cmd:
     - python src/predict.py
     - python src/report_cls.py
+    - python src/feature_importance.py
     deps:
     - path: data/test.csv
       hash: md5
@@ -80,30 +117,122 @@ stages:
       hash: md5
       md5: 12fa4f0309f7c266cc04a74cb6950efa
       size: 34391
+    - path: src/feature_importance.py
+      hash: md5
+      md5: 6af1e5474e76447a2b1f5714a0a29f65
+      size: 934
     - path: src/predict.py
       hash: md5
-      md5: 8830a2d582e8ebf6fcfe6b25a34abadc
-      size: 640
+      md5: 46f96f52da848828d8a58e4219452570
+      size: 810
     - path: src/report_cls.py
       hash: md5
       md5: 1ac472bd37fa60cf0606edec1451e925
       size: 792
+    params:
+      params.yaml:
+        column_mapping.target: status
+        data_test: data/test.csv
+        data_test_pred: data/test_pred.csv
+        data_train: data/train.csv
+        data_train_pred: data/train_pred.csv
+        feature_importance: results/feature_importance.yaml
+        metrics: results/metrics.yaml
+        model_dst: results/models/model.pkl
+        report_cls_html: results/reports/cls_report.html
     outs:
     - path: data/test_pred.csv
       hash: md5
-      md5: c3951edee7256a0b203a37de38fc3439
-      size: 1273501
+      md5: cfea1064c4b01d66303795adeb32fe53
+      size: 1310300
     - path: data/train_pred.csv
       hash: md5
-      md5: 41c4dfb21fa549fee913799ef491afba
-      size: 2592391
+      md5: 8a68d662b9c6a5b627872181dfc1ff57
+      size: 2667246
+    - path: results/feature_importance.yaml
+      hash: md5
+      md5: fa7c581d0a8236870eafb42f3f781ec7
+      size: 2099
     - path: results/metrics.yaml
       hash: md5
       md5: eb517122eac187314007b77259a9a520
       size: 262
     - path: results/reports/cls_report.html
       hash: md5
-      md5: 46ea23419140f2ae3af0bc03b6983713
+      md5: c401606728a34dee4fe0450e304856fd
       size: 3995374
   dag:
     cmd: dvc dag --md > dag.md
+  create_model_card:
+    cmd:
+    - python src/model_card.py
+    deps:
+    - path: data/test_pred.csv
+      hash: md5
+      md5: cfea1064c4b01d66303795adeb32fe53
+      size: 1310300
+    - path: data/train_pred.csv
+      hash: md5
+      md5: 8a68d662b9c6a5b627872181dfc1ff57
+      size: 2667246
+    - path: results/feature_importance.yaml
+      hash: md5
+      md5: fa7c581d0a8236870eafb42f3f781ec7
+      size: 2099
+    - path: src/model_card.py
+      hash: md5
+      md5: 8ac59dcd6704b997f27652fb1bc0e916
+      size: 5064
+    params:
+      params.yaml:
+        column_mapping.pos_label: phishing
+        column_mapping.target: status
+        data_test_pred: data/test_pred.csv
+        data_train_pred: data/train_pred.csv
+        feature_importance: results/feature_importance.yaml
+        metrics: results/metrics.yaml
+        model_card: results/models/model_card.png
+    outs:
+    - path: results/models/model_card.png
+      hash: md5
+      md5: a15592b71f6ff90f3074e666b38945b4
+      size: 1141863
+  model_card:
+    cmd:
+    - python src/model_card.py
+    deps:
+    - path: data/test_pred.csv
+      hash: md5
+      md5: cfea1064c4b01d66303795adeb32fe53
+      size: 1310300
+    - path: data/train_pred.csv
+      hash: md5
+      md5: 8a68d662b9c6a5b627872181dfc1ff57
+      size: 2667246
+    - path: results/feature_importance.yaml
+      hash: md5
+      md5: fa7c581d0a8236870eafb42f3f781ec7
+      size: 2099
+    - path: src/model_card.py
+      hash: md5
+      md5: 6912285bd4c399fd8a8272ba674fc98e
+      size: 5443
+    - path: src/plots
+      hash: md5
+      md5: 9d886cb786fc1c9c5cdd5a5ef5631610.dir
+      size: 26768
+      nfiles: 23
+    params:
+      params.yaml:
+        column_mapping.pos_label: phishing
+        column_mapping.target: status
+        data_test_pred: data/test_pred.csv
+        data_train_pred: data/train_pred.csv
+        feature_importance: results/feature_importance.yaml
+        metrics: results/metrics.yaml
+        model_card: results/models/model_card.png
+    outs:
+    - path: results/models/model_card.png
+      hash: md5
+      md5: ab8eb6d4722078117bdc24d99654e9e3
+      size: 1167504

@@ -4,6 +4,9 @@ stages:
 
   download_data:
     cmd: wget ${data_url} -O ${data_all}
+    params: 
+      - data_url
+      - data_all
     deps:
       - ${data_url}
     outs:
@@ -11,6 +14,10 @@ stages:
 
   report_data:
     cmd: python src/report_data.py
+    params:
+      - data_all
+      - column_mapping
+      - report_data_html
     deps:
       - src/report_data.py
       - ${data_all}
@@ -20,6 +27,11 @@ stages:
 
   split_data:
     cmd: python src/split_data.py
+    params: 
+      - train_test_split
+      - data_all
+      - data_train
+      - data_test
     deps:
       - src/split_data.py
       - ${data_all}
@@ -29,6 +41,11 @@ stages:
 
   train_model:
     cmd: python src/train_model.py
+    params: 
+      - data_train
+      - column_mapping.target
+      - pipeline
+      - model_dst
     deps:
       - src/train_model.py
       - ${data_train}
@@ -39,9 +56,21 @@ stages:
     cmd: 
       - python src/predict.py
       - python src/report_cls.py
+      - python src/feature_importance.py
+    params: 
+      - data_test
+      - data_train
+      - column_mapping.target
+      - model_dst
+      - data_train_pred
+      - data_test_pred
+      - report_cls_html
+      - metrics
+      - feature_importance
     deps:
       - src/predict.py
       - src/report_cls.py
+      - src/feature_importance.py
       - ${data_test}
       - ${model_dst}
     outs:
@@ -51,5 +80,29 @@ stages:
           cache: False
       - ${report_cls_html}:
           cache: False
+      - ${feature_importance}:
+          cache: False
     metrics:
       - ${metrics}
+
+    
+  model_card:
+    cmd: 
+      - python src/model_card.py
+    params:
+      - data_train_pred
+      - data_test_pred
+      - feature_importance
+      - metrics
+      - column_mapping.target
+      - column_mapping.pos_label
+      - model_card
+    deps:
+      - src/model_card.py
+      - src/plots
+      - ${data_train_pred}
+      - ${data_test_pred}
+      - ${feature_importance}
+    outs:
+      - ${model_card}:
+          cache: False
