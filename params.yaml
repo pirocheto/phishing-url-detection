@@ -24,12 +24,14 @@ data_test_pred: data/test_pred.csv
 results_dir: results
 models_dir: results/models
 model_dst: results/models/model.pkl
+model_card: results/models/model_card.png
 report_dir: results/reports
 report_data_html: results/reports/data_report.html
 report_data_json: results/reports/data_report.json
 report_cls_html: results/reports/cls_report.html
 report_cls_json: results/reports/cls_report.json
 metrics: results/metrics.yaml
+feature_importance: results/feature_importance.yaml
 column_mapping:
   id: url
   target: status
@@ -39,3 +41,6 @@ train_test_split:
   test_size: 0.33
   random_state: 42
   shuffle: true
+model_card_style:
+  style: Solarize_Light2
+  font: Verdana

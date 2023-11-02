@@ -1,13 +1,15 @@
 ```mermaid
 flowchart TD
-	node1["download_data"]
-	node2["report_data"]
-	node3["split_data"]
-	node4["test_model"]
-	node5["train_model"]
-	node1-->node2
-	node1-->node3
-	node3-->node4
-	node3-->node5
-	node5-->node4
+	node1["create_model_card"]
+	node2["download_data"]
+	node3["report_data"]
+	node4["split_data"]
+	node5["test_model"]
+	node6["train_model"]
+	node2-->node3
+	node2-->node4
+	node4-->node5
+	node4-->node6
+	node5-->node1
+	node6-->node5
 ```

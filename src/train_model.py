@@ -10,6 +10,6 @@ y_train = df_train[params["column_mapping"]["target"]]
 X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
 
 pipeline = instantiate(params["pipeline"])
-pipeline.fit(X_train, y_train)
+pipeline = pipeline.fit(X_train, y_train)
 
 joblib.dump(pipeline, params["model_dst"])
