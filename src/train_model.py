@@ -3,13 +3,15 @@ import joblib
 import pandas as pd
 from hydra.utils import instantiate
 
-params = dvc.api.params_show()
+params = dvc.api.params_show(stages="train_model")
 
-df_train = pd.read_csv(params["data_train"], index_col=params["column_mapping"]["id"])
+df_train = pd.read_csv(
+    params["path"]["data_train"], index_col=params["column_mapping"]["id"]
+)
 y_train = df_train[params["column_mapping"]["target"]]
 X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
 
 pipeline = instantiate(params["pipeline"])
 pipeline = pipeline.fit(X_train, y_train)
 
-joblib.dump(pipeline, params["model_dst"])
+joblib.dump(pipeline, params["path"]["model_bin"])

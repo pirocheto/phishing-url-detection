@@ -1,5 +1,5 @@
 defaults:
-  - classifier: GaussianNB
+  - classifier: LinearSVC
   - calibration: Isotonic
 
 calibration:
