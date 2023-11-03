@@ -30,13 +30,13 @@ plt_style:
   style: src/mplstyles/rose-pine-dawn.mplstyle
   font: Verdana
 classifier:
-  _target_: sklearn.svm.LinearSVC
+  _target_: sklearn.linear_model.LogisticRegression
 calibration:
   _target_: sklearn.calibration.CalibratedClassifierCV
   method: isotonic
   cv: 5
   estimator:
-    _target_: sklearn.svm.LinearSVC
+    _target_: sklearn.linear_model.LogisticRegression
 pipeline:
   _target_: sklearn.pipeline.make_pipeline
   _args_:
@@ -44,4 +44,4 @@ pipeline:
     method: isotonic
     cv: 5
     estimator:
-      _target_: sklearn.svm.LinearSVC
+      _target_: sklearn.linear_model.LogisticRegression

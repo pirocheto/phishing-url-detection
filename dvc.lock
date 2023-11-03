@@ -118,12 +118,12 @@ stages:
             method: isotonic
             cv: 5
             estimator:
-              _target_: sklearn.svm.LinearSVC
+              _target_: sklearn.linear_model.LogisticRegression
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: 255a5b42a174e7e79a309399ee4e5b13
-      size: 23775
+      md5: e605a6ffe469fb905b9b09b2b8306f6f
+      size: 25327
   test_model:
     cmd:
     - python src/test_model.py
@@ -134,8 +134,8 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 255a5b42a174e7e79a309399ee4e5b13
-      size: 23775
+      md5: e605a6ffe469fb905b9b09b2b8306f6f
+      size: 25327
     - path: src/plots/confusion_matrix.py
       hash: md5
       md5: 03d267a00ff6b403b97dd84156c618f0
@@ -174,28 +174,28 @@ stages:
     outs:
     - path: data/test_pred.csv
       hash: md5
-      md5: a8a2d509fb5412548e5a9d0aca1143a4
-      size: 1312205
+      md5: 5a613d09215b4a138d1fab004d1847ff
+      size: 1311543
     - path: data/train_pred.csv
       hash: md5
-      md5: 0fd77387c6e977037baa3c4cd84b7ddf
-      size: 2671045
+      md5: 904e25d19aa3d0251b9aaad20423acb4
+      size: 2669185
     - path: results/metrics.yaml
       hash: md5
-      md5: b900e81cb71595385ef26ef58490f353
-      size: 115
+      md5: 2254f4c388a0f3b59ad9810ba7c2bb5c
+      size: 114
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: aac910270f52fe89d5cf7599e421c48f
-      size: 13709
+      md5: 7dacded4891da18dcc7a8e116689fa55
+      size: 14050
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 0063f9bf668c5efed93120c7f0f2e682
-      size: 26696
+      md5: b92e11022ca320d68ae5858b9c9b4b0d
+      size: 28392
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: 26d25c55d6b98e53bd09d14d3f05c7fe
-      size: 34919
+      md5: 46e33bcbf7ef17eff1e0d058614441c0
+      size: 32496
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -281,16 +281,16 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 255a5b42a174e7e79a309399ee4e5b13
-      size: 23775
+      md5: e605a6ffe469fb905b9b09b2b8306f6f
+      size: 25327
     - path: src/feature_importances.py
       hash: md5
-      md5: c048338b2656e7498424c090e886584f
-      size: 1717
+      md5: d7edf0dcd59fe9d5f9d6b44835cb696b
+      size: 1730
     - path: src/plots/feature_importances.py
       hash: md5
-      md5: d06dba85852fddbd73d54680fb57d4bb
-      size: 1848
+      md5: b553c94b9be107402c0cd7216d90c58e
+      size: 1523
     params:
       params.yaml:
         column_mapping:
@@ -308,5 +308,5 @@ stages:
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 9d025df9896d2090fa0b078e62898805
-      size: 119949
+      md5: be2350556a4aa62b8cca5f452b5085ca
+      size: 118733
