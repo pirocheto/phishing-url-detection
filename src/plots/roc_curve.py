@@ -1,7 +1,7 @@
 from sklearn.metrics import auc, roc_curve
 
 
-def plot_roc_curve(y_scores, y_true, pos_label, ax):
+def plot_roc_curve(y_true, y_scores, pos_label, ax):
     fpr, tpr, _ = roc_curve(
         y_true, y_scores, pos_label=pos_label, drop_intermediate=False
     )
@@ -33,8 +33,8 @@ def plot_roc_curve(y_scores, y_true, pos_label, ax):
             pad=0.5,
         ),
     )
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.spines["left"].set_visible(False)
-    ax.spines["bottom"].set_visible(False)
+    # ax.set_xticks([])
+    # ax.set_yticks([])
+    # ax.spines["left"].set_visible(False)
+    # ax.spines["bottom"].set_visible(False)
     ax.set_box_aspect(1)

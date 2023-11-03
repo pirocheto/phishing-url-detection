@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sns
 
 
-def plot_score_distribution(y_scores, y_true, labels, ax):
+def plot_score_distribution(y_true, y_scores, labels, ax):
     y_scores = np.array(y_scores)
     data1 = y_scores[np.where(y_true == labels[0])]
     data2 = y_scores[np.where(y_true == labels[1])]
@@ -26,16 +26,19 @@ def plot_score_distribution(y_scores, y_true, labels, ax):
     )
 
     ax.legend(
-        loc="upper center",
+        # loc="upper center",
         framealpha=0.4,
-        fancybox=False,
-        bbox_to_anchor=(0.5, 0),
-        ncols=2,
+        # fancybox=False,
+        # bbox_to_anchor=(0.5, 0),
+        # ncols=2,
     )
     ax.set_box_aspect(1)
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_ylabel(None)
-    ax.spines["left"].set_visible(False)
-    ax.spines["bottom"].set_visible(False)
+    # ax.set_xticks([])
+    # ax.set_yticks([])
+    # ax.set_ylabel(None)
+
+    ax.xaxis.set_ticks_position("bottom")
+    ax.grid(True)
+    # ax.spines["left"].set_visible(False)
+    # ax.spines["bottom"].set_visible(False)
     ax.set_title("Score distribution", fontweight="bold", fontsize=10)

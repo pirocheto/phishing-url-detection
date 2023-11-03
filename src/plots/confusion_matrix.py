@@ -9,7 +9,7 @@ def plot_confusion_matrix(y_pred, y_true, labels, ax):
     colors = prop_cycle.by_key()["color"]
 
     colors = colors[0 : 1 + 1]
-    n = 256
+    n = 2
     cmap = LinearSegmentedColormap.from_list("custom_cmap", colors, N=n)
     cm = confusion_matrix(y_true, y_pred, labels=labels)
 
@@ -30,6 +30,7 @@ def plot_confusion_matrix(y_pred, y_true, labels, ax):
     )
 
     # ax.set_box_aspect(1)
+    ax.tick_params(axis="both", which="both", length=0)
     ax.xaxis.set_ticks_position("top")
     ax.xaxis.set_label_position("top")
     ax.set_xlabel("Pred Labels")
