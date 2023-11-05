@@ -5,7 +5,11 @@ import pandas as pd
 import yaml
 from sklearn.metrics import classification_report
 
+from plots.calibration_curve import plot_calibration_curve
 from plots.confusion_matrix import plot_confusion_matrix
+from plots.cumulative_distribution import plot_cumulative_distribution
+from plots.metrics_table import plot_metrics_table
+from plots.precision_recall_curve import plot_precision_recall_curve
 from plots.roc_curve import plot_roc_curve
 from plots.score_distribution import plot_score_distribution
 
@@ -68,8 +72,6 @@ with open(params["path"]["metrics"], "w", encoding="utf8" "") as fp:
     yaml.safe_dump(metrics, fp)
 
 # =========== Plotting confusion matrix ===========
-
-
 fig, ax = plt.subplots()
 plot_confusion_matrix(
     df_test[target],
@@ -82,7 +84,6 @@ fig.savefig(params["path"]["confusion_matrix"])
 
 
 # =========== Plotting ROC curve ===========
-
 fig, ax = plt.subplots()
 plot_roc_curve(
     df_test[target],
@@ -94,8 +95,6 @@ plot_roc_curve(
 fig.savefig(params["path"]["roc_curve"])
 
 # =========== Plotting score distribution ===========
-
-
 fig, ax = plt.subplots()
 plot_score_distribution(
     df_test[target],
@@ -105,3 +104,69 @@ plot_score_distribution(
 )
 
 fig.savefig(params["path"]["score_distribution"])
+
+
+# =========== Plotting score distribution ===========
+fig, ax = plt.subplots()
+
+plot_precision_recall_curve(
+    df_test[target],
+    df_test[prediction],
+    pos_label,
+    ax,
+)
+
+fig.savefig(params["path"]["precision_recall_curve"])
+
+
+# =========== Plotting calibration curve ===========
+fig, ax = plt.subplots()
+
+plot_calibration_curve(
+    df_test[target],
+    df_test[prediction],
+    pos_label,
+    ax,
+)
+
+fig.savefig(params["path"]["calibration_curve"])
+
+# =========== Plotting cumulative distribution ===========
+fig, ax = plt.subplots()
+
+plot_cumulative_distribution(
+    df_test[target],
+    df_test[prediction],
+    labels,
+    ax,
+)
+
+fig.savefig(params["path"]["cumulative_distribution"])
+
+# =========== Plotting Metrics table ===========
+fig, ax = plt.subplots()
+
+plot_metrics_table(list(metrics.items()), ax=ax)
+
+fig.savefig(params["path"]["metrics_table"])
+
+# =========== Plotting combined curves ===========
+fig, ax = plt.subplots(
+    nrows=3,
+    ncols=2,
+    figsize=(8.27, 11.69),
+)
+
+
+plot_confusion_matrix(df_test[target], df_test[label_pred], labels, ax[0][0])
+plot_metrics_table(list(metrics.items()), ax=ax[0][1])
+plot_roc_curve(df_test[target], df_test[prediction], pos_label, ax[1][0])
+plot_precision_recall_curve(df_test[target], df_test[prediction], pos_label, ax[1][1])
+
+plot_score_distribution(df_test[target], df_test[prediction], labels, ax[2][0])
+plot_cumulative_distribution(df_test[target], df_test[prediction], labels, ax[2][1])
+
+fig.suptitle("Classification Report", fontsize=13, fontweight="bold")
+
+fig.subplots_adjust(wspace=0.5, hspace=0.5)
+fig.savefig(params["path"]["classification_report"], dpi=300)

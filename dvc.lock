@@ -72,7 +72,7 @@ stages:
         path.data_test: data/test.csv
         path.data_train: data/train.csv
         plt_style:
-          style: src/mplstyles/rose-pine-dawn.mplstyle
+          style: Solarize_Light2
           font: Verdana
         train_test_split:
           test_size: 0.33
@@ -89,8 +89,8 @@ stages:
       size: 2446644
     - path: results/plots/data_proportion.png
       hash: md5
-      md5: 0d52abb5b9c94ccc72a2379fe1adbefe
-      size: 20538
+      md5: 8570e63c1fac62e8c07f128920224313
+      size: 20367
   train_model:
     cmd: python src/train_model.py
     deps:
@@ -118,15 +118,14 @@ stages:
             method: isotonic
             cv: 5
             estimator:
-              _target_: sklearn.svm.LinearSVC
+              _target_: sklearn.linear_model.LogisticRegression
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: 255a5b42a174e7e79a309399ee4e5b13
-      size: 23775
+      md5: e605a6ffe469fb905b9b09b2b8306f6f
+      size: 25327
   test_model:
-    cmd:
-    - python src/test_model.py
+    cmd: python src/test_model.py
     deps:
     - path: data/test.csv
       hash: md5
@@ -134,24 +133,40 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 255a5b42a174e7e79a309399ee4e5b13
-      size: 23775
+      md5: e605a6ffe469fb905b9b09b2b8306f6f
+      size: 25327
+    - path: src/plots/calibration_curve.py
+      hash: md5
+      md5: f98337fcccca18db5d2d290147f49369
+      size: 603
     - path: src/plots/confusion_matrix.py
       hash: md5
-      md5: 03d267a00ff6b403b97dd84156c618f0
-      size: 1023
+      md5: 2f148ca052d40ff673b31b60b26edbb4
+      size: 1056
+    - path: src/plots/cumulative_distribution.py
+      hash: md5
+      md5: d4a182dafa1bd35cb53a6096edc622ef
+      size: 1954
+    - path: src/plots/metrics_table.py
+      hash: md5
+      md5: ab081ba6afbdfb65e5b8a3cd31293040
+      size: 909
+    - path: src/plots/precision_recall_curve.py
+      hash: md5
+      md5: 7f32efebd4c770dea6338dfb8bcf8432
+      size: 1805
     - path: src/plots/roc_curve.py
       hash: md5
-      md5: bfe188db1c1e4ea1af8ea57a981f78b5
-      size: 1078
+      md5: b312a4443fa723ee6d97edc987ace79b
+      size: 2029
     - path: src/plots/score_distribution.py
       hash: md5
-      md5: 5b08dc23b134a22b24c5551e414f1ff6
-      size: 1042
+      md5: 2c94d321a14aaf1f78d72599532154c6
+      size: 1069
     - path: src/test_model.py
       hash: md5
-      md5: fe87d62203daef5b2bf98657b7b1161b
-      size: 2570
+      md5: 37a274a0664e19d637c746ebce4ba0bc
+      size: 4460
     params:
       params.yaml:
         column_mapping:
@@ -159,43 +174,68 @@ stages:
           target: status
           pos_label: phishing
           prediction: phishing
+        path.calibration_curve: results/plots/calibration_curve.png
+        path.classification_report: results/plots/classification_report.png
         path.confusion_matrix: results/plots/confusion_matrix.png
+        path.cumulative_distribution: results/plots/cumulative_distribution.png
         path.data_test: data/test.csv
         path.data_test_pred: data/test_pred.csv
         path.data_train: data/train.csv
         path.data_train_pred: data/train_pred.csv
         path.metrics: results/metrics.yaml
+        path.metrics_table: results/plots/metrics_table.png
         path.model_bin: results/models/model.pkl
+        path.precision_recall_curve: results/plots/precision_recall_curve.png
         path.roc_curve: results/plots/roc_curve.png
         path.score_distribution: results/plots/score_distribution.png
         plt_style:
-          style: src/mplstyles/rose-pine-dawn.mplstyle
+          style: Solarize_Light2
           font: Verdana
     outs:
     - path: data/test_pred.csv
       hash: md5
-      md5: a8a2d509fb5412548e5a9d0aca1143a4
-      size: 1312205
+      md5: 5a613d09215b4a138d1fab004d1847ff
+      size: 1311543
     - path: data/train_pred.csv
       hash: md5
-      md5: 0fd77387c6e977037baa3c4cd84b7ddf
-      size: 2671045
+      md5: 904e25d19aa3d0251b9aaad20423acb4
+      size: 2669185
     - path: results/metrics.yaml
       hash: md5
-      md5: b900e81cb71595385ef26ef58490f353
-      size: 115
+      md5: 2254f4c388a0f3b59ad9810ba7c2bb5c
+      size: 114
+    - path: results/plots/calibration_curve.png
+      hash: md5
+      md5: e212bf60ccb8d223268979e4b05df13a
+      size: 29122
+    - path: results/plots/classification_report.png
+      hash: md5
+      md5: 689464f40b74d10aa655beec897451d8
+      size: 470652
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: aac910270f52fe89d5cf7599e421c48f
-      size: 13709
+      md5: a563b5e079cdae93744565747fcfcf72
+      size: 17088
+    - path: results/plots/cumulative_distribution.png
+      hash: md5
+      md5: c0fdcd74f1ae2a885168f211988b4700
+      size: 41581
+    - path: results/plots/metrics_table.png
+      hash: md5
+      md5: be010a3219d1b8f2c83469a52fb5e03c
+      size: 14322
+    - path: results/plots/precision_recall_curve.png
+      hash: md5
+      md5: 5f363505b950ff5c746ed3656a44c79e
+      size: 24749
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 0063f9bf668c5efed93120c7f0f2e682
-      size: 26696
+      md5: 69d5e4456e1698b3eab8d779389b1e63
+      size: 38215
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: 26d25c55d6b98e53bd09d14d3f05c7fe
-      size: 34919
+      md5: 399fa1ed9c0ccdcfe4de2883f174139e
+      size: 35073
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -281,16 +321,16 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 255a5b42a174e7e79a309399ee4e5b13
-      size: 23775
+      md5: e605a6ffe469fb905b9b09b2b8306f6f
+      size: 25327
     - path: src/feature_importances.py
       hash: md5
-      md5: c048338b2656e7498424c090e886584f
-      size: 1717
+      md5: d7edf0dcd59fe9d5f9d6b44835cb696b
+      size: 1730
     - path: src/plots/feature_importances.py
       hash: md5
-      md5: d06dba85852fddbd73d54680fb57d4bb
-      size: 1848
+      md5: b553c94b9be107402c0cd7216d90c58e
+      size: 1523
     params:
       params.yaml:
         column_mapping:
@@ -303,10 +343,10 @@ stages:
         path.feature_importances: results/plots/feature_importances.png
         path.model_bin: results/models/model.pkl
         plt_style:
-          style: src/mplstyles/rose-pine-dawn.mplstyle
+          style: Solarize_Light2
           font: Verdana
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 9d025df9896d2090fa0b078e62898805
-      size: 119949
+      md5: 2cd0e594056c30de3abe89834079e173
+      size: 120500

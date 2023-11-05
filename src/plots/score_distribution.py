@@ -1,25 +1,26 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
 
 def plot_score_distribution(y_true, y_scores, labels, ax):
     y_scores = np.array(y_scores)
-    data1 = y_scores[np.where(y_true == labels[0])]
-    data2 = y_scores[np.where(y_true == labels[1])]
+    scores1 = y_scores[y_true == labels[0]]
+    scores2 = y_scores[y_true == labels[1]]
 
     ax = sns.histplot(
-        data1,
+        scores1,
         kde=True,
         ax=ax,
+        bins="auto",
         edgecolor=None,
         legend=True,
         label=labels[0],
     )
     ax = sns.histplot(
-        data2,
+        scores2,
         kde=True,
         ax=ax,
+        bins="auto",
         edgecolor=None,
         legend=True,
         label=labels[1],
@@ -35,7 +36,8 @@ def plot_score_distribution(y_true, y_scores, labels, ax):
     ax.set_box_aspect(1)
     # ax.set_xticks([])
     # ax.set_yticks([])
-    # ax.set_ylabel(None)
+    ax.set_xlim(0, 1)
+    ax.set_xlabel("Probability")
 
     ax.xaxis.set_ticks_position("bottom")
     ax.grid(True)

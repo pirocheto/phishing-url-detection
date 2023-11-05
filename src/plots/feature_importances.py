@@ -1,21 +1,6 @@
-import random
-
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-
-# def normalize_values(values):
-#     min_value = min(values)
-#     max_value = max(values)
-
-#     new_min = -1
-#     new_max = 1
-
-#     normalized_values = [
-#         (x - min_value) / (max_value - min_value) * (new_max - new_min) + new_min
-#         for x in values
-#     ]
-#     return normalized_values
 
 
 def plot_feature_importances(
@@ -28,8 +13,6 @@ def plot_feature_importances(
 
     feature_names = list(feature_importance.keys())
     feature_values = list(feature_importance.values())
-
-    # feature_values = normalize_values(feature_values)
 
     prop_cycle = plt.rcParams["axes.prop_cycle"]
     colors = prop_cycle.by_key()["color"]
@@ -57,6 +40,7 @@ def plot_feature_importances(
     ax.set_yticks([])
     ax.set_xticks([0])
     ax.margins(0.05, 0.025)
+    ax.tick_params(axis="both", which="both", length=0)
 
     ax.grid(True)
 

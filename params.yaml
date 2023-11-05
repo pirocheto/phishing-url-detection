@@ -17,6 +17,11 @@ path:
   confusion_matrix: results/plots/confusion_matrix.png
   roc_curve: results/plots/roc_curve.png
   score_distribution: results/plots/score_distribution.png
+  precision_recall_curve: results/plots/precision_recall_curve.png
+  calibration_curve: results/plots/calibration_curve.png
+  cumulative_distribution: results/plots/cumulative_distribution.png
+  metrics_table: results/plots/metrics_table.png
+  classification_report: results/plots/classification_report.png
 column_mapping:
   id: url
   target: status
@@ -27,16 +32,16 @@ train_test_split:
   random_state: 42
   shuffle: true
 plt_style:
-  style: src/mplstyles/rose-pine-dawn.mplstyle
+  style: Solarize_Light2
   font: Verdana
 classifier:
-  _target_: sklearn.svm.LinearSVC
+  _target_: sklearn.linear_model.LogisticRegression
 calibration:
   _target_: sklearn.calibration.CalibratedClassifierCV
   method: isotonic
   cv: 5
   estimator:
-    _target_: sklearn.svm.LinearSVC
+    _target_: sklearn.linear_model.LogisticRegression
 pipeline:
   _target_: sklearn.pipeline.make_pipeline
   _args_:
@@ -44,4 +49,4 @@ pipeline:
     method: isotonic
     cv: 5
     estimator:
-      _target_: sklearn.svm.LinearSVC
+      _target_: sklearn.linear_model.LogisticRegression
