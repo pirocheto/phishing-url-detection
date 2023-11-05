@@ -31,6 +31,13 @@ path:
   confusion_matrix: ${path.plots}/confusion_matrix.png
   roc_curve: ${path.plots}/roc_curve.png
   score_distribution: ${path.plots}/score_distribution.png
+  precision_recall_curve: ${path.plots}/precision_recall_curve.png
+  calibration_curve: ${path.plots}/calibration_curve.png
+  cumulative_distribution: ${path.plots}/cumulative_distribution.png
+  metrics_table: ${path.plots}/metrics_table.png
+  classification_report: ${path.plots}/classification_report.png
+
+
 
 column_mapping:
   id: url
@@ -44,7 +51,7 @@ train_test_split:
   shuffle: true
 
 plt_style:
-  style: src/mplstyles/rose-pine-dawn.mplstyle
+  # style: src/mplstyles/rose-pine-dawn.mplstyle
   # style: src/mplstyles/rose-pine-moon.mplstyle
-  # style: Solarize_Light2
+  style: Solarize_Light2
   font: Verdana

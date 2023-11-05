@@ -45,8 +45,7 @@ stages:
       - ${path.model_bin}
 
   test_model:
-    cmd: 
-      - python src/test_model.py
+    cmd: python src/test_model.py
     params: 
       - path.data_test
       - path.data_train
@@ -58,12 +57,21 @@ stages:
       - path.confusion_matrix
       - path.roc_curve
       - path.score_distribution
+      - path.precision_recall_curve
+      - path.calibration_curve
+      - path.cumulative_distribution
+      - path.metrics_table
+      - path.classification_report
       - plt_style
     deps:
       - src/test_model.py
       - src/plots/confusion_matrix.py
       - src/plots/roc_curve.py
       - src/plots/score_distribution.py
+      - src/plots/precision_recall_curve.py
+      - src/plots/cumulative_distribution.py
+      - src/plots/calibration_curve.py
+      - src/plots/metrics_table.py
       - ${path.data_test}
       - ${path.model_bin}
     plots:
@@ -72,6 +80,16 @@ stages:
       - ${path.roc_curve}:
           cache: False
       - ${path.score_distribution}:
+          cache: False
+      - ${path.precision_recall_curve}:
+          cache: False
+      - ${path.cumulative_distribution}:
+          cache: False
+      - ${path.calibration_curve}:
+          cache: False
+      - ${path.metrics_table}:
+          cache: False
+      - ${path.classification_report}:
           cache: False
     outs:
       - ${path.data_test_pred}:

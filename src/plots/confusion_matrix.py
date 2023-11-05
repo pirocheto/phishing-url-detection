@@ -30,8 +30,9 @@ def plot_confusion_matrix(y_pred, y_true, labels, ax):
     )
 
     # ax.set_box_aspect(1)
+
     ax.tick_params(axis="both", which="both", length=0)
-    ax.xaxis.set_ticks_position("top")
-    ax.xaxis.set_label_position("top")
+    # ax.xaxis.set_label_position("top")
     ax.set_xlabel("Pred Labels")
     ax.set_ylabel("True Labels")
+    ax.set_title("Confusion Matrix", fontweight="bold", fontsize=10)

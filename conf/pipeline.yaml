@@ -1,5 +1,5 @@
 defaults:
-  - classifier: LinearSVC
+  - classifier: LogisticRegression
   - calibration: Isotonic
 
 calibration:

@@ -60,5 +60,5 @@ plot_feature_importances(
 )
 
 fig.suptitle("Feature Importances", fontweight="bold")
-fig.subplots_adjust(top=0.94, bottom=0.05)
+fig.subplots_adjust(top=0.94, bottom=0.05, wspace=0.03)
 fig.savefig(params["path"]["feature_importances"])
