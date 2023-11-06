@@ -31,6 +31,20 @@ stages:
       - ${path.data_train}
       - ${path.data_test}
 
+  feature_selection:
+    cmd: python src/feature_selection.py
+    params: 
+      - column_mapping
+      - path.data_all
+      - path.correlation_matrix
+      - plt_style
+    deps:
+      - ${path.data_all}
+      - src/feature_selection.py
+    plots:
+      - ${path.correlation_matrix}:
+          cache: False
+
   train_model:
     cmd: python src/train_model.py
     params: 

@@ -27,6 +27,10 @@ path:
   # Plots
   plots: ${path.results}/plots
   data_proportion: ${path.plots}/data_proportion.png
+
+  correlation_matrix: ${path.plots}/correlation_matrix.png
+
+  metrics_table: ${path.plots}/metrics_table.png
   feature_importances: ${path.plots}/feature_importances.png
   confusion_matrix: ${path.plots}/confusion_matrix.png
   roc_curve: ${path.plots}/roc_curve.png
@@ -34,7 +38,6 @@ path:
   precision_recall_curve: ${path.plots}/precision_recall_curve.png
   calibration_curve: ${path.plots}/calibration_curve.png
   cumulative_distribution: ${path.plots}/cumulative_distribution.png
-  metrics_table: ${path.plots}/metrics_table.png
   classification_report: ${path.plots}/classification_report.png
 
 

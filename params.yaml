@@ -13,6 +13,8 @@ path:
   metrics: results/metrics.yaml
   plots: results/plots
   data_proportion: results/plots/data_proportion.png
+  correlation_matrix: results/plots/correlation_matrix.png
+  metrics_table: results/plots/metrics_table.png
   feature_importances: results/plots/feature_importances.png
   confusion_matrix: results/plots/confusion_matrix.png
   roc_curve: results/plots/roc_curve.png
@@ -20,7 +22,6 @@ path:
   precision_recall_curve: results/plots/precision_recall_curve.png
   calibration_curve: results/plots/calibration_curve.png
   cumulative_distribution: results/plots/cumulative_distribution.png
-  metrics_table: results/plots/metrics_table.png
   classification_report: results/plots/classification_report.png
 column_mapping:
   id: url
