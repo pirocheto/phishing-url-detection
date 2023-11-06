@@ -350,3 +350,31 @@ stages:
       hash: md5
       md5: 2cd0e594056c30de3abe89834079e173
       size: 120500
+  feature_selection:
+    cmd: python src/feature_selection.py
+    deps:
+    - path: data/all.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/feature_selection.py
+      hash: md5
+      md5: 10ec42a01eeb3669a7191857fe918268
+      size: 845
+    params:
+      params.yaml:
+        column_mapping:
+          id: url
+          target: status
+          pos_label: phishing
+          prediction: phishing
+        path.correlation_matrix: results/plots/correlation_matrix.png
+        path.data_all: data/all.csv
+        plt_style:
+          style: Solarize_Light2
+          font: Verdana
+    outs:
+    - path: results/plots/correlation_matrix.png
+      hash: md5
+      md5: 927d130b12f7b5737e585dce5ad50534
+      size: 396194
