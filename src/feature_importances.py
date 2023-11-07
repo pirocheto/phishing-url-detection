@@ -2,23 +2,54 @@ import dvc.api
 import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
+import yaml
+from rich.console import Console
+from rich.syntax import Syntax
 from sklearn.inspection import permutation_importance
 
 from plots.feature_importances import plot_feature_importances
 
 params = dvc.api.params_show()
 
+console = Console()
+
+stage = "feature_importance"
+
+console.log(
+    f"[purple]['{stage}' stage config]",
+    Syntax(
+        yaml.dump(params),
+        "yaml",
+        theme="monokai",
+        background_color="default",
+    ),
+)
+
+
 plt.style.use(params["plt_style"]["style"])
 plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
 
 # ----------- Loading data -----------
+with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:
+    selected_features = yaml.safe_load(fp)
+
 df_test = pd.read_csv(
     params["path"]["data_test"],
     index_col=params["column_mapping"]["id"],
+    usecols=[
+        params["column_mapping"]["id"],
+        params["column_mapping"]["target"],
+        *selected_features,
+    ],
 )
 df_train = pd.read_csv(
     params["path"]["data_train"],
     index_col=params["column_mapping"]["id"],
+    usecols=[
+        params["column_mapping"]["id"],
+        params["column_mapping"]["target"],
+        *selected_features,
+    ],
 )
 
 # ----------- Loading model -----------
@@ -26,6 +57,8 @@ pipeline = joblib.load(params["path"]["model_bin"])
 
 
 # ----------- Compute feature importances -----------
+
+
 def _compute_feature_importances(df):
     targets = df[params["column_mapping"]["target"]]
     data = df.drop(params["column_mapping"]["target"], axis=1)

@@ -1,11 +1,12 @@
 defaults:
-  - classifier: LogisticRegression
-  - calibration: Isotonic
+  - feature_selection: VarianceThreshold
+  - classifier: RandomForest
+  - calibration: isotonic
 
 calibration:
   estimator: ${classifier}
 
-pipeline:
+pipeline: 
   _target_: sklearn.pipeline.make_pipeline
   _args_:
     - ${calibration}

@@ -3,6 +3,8 @@ import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
 import yaml
+from rich.console import Console
+from rich.syntax import Syntax
 from sklearn.metrics import classification_report
 
 from plots.calibration_curve import plot_calibration_curve
@@ -13,7 +15,21 @@ from plots.precision_recall_curve import plot_precision_recall_curve
 from plots.roc_curve import plot_roc_curve
 from plots.score_distribution import plot_score_distribution
 
-params = dvc.api.params_show(stages="test_model")
+stage = "test_model"
+
+params = dvc.api.params_show(stages=stage)
+
+console = Console()
+
+console.log(
+    f"[purple]\['{stage}' stage config]",
+    Syntax(
+        yaml.dump(params),
+        "yaml",
+        theme="monokai",
+        background_color="default",
+    ),
+)
 
 plt.style.use(params["plt_style"]["style"])
 plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
@@ -25,15 +41,29 @@ label_pred = f"{prediction}_label"
 pos_label = params["column_mapping"]["pos_label"]
 
 # =========== Predict data ===========
+with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:
+    selected_features = yaml.safe_load(fp)
+
+
 df_test = pd.read_csv(
     params["path"]["data_test"],
     index_col=params["column_mapping"]["id"],
+    usecols=[
+        params["column_mapping"]["id"],
+        params["column_mapping"]["target"],
+        *selected_features,
+    ],
 )
 X_test = df_test.drop(target, axis=1)
 
 df_train = pd.read_csv(
     params["path"]["data_train"],
     index_col=params["column_mapping"]["id"],
+    usecols=[
+        params["column_mapping"]["id"],
+        params["column_mapping"]["target"],
+        *selected_features,
+    ],
 )
 X_train = df_train.drop(target, axis=1)
 
@@ -70,6 +100,16 @@ metrics = {
 
 with open(params["path"]["metrics"], "w", encoding="utf8" "") as fp:
     yaml.safe_dump(metrics, fp)
+
+console.log(
+    "[purple]\[metrics]",
+    Syntax(
+        yaml.dump(metrics),
+        "yaml",
+        theme="monokai",
+        background_color="default",
+    ),
+)
 
 # =========== Plotting confusion matrix ===========
 fig, ax = plt.subplots()

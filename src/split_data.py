@@ -2,15 +2,35 @@ import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import yaml
+from rich.console import Console
+from rich.syntax import Syntax
 from sklearn.model_selection import train_test_split
 
 from plots.data_proportion import plot_data_proportion
 
-params = dvc.api.params_show(stages="split_data")
+console = Console()
+
+stage = "split_data"
+
+params = dvc.api.params_show(stages=stage)
+
+console.log(
+    f"[purple]['{stage}' stage config]",
+    Syntax(
+        yaml.dump(params),
+        "yaml",
+        theme="monokai",
+        background_color="default",
+    ),
+)
 
 
 # =========== Splitting data ===========
-df = pd.read_csv(params["path"]["data_all"], index_col=params["column_mapping"]["id"])
+df = pd.read_csv(
+    params["path"]["data_all"],
+    index_col=params["column_mapping"]["id"],
+)
 
 X_train, X_test = train_test_split(df, **params["train_test_split"])
 

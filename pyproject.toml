@@ -13,6 +13,7 @@ tpot = "^0.12.1"
 matplotlib = "^3.8.0"
 seaborn = "^0.13.0"
 ipykernel = "^6.26.0"
+rich = "^13.6.0"
 
 
 [build-system]
