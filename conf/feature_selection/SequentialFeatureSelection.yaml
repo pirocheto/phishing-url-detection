@@ -1,0 +1,40 @@
+# Transformer that performs Sequential Feature Selection.
+# https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SequentialFeatureSelector.html#sklearn.feature_selection.SequentialFeatureSelector
+_target_: sklearn.feature_selection.SequentialFeatureSelector
+
+# An unfitted estimator.
+estimator:
+  _target_: sklearn.ensemble.RandomForestClassifier
+
+# If "auto", the behaviour depends on the tol parameter:
+# if tol is not None, then features are selected while the score change does not exceed tol.
+# otherwise, half of the features are selected.
+# If integer, the parameter is the absolute number of features to select. 
+# If float between 0 and 1, it is the fraction of features to select.
+n_features_to_select: 10
+
+# If the score is not incremented by at least tol between two consecutive feature additions or removals, stop adding or removing.
+# tol can be negative when removing features using direction="backward". It can be useful to reduce the number of features at the cost of a small decrease in the score.
+# tol is enabled only when n_features_to_select is "auto".
+tol: null
+
+# Whether to perform forward selection or backward selection.
+direction: forward
+
+# A single str (see The scoring parameter: defining model evaluation rules) or a callable (see Defining your scoring strategy from metric functions) to evaluate the predictions on the test set.
+# NOTE that when using a custom scorer, it should return a single value.
+# If None, the estimator’s score method is used.
+scoring: null
+
+# Determines the cross-validation splitting strategy.
+# Possible inputs for cv are:
+# None, to use the default 5-fold cross validation,
+# integer, to specify the number of folds in a (Stratified)KFold,
+# CV splitter,
+# An iterable yielding (train, test) splits as arrays of indices.
+cv: null
+
+# Number of jobs to run in parallel. 
+# When evaluating a new feature to add or remove, the cross-validation procedure is parallel over the folds. 
+# None means 1 unless in a joblib.parallel_backend context. -1 means using all processors.
+n_jobs: null

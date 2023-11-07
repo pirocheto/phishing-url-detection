@@ -1,0 +1,24 @@
+# Feature ranking with recursive feature elimination.
+# https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html#sklearn.feature_selection.RFE
+_target_: sklearn.feature_selection.RFE
+
+# A supervised learning estimator with a fit method that provides information about feature importance (e.g. coef_, feature_importances_).
+estimator:
+  _target_: sklearn.tree.DecisionTreeClassifier
+
+
+# The number of features to select. 
+# If None, half of the features are selected. 
+# If integer, the parameter is the absolute number of features to select. 
+# If float between 0 and 1, it is the fraction of features to select.
+n_features_to_select: null
+
+# If greater than or equal to 1, then step corresponds to the (integer) number of features to remove at each iteration. 
+# If within (0.0, 1.0), then step corresponds to the percentage (rounded down) of features to remove at each iteration.
+step: 1
+
+# Controls verbosity of output.
+verbose: 0
+
+# If ‘auto’, uses the feature importance either through a coef_ or feature_importances_ attributes of estimator.
+importance_getter: auto

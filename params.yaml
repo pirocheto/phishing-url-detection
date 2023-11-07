@@ -1,28 +1,4 @@
 data_url: https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
-path:
-  data: data
-  data_all: data/all.csv
-  data_train: data/train.csv
-  data_test: data/test.csv
-  data_train_pred: data/train_pred.csv
-  data_test_pred: data/test_pred.csv
-  results: results
-  models: results/models
-  model_bin: results/models/model.pkl
-  model_card: results/models/model_card.png
-  metrics: results/metrics.yaml
-  plots: results/plots
-  data_proportion: results/plots/data_proportion.png
-  correlation_matrix: results/plots/correlation_matrix.png
-  metrics_table: results/plots/metrics_table.png
-  feature_importances: results/plots/feature_importances.png
-  confusion_matrix: results/plots/confusion_matrix.png
-  roc_curve: results/plots/roc_curve.png
-  score_distribution: results/plots/score_distribution.png
-  precision_recall_curve: results/plots/precision_recall_curve.png
-  calibration_curve: results/plots/calibration_curve.png
-  cumulative_distribution: results/plots/cumulative_distribution.png
-  classification_report: results/plots/classification_report.png
 column_mapping:
   id: url
   target: status
@@ -35,14 +11,42 @@ train_test_split:
 plt_style:
   style: Solarize_Light2
   font: Verdana
+path:
+  data: data
+  data_all: data/all.csv
+  data_train: data/train.csv
+  data_test: data/test.csv
+  data_train_pred: data/train_pred.csv
+  data_test_pred: data/test_pred.csv
+  results: results
+  models: results/models
+  model_bin: results/models/model.pkl
+  model_card: results/models/model_card.png
+  metrics: results/metrics.yaml
+  selected_features: results/selected_features.yaml
+  plots: results/plots
+  data_proportion: results/plots/data_proportion.png
+  correlation_matrix: results/plots/correlation_matrix.png
+  metrics_table: results/plots/metrics_table.png
+  feature_importances: results/plots/feature_importances.png
+  confusion_matrix: results/plots/confusion_matrix.png
+  roc_curve: results/plots/roc_curve.png
+  score_distribution: results/plots/score_distribution.png
+  precision_recall_curve: results/plots/precision_recall_curve.png
+  calibration_curve: results/plots/calibration_curve.png
+  cumulative_distribution: results/plots/cumulative_distribution.png
+  classification_report: results/plots/classification_report.png
+feature_selection:
+  _target_: sklearn.feature_selection.VarianceThreshold
+  threshold: 1
 classifier:
-  _target_: sklearn.linear_model.LogisticRegression
+  _target_: sklearn.ensemble.RandomForestClassifier
 calibration:
   _target_: sklearn.calibration.CalibratedClassifierCV
   method: isotonic
   cv: 5
   estimator:
-    _target_: sklearn.linear_model.LogisticRegression
+    _target_: sklearn.ensemble.RandomForestClassifier
 pipeline:
   _target_: sklearn.pipeline.make_pipeline
   _args_:
@@ -50,4 +54,4 @@ pipeline:
     method: isotonic
     cv: 5
     estimator:
-      _target_: sklearn.linear_model.LogisticRegression
+      _target_: sklearn.ensemble.RandomForestClassifier

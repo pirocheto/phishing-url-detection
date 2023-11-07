@@ -9,7 +9,7 @@ def plot_correlation_matrix(x, y, color, size, ax):
     # x_to_num = {p[1]:p[0] for p in enumerate(x_labels)}
     # y_to_num = {p[1]:p[0] for p in enumerate(y_labels)}
 
-    size_scale = 500
+    size_scale = 400
 
     n_colors = 256
     palette = sns.diverging_palette(20, 220, n=n_colors)
@@ -28,8 +28,8 @@ def plot_correlation_matrix(x, y, color, size, ax):
         marker="o",
     )
 
-    ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation=45, ha="left")
-    ax.xaxis.set_ticks_position("top")
+    ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation=45, ha="right")
+    ax.yaxis.set_ticks_position("right")
     ax.tick_params(axis="both", labelsize=10, which="both", length=0)
 
     ax.grid(False, "major")
@@ -41,4 +41,5 @@ def plot_correlation_matrix(x, y, color, size, ax):
     # ax.set_ylim([-0.5, max([v for v in y_to_num.values()]) + 0.5])
     ax.set_xlim(-0.5, len(np.unique(x)) - 0.5)
     ax.set_ylim(-0.5, len(np.unique(y)) - 0.5)
-    ax.set_title("Correlation Matrix", fontweight="bold", fontsize=15)
+    ax.set_title("Correlation Matrix", fontweight="bold", fontsize=10)
+    ax.set_box_aspect(1)

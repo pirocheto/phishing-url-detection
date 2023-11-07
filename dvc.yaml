@@ -35,14 +35,22 @@ stages:
     cmd: python src/feature_selection.py
     params: 
       - column_mapping
+      - feature_selection
       - path.data_all
+      - path.data_train
+      - path.data_test
       - path.correlation_matrix
+      - path.selected_features
       - plt_style
     deps:
       - ${path.data_all}
       - src/feature_selection.py
+      - src/plots/correlation_matrix.py
     plots:
       - ${path.correlation_matrix}:
+          cache: False
+    outs:
+      - ${path.selected_features}:
           cache: False
 
   train_model:
@@ -50,11 +58,13 @@ stages:
     params: 
       - path.data_train
       - column_mapping
+      - path.selected_features
       - pipeline
       - path.model_bin
     deps:
       - src/train_model.py
       - ${path.data_train}
+      - ${path.selected_features}
     outs:
       - ${path.model_bin}
 
@@ -76,6 +86,7 @@ stages:
       - path.cumulative_distribution
       - path.metrics_table
       - path.classification_report
+      - path.selected_features
       - plt_style
     deps:
       - src/test_model.py
@@ -88,6 +99,7 @@ stages:
       - src/plots/metrics_table.py
       - ${path.data_test}
       - ${path.model_bin}
+      - ${path.selected_features}
     plots:
       - ${path.confusion_matrix}:
           cache: False
@@ -124,12 +136,14 @@ stages:
       - column_mapping
       - path.model_bin
       - path.feature_importances
+      - path.selected_features
       - plt_style
     deps:
       - src/feature_importances.py
       - src/plots/feature_importances.py
       - ${path.data_test}
       - ${path.model_bin}
+      - ${path.selected_features}
     plots:
       - ${path.feature_importances}:
           cache: False

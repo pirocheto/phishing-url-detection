@@ -58,8 +58,8 @@ stages:
       size: 1344
     - path: src/split_data.py
       hash: md5
-      md5: 7d118d0c875dd569212a5164f5156cdf
-      size: 1046
+      md5: 1a06053e78b586db55ad0affe28c55cb
+      size: 1349
     params:
       params.yaml:
         column_mapping:
@@ -98,10 +98,14 @@ stages:
       hash: md5
       md5: de0274753f5d64f0729034afae01c814
       size: 2446644
+    - path: results/selected_features.yaml
+      hash: md5
+      md5: f7caf56c01245c1940417a412e49689c
+      size: 458
     - path: src/train_model.py
       hash: md5
-      md5: e0eead4b67fb7b2f5224ef071c530233
-      size: 500
+      md5: 56025607977f0a31a9c4109ad8efc0f1
+      size: 1345
     params:
       params.yaml:
         column_mapping:
@@ -111,6 +115,7 @@ stages:
           prediction: phishing
         path.data_train: data/train.csv
         path.model_bin: results/models/model.pkl
+        path.selected_features: results/selected_features.yaml
         pipeline:
           _target_: sklearn.pipeline.make_pipeline
           _args_:
@@ -118,12 +123,12 @@ stages:
             method: isotonic
             cv: 5
             estimator:
-              _target_: sklearn.linear_model.LogisticRegression
+              _target_: sklearn.ensemble.RandomForestClassifier
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: e605a6ffe469fb905b9b09b2b8306f6f
-      size: 25327
+      md5: 8ab261ae395d64d94814257fd7c3107f
+      size: 33216501
   test_model:
     cmd: python src/test_model.py
     deps:
@@ -133,8 +138,12 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: e605a6ffe469fb905b9b09b2b8306f6f
-      size: 25327
+      md5: 8ab261ae395d64d94814257fd7c3107f
+      size: 33216501
+    - path: results/selected_features.yaml
+      hash: md5
+      md5: f7caf56c01245c1940417a412e49689c
+      size: 458
     - path: src/plots/calibration_curve.py
       hash: md5
       md5: f98337fcccca18db5d2d290147f49369
@@ -165,8 +174,8 @@ stages:
       size: 1069
     - path: src/test_model.py
       hash: md5
-      md5: 37a274a0664e19d637c746ebce4ba0bc
-      size: 4460
+      md5: 47ab0d3ee0d4f3b3603157ba4e3ab62e
+      size: 5294
     params:
       params.yaml:
         column_mapping:
@@ -188,54 +197,55 @@ stages:
         path.precision_recall_curve: results/plots/precision_recall_curve.png
         path.roc_curve: results/plots/roc_curve.png
         path.score_distribution: results/plots/score_distribution.png
+        path.selected_features: results/selected_features.yaml
         plt_style:
           style: Solarize_Light2
           font: Verdana
     outs:
     - path: data/test_pred.csv
       hash: md5
-      md5: 5a613d09215b4a138d1fab004d1847ff
-      size: 1311543
+      md5: 08373d32176c6410ef7a47fe829461dc
+      size: 742031
     - path: data/train_pred.csv
       hash: md5
-      md5: 904e25d19aa3d0251b9aaad20423acb4
-      size: 2669185
+      md5: 25f5d8110f61dd5a1f704adafd1e963e
+      size: 1510038
     - path: results/metrics.yaml
       hash: md5
-      md5: 2254f4c388a0f3b59ad9810ba7c2bb5c
-      size: 114
+      md5: f49876d9ff6f9948a6976146ca969648
+      size: 115
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: e212bf60ccb8d223268979e4b05df13a
-      size: 29122
+      md5: 6cfd531077bc8cef4d2d7c81cd4100d1
+      size: 30167
     - path: results/plots/classification_report.png
       hash: md5
-      md5: 689464f40b74d10aa655beec897451d8
-      size: 470652
+      md5: ce60cc4a360091ea790a860c43925536
+      size: 422821
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: a563b5e079cdae93744565747fcfcf72
-      size: 17088
+      md5: 7ac54ff9a7a4cd58898031577dcb70df
+      size: 16590
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: c0fdcd74f1ae2a885168f211988b4700
-      size: 41581
+      md5: e5db6afc1c8601b8acdd969b961e9807
+      size: 36914
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: be010a3219d1b8f2c83469a52fb5e03c
-      size: 14322
+      md5: ba281bb80c1df86469bd324c525f648f
+      size: 14574
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: 5f363505b950ff5c746ed3656a44c79e
-      size: 24749
+      md5: aa33c38d14669b8a5e8af52eb9b84e5f
+      size: 21551
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 69d5e4456e1698b3eab8d779389b1e63
-      size: 38215
+      md5: 60325680372fed81288a88b54f9eb096
+      size: 34719
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: 399fa1ed9c0ccdcfe4de2883f174139e
-      size: 35073
+      md5: f9dc6b7c53ec3ee3edb8e56948c49e70
+      size: 20997
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -321,12 +331,16 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: e605a6ffe469fb905b9b09b2b8306f6f
-      size: 25327
+      md5: 8ab261ae395d64d94814257fd7c3107f
+      size: 33216501
+    - path: results/selected_features.yaml
+      hash: md5
+      md5: f7caf56c01245c1940417a412e49689c
+      size: 458
     - path: src/feature_importances.py
       hash: md5
-      md5: d7edf0dcd59fe9d5f9d6b44835cb696b
-      size: 1730
+      md5: 22ab3c1774088c184711668bb088c939
+      size: 2426
     - path: src/plots/feature_importances.py
       hash: md5
       md5: b553c94b9be107402c0cd7216d90c58e
@@ -342,14 +356,15 @@ stages:
         path.data_train: data/train.csv
         path.feature_importances: results/plots/feature_importances.png
         path.model_bin: results/models/model.pkl
+        path.selected_features: results/selected_features.yaml
         plt_style:
           style: Solarize_Light2
           font: Verdana
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 2cd0e594056c30de3abe89834079e173
-      size: 120500
+      md5: 1770ebf75fa3fa59e8a0d792e24e4839
+      size: 56833
   feature_selection:
     cmd: python src/feature_selection.py
     deps:
@@ -359,8 +374,12 @@ stages:
       size: 3661166
     - path: src/feature_selection.py
       hash: md5
-      md5: 10ec42a01eeb3669a7191857fe918268
-      size: 845
+      md5: f62b11e40cd969b28b8f592236b2269a
+      size: 2425
+    - path: src/plots/correlation_matrix.py
+      hash: md5
+      md5: c31b6d4cdb079375513ffb67ef344a60
+      size: 1518
     params:
       params.yaml:
         column_mapping:
@@ -368,13 +387,23 @@ stages:
           target: status
           pos_label: phishing
           prediction: phishing
+        feature_selection:
+          _target_: sklearn.feature_selection.VarianceThreshold
+          threshold: 1
         path.correlation_matrix: results/plots/correlation_matrix.png
         path.data_all: data/all.csv
+        path.data_test: data/test.csv
+        path.data_train: data/train.csv
+        path.selected_features: results/selected_features.yaml
         plt_style:
           style: Solarize_Light2
           font: Verdana
     outs:
     - path: results/plots/correlation_matrix.png
       hash: md5
-      md5: 927d130b12f7b5737e585dce5ad50534
-      size: 396194
+      md5: e31b71b848149aa226ef70a34d5bd395
+      size: 215773
+    - path: results/selected_features.yaml
+      hash: md5
+      md5: f7caf56c01245c1940417a412e49689c
+      size: 458
