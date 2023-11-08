@@ -2,6 +2,7 @@ stages:
 
   download_data:
     cmd: wget ${data_url} -O ${path.data_all}
+    frozen: True
     params: 
       - data_url
       - path.data_all
