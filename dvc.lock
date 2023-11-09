@@ -54,8 +54,8 @@ stages:
       size: 3661166
     - path: src/split_data.py
       hash: md5
-      md5: 00faa30956e399fcff9901d541a5d5cd
-      size: 1658
+      md5: deef47671bdf6e2601eefdcb81ef5dae
+      size: 2322
     params:
       params.yaml:
         column_mapping:
@@ -83,8 +83,8 @@ stages:
       size: 2446644
     - path: results/plots/data_proportion.png
       hash: md5
-      md5: 5c3dabd6fb800a9c8afb359cd87ceeb1
-      size: 20130
+      md5: 53ce6fd6879b55da43fabad0dbd3b5a5
+      size: 20127
   train_model:
     cmd: python src/train_model.py
     deps:
@@ -364,12 +364,8 @@ stages:
       size: 3661166
     - path: src/feature_selection.py
       hash: md5
-      md5: 3b79f89d6af79bed13ad23a7dc2e08f3
-      size: 2087
-    - path: src/plots/correlation_matrix.py
-      hash: md5
-      md5: c31b6d4cdb079375513ffb67ef344a60
-      size: 1518
+      md5: c88bcbdd0f02de9c7c2aa4c3db5ba2f0
+      size: 4288
     params:
       params.yaml:
         column_mapping:
