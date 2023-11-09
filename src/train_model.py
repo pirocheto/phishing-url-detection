@@ -1,3 +1,4 @@
+import warnings
 from datetime import datetime
 
 import dvc.api
@@ -5,6 +6,11 @@ import joblib
 import pandas as pd
 import yaml
 from hydra.utils import instantiate
+from sklearn.exceptions import ConvergenceWarning
+
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 stage = "train_model"
 
