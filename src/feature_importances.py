@@ -54,12 +54,12 @@ def _compute_feature_importances(df):
         targets,
         scoring="f1_macro",
         n_repeats=3,
-        n_jobs=-1,
+        n_jobs=1,
         random_state=42,
     )
 
     importances_mean = [value.item() for value in results["importances_mean"]]
-    feature_importances = dict(zip(pipeline.feature_names_in_, importances_mean))
+    feature_importances = dict(zip(df_train.columns, importances_mean))
     return feature_importances
 
 

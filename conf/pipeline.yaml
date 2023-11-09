@@ -1,12 +1,17 @@
+# Configuration defaults for the machine learning pipeline
 defaults:
-  - feature_selection: VarianceThreshold
-  - classifier: RandomForest
-  - calibration: Isotonic
+  - target_preprocessing: LabelEncoder # Default target preprocessing method
+  - feature_preprocessing: Normalizer # Default feature preprocessing method
+  - feature_selection: VarianceThreshold # Default feature selection method
+  - classifier: RandomForest # Default classifier for the pipeline
+  - calibration: Isotonic # Default calibration method
 
+# Calibration configuration
 calibration:
-  estimator: ${classifier}
+  estimator: ${classifier} # Calibration estimator, using the default classifier
 
+# Pipeline configuration
 pipeline:
-  _target_: sklearn.pipeline.make_pipeline
+  _target_: sklearn.pipeline.make_pipeline # Define a pipeline with default parameters
   _args_:
-    - ${calibration}
+    - ${calibration} # Include calibration step as the first step in the pipeline

@@ -1,19 +1,25 @@
+# Configuration defaults
 defaults:
-  - _self_
-  - path.yaml
-  - pipeline.yaml
+  - _self_ # Reference to the current configuration
+  - path.yaml # Include path.yaml configuration
+  - pipeline.yaml # Include pipeline.yaml configuration
 
+# Data source URL
 data_url: https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
 
+# Column mapping for data
 column_mapping:
-  id: url
-  target: status
-  pos_label: phishing
-  prediction: phishing
+  id: url # ID column mapped to 'url'
+  target: status # Target column mapped to 'status'
+  pos_label: phishing # Positive label mapped to 'phishing'
+  prediction: phishing # Prediction column mapped to 'phishing'
 
+# Train-test split configuration
 train_test_split:
-  test_size: 0.33
-  random_state: 42
-  shuffle: true
+  test_size: 0.33 # Test set size is 33% of the data
+  random_state: 42 # Random seed for reproducibility
+  shuffle: true # Shuffle the data during splitting
 
-plt_style: Solarize_Light2
+# Plotting style
+plt_style: Solarize_Light2 # Matplotlib style for plotting
+

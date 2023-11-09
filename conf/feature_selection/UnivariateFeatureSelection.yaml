@@ -2,15 +2,13 @@
 # https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.GenericUnivariateSelect.html
 _target_: sklearn.feature_selection.GenericUnivariateSelect
 
-score_func: 
+# Possible values: chi2, f_classif ,mutual_info_classif
+score_func:
   _target_: builtins.getattr
   _args_:
     - _target_: importlib.import_module
       name: sklearn.feature_selection
-    # - chi2
     - f_classif
-    # - mutual_info_classif
-
 
 # Feature selection mode.
 # "k_best": Select features according to the k highest scores.

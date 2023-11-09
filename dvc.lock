@@ -52,14 +52,10 @@ stages:
       hash: md5
       md5: ed9850d990e6aa169afcd23497397fcd
       size: 3661166
-    - path: src/plots/data_proportion.py
-      hash: md5
-      md5: e397dab8f57cd0c878306b437518f519
-      size: 1344
     - path: src/split_data.py
       hash: md5
-      md5: 66e96ecf96ce8b3f96ddb10f378633ff
-      size: 1001
+      md5: 00faa30956e399fcff9901d541a5d5cd
+      size: 1658
     params:
       params.yaml:
         column_mapping:
@@ -125,8 +121,8 @@ stages:
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: 16bebc7696e95616ab95253ecabccdf2
-      size: 33064693
+      md5: f573844662e2c334fcbb0271490aa68e
+      size: 33217493
   test_model:
     cmd: python src/test_model.py
     deps:
@@ -136,8 +132,8 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 16bebc7696e95616ab95253ecabccdf2
-      size: 33064693
+      md5: f573844662e2c334fcbb0271490aa68e
+      size: 33217493
     - path: results/selected_features.yaml
       hash: md5
       md5: f7caf56c01245c1940417a412e49689c
@@ -200,48 +196,48 @@ stages:
     outs:
     - path: data/test_pred.csv
       hash: md5
-      md5: 671519063131294c0b6c66f29d215887
-      size: 745530
+      md5: 04299c664f2f5cd26e8972e69cec10ee
+      size: 742916
     - path: data/train_pred.csv
       hash: md5
-      md5: 5d9b472aff8872e97e50669579b0624e
-      size: 1518709
+      md5: d3d9bf86baa57dde8d06ec70c61767f6
+      size: 1511148
     - path: results/metrics.yaml
       hash: md5
-      md5: 049722f301104f0980d38e3cd782542b
+      md5: f612003324205b0019959763a1c57bcf
       size: 115
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: 88cdf61fed494cbf5cbe193bbf89a36f
-      size: 29423
+      md5: c3f59df8de6e9966a5450b8b95108b0a
+      size: 29168
     - path: results/plots/classification_report.png
       hash: md5
-      md5: 06c706f29768b25b5d0933e47c5e6ac6
-      size: 418770
+      md5: 72a8822ab0e74dde7aa51e4f209b00ef
+      size: 418879
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: a09286fd876a027df89690b4cd074051
-      size: 16808
+      md5: 5382f16fba470c37fa451cd4b97d79fc
+      size: 16830
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: 5593100e5e3ebd845a23af8dcc9f44b5
-      size: 36489
+      md5: 1123ee7b2e521ae07f17354770aa267a
+      size: 36152
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: dad48e17b1ef47b351ffadb58659d7bb
-      size: 13858
+      md5: 8b7fa2350c40d7961525d384cce93c6c
+      size: 13898
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: f1e9fd8bde0864f68e1a16128028b6fd
-      size: 21902
+      md5: 5ff142a08aa54c8bca6fcefa845c5011
+      size: 21375
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 9e5c5f8ea587cc7fc247cde09732b90c
-      size: 34222
+      md5: 5a93d7d0cec909b13570436b3ee765f5
+      size: 34176
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: bb3c1ae53200f5bda34605c2e25ae984
-      size: 20216
+      md5: d70c25f0edebc0480a9ee20dab0f9297
+      size: 21388
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -327,16 +323,16 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 16bebc7696e95616ab95253ecabccdf2
-      size: 33064693
+      md5: f573844662e2c334fcbb0271490aa68e
+      size: 33217493
     - path: results/selected_features.yaml
       hash: md5
       md5: f7caf56c01245c1940417a412e49689c
       size: 458
     - path: src/feature_importances.py
       hash: md5
-      md5: bbe15d4566957f8e931a1a81f67ba81d
-      size: 2091
+      md5: 7c24bdf90970d417e03ae430483f1a8b
+      size: 2080
     - path: src/plots/feature_importances.py
       hash: md5
       md5: b553c94b9be107402c0cd7216d90c58e
@@ -357,8 +353,8 @@ stages:
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: f670bc6035fbec3507a61f028dbbc8ce
-      size: 57607
+      md5: 5e8f164d8fd85fee27cfac94f97ab4b9
+      size: 57669
   feature_selection:
     cmd: python src/feature_selection.py
     deps:
@@ -399,3 +395,5 @@ stages:
       hash: md5
       md5: f7caf56c01245c1940417a412e49689c
       size: 458
+  test:
+    cmd: python -c "print('${data}/all.csv')"
