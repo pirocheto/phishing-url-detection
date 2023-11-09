@@ -8,8 +8,6 @@ import optuna
 
 logger = logging.getLogger(__name__)
 
-plt.style.use("Solarize_Light2")
-
 
 def generate_experiment_name():
     p1 = random.randint(100, 999)
@@ -79,11 +77,6 @@ study.optimize(objective, n_trials=N_TRIALS, n_jobs=N_JOBS)
 # print(study.best_value)
 
 optuna.visualization.matplotlib.plot_timeline(study)
-plt.tight_layout()
 plt.savefig("comparaison/timeline.png")
 optuna.visualization.matplotlib.plot_optimization_history(study)
-plt.tight_layout()
 plt.savefig("comparaison/optimization_history.png")
-optuna.visualization.matplotlib.plot_parallel_coordinate(study)
-plt.tight_layout()
-plt.savefig("comparaison/parallel_coordinate.png")
