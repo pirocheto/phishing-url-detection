@@ -30,7 +30,7 @@ def plot_data_proportion(data, labels, ax=None):
         b_1, labels=data[1], label_type="center", color=plt.rcParams["figure.facecolor"]
     )
 
-    # Remove ticks on the x-axis
+    # Remove ticks (-) on the x-axis
     ax.tick_params(axis="x", which="both", length=0)
 
     # Set font weight to "bold" for x-axis labels
@@ -40,7 +40,7 @@ def plot_data_proportion(data, labels, ax=None):
     # Display legend with slight transparency
     ax.legend(framealpha=0.4, reverse=True)
 
-    # Set grid lines
+    # Configure grid lines
     ax.yaxis.grid(True)
     ax.xaxis.grid(False)
 

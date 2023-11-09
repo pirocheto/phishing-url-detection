@@ -1,6 +1,8 @@
 stages:
+  # Download data from source.
   download_data:
     cmd: wget ${data_url} -O ${path.data_all}
+    # Set Frozen=True to prevent the step from being re-executed.
     frozen: False
     params:
       - data_url
@@ -10,6 +12,8 @@ stages:
     outs:
       - ${path.data_all}
 
+  # Split the dataframe and generate a plot to easily
+  # view the data size later.
   split_data:
     cmd: python src/split_data.py
     params:
@@ -30,6 +34,8 @@ stages:
       - ${path.data_train}
       - ${path.data_test}
 
+  # Remove the least important features
+  # to accelerate training and make interpretation easier
   feature_selection:
     cmd: python src/feature_selection.py
     params:
@@ -44,7 +50,6 @@ stages:
     deps:
       - ${path.data_all}
       - src/feature_selection.py
-      - src/plots/correlation_matrix.py
     plots:
       - ${path.correlation_matrix}:
           cache: False
