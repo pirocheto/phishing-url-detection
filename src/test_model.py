@@ -18,9 +18,7 @@ stage = "test_model"
 params = dvc.api.params_show(stages=stage)
 
 
-plt.style.use(params["plt_style"]["style"])
-plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
-
+plt.style.use(params["plt_style"])
 
 target = params["column_mapping"]["target"]
 prediction = params["column_mapping"]["prediction"]
