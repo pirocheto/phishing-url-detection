@@ -2,28 +2,13 @@ import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import yaml
-from rich.console import Console
-from rich.syntax import Syntax
 from sklearn.model_selection import train_test_split
 
 from plots.data_proportion import plot_data_proportion
 
-console = Console()
-
 stage = "split_data"
 
 params = dvc.api.params_show(stages=stage)
-
-console.log(
-    f"[purple]['{stage}' stage config]",
-    Syntax(
-        yaml.dump(params),
-        "yaml",
-        theme="monokai",
-        background_color="default",
-    ),
-)
 
 
 # =========== Splitting data ===========

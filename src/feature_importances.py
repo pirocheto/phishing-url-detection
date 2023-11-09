@@ -3,27 +3,14 @@ import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
 import yaml
-from rich.console import Console
-from rich.syntax import Syntax
 from sklearn.inspection import permutation_importance
 
 from plots.feature_importances import plot_feature_importances
 
 params = dvc.api.params_show()
 
-console = Console()
 
 stage = "feature_importance"
-
-console.log(
-    f"[purple]['{stage}' stage config]",
-    Syntax(
-        yaml.dump(params),
-        "yaml",
-        theme="monokai",
-        background_color="default",
-    ),
-)
 
 
 plt.style.use(params["plt_style"]["style"])
