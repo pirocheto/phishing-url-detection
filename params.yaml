@@ -17,9 +17,7 @@ path:
   data_train_pred: data/train_pred.csv
   data_test_pred: data/test_pred.csv
   results: results
-  models: results/models
   model_bin: results/models/model.pkl
-  model_card: results/models/model_card.png
   metrics: results/metrics.yaml
   selected_features: results/selected_features.yaml
   plots: results/plots
@@ -34,6 +32,10 @@ path:
   calibration_curve: results/plots/calibration_curve.png
   cumulative_distribution: results/plots/cumulative_distribution.png
   classification_report: results/plots/classification_report.png
+target_preprocessing:
+  _target_: sklearn.preprocessing.LabelEncoder
+feature_preprocessing:
+  _target_: sklearn.preprocessing.Normalizer
 feature_selection:
   _target_: sklearn.feature_selection.VarianceThreshold
   threshold: 1

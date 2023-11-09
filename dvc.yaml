@@ -1,9 +1,8 @@
 stages:
-
   download_data:
     cmd: wget ${data_url} -O ${path.data_all}
-    frozen: True
-    params: 
+    frozen: False
+    params:
       - data_url
       - path.data_all
     deps:
@@ -13,7 +12,7 @@ stages:
 
   split_data:
     cmd: python src/split_data.py
-    params: 
+    params:
       - train_test_split
       - column_mapping
       - path.data_all
@@ -23,7 +22,6 @@ stages:
       - plt_style
     deps:
       - src/split_data.py
-      - src/plots/data_proportion.py
       - ${path.data_all}
     plots:
       - ${path.data_proportion}:
@@ -34,7 +32,7 @@ stages:
 
   feature_selection:
     cmd: python src/feature_selection.py
-    params: 
+    params:
       - column_mapping
       - feature_selection
       - path.data_all
@@ -56,7 +54,7 @@ stages:
 
   train_model:
     cmd: python src/train_model.py
-    params: 
+    params:
       - path.data_train
       - column_mapping
       - path.selected_features
@@ -71,7 +69,7 @@ stages:
 
   test_model:
     cmd: python src/test_model.py
-    params: 
+    params:
       - path.data_test
       - path.data_train
       - column_mapping
@@ -127,11 +125,10 @@ stages:
       - ${path.metrics}:
           cache: False
 
-    
   feature_importances:
     cmd:
       - python src/feature_importances.py
-    params: 
+    params:
       - path.data_test
       - path.data_train
       - column_mapping
@@ -149,9 +146,8 @@ stages:
       - ${path.feature_importances}:
           cache: False
 
-
   # model_card:
-  #   cmd: 
+  #   cmd:
   #     - python src/model_card.py
   #   params:
   #     - data_train_pred
