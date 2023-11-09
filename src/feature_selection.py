@@ -1,15 +1,17 @@
+import warnings
+
 import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
 from hydra.utils import instantiate
-from rich.console import Console
-from rich.pretty import Pretty
-from rich.rule import Rule
-from rich.syntax import Syntax
 
 from plots.correlation_matrix import plot_correlation_matrix
+
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 stage = "feature_selection"
 

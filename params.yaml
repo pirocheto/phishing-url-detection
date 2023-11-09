@@ -8,9 +8,7 @@ train_test_split:
   test_size: 0.33
   random_state: 42
   shuffle: true
-plt_style:
-  style: Solarize_Light2
-  font: Verdana
+plt_style: Solarize_Light2
 path:
   data: data
   data_all: data/all.csv

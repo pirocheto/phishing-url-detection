@@ -58,8 +58,8 @@ stages:
       size: 1344
     - path: src/split_data.py
       hash: md5
-      md5: 1a06053e78b586db55ad0affe28c55cb
-      size: 1349
+      md5: 66e96ecf96ce8b3f96ddb10f378633ff
+      size: 1001
     params:
       params.yaml:
         column_mapping:
@@ -71,9 +71,7 @@ stages:
         path.data_proportion: results/plots/data_proportion.png
         path.data_test: data/test.csv
         path.data_train: data/train.csv
-        plt_style:
-          style: Solarize_Light2
-          font: Verdana
+        plt_style: Solarize_Light2
         train_test_split:
           test_size: 0.33
           random_state: 42
@@ -89,8 +87,8 @@ stages:
       size: 2446644
     - path: results/plots/data_proportion.png
       hash: md5
-      md5: 8570e63c1fac62e8c07f128920224313
-      size: 20367
+      md5: 5c3dabd6fb800a9c8afb359cd87ceeb1
+      size: 20130
   train_model:
     cmd: python src/train_model.py
     deps:
@@ -104,8 +102,8 @@ stages:
       size: 458
     - path: src/train_model.py
       hash: md5
-      md5: 56025607977f0a31a9c4109ad8efc0f1
-      size: 1345
+      md5: 40b3efac67c983f35bfc1dc6fa44e17c
+      size: 1173
     params:
       params.yaml:
         column_mapping:
@@ -127,8 +125,8 @@ stages:
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: 8ab261ae395d64d94814257fd7c3107f
-      size: 33216501
+      md5: 16bebc7696e95616ab95253ecabccdf2
+      size: 33064693
   test_model:
     cmd: python src/test_model.py
     deps:
@@ -138,8 +136,8 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 8ab261ae395d64d94814257fd7c3107f
-      size: 33216501
+      md5: 16bebc7696e95616ab95253ecabccdf2
+      size: 33064693
     - path: results/selected_features.yaml
       hash: md5
       md5: f7caf56c01245c1940417a412e49689c
@@ -174,8 +172,8 @@ stages:
       size: 1069
     - path: src/test_model.py
       hash: md5
-      md5: 47ab0d3ee0d4f3b3603157ba4e3ab62e
-      size: 5294
+      md5: 691d555e94405f6be3a0595455444ab7
+      size: 4792
     params:
       params.yaml:
         column_mapping:
@@ -198,54 +196,52 @@ stages:
         path.roc_curve: results/plots/roc_curve.png
         path.score_distribution: results/plots/score_distribution.png
         path.selected_features: results/selected_features.yaml
-        plt_style:
-          style: Solarize_Light2
-          font: Verdana
+        plt_style: Solarize_Light2
     outs:
     - path: data/test_pred.csv
       hash: md5
-      md5: 08373d32176c6410ef7a47fe829461dc
-      size: 742031
+      md5: 671519063131294c0b6c66f29d215887
+      size: 745530
     - path: data/train_pred.csv
       hash: md5
-      md5: 25f5d8110f61dd5a1f704adafd1e963e
-      size: 1510038
+      md5: 5d9b472aff8872e97e50669579b0624e
+      size: 1518709
     - path: results/metrics.yaml
       hash: md5
-      md5: f49876d9ff6f9948a6976146ca969648
+      md5: 049722f301104f0980d38e3cd782542b
       size: 115
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: 6cfd531077bc8cef4d2d7c81cd4100d1
-      size: 30167
+      md5: 88cdf61fed494cbf5cbe193bbf89a36f
+      size: 29423
     - path: results/plots/classification_report.png
       hash: md5
-      md5: ce60cc4a360091ea790a860c43925536
-      size: 422821
+      md5: 06c706f29768b25b5d0933e47c5e6ac6
+      size: 418770
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: 7ac54ff9a7a4cd58898031577dcb70df
-      size: 16590
+      md5: a09286fd876a027df89690b4cd074051
+      size: 16808
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: e5db6afc1c8601b8acdd969b961e9807
-      size: 36914
+      md5: 5593100e5e3ebd845a23af8dcc9f44b5
+      size: 36489
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: ba281bb80c1df86469bd324c525f648f
-      size: 14574
+      md5: dad48e17b1ef47b351ffadb58659d7bb
+      size: 13858
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: aa33c38d14669b8a5e8af52eb9b84e5f
-      size: 21551
+      md5: f1e9fd8bde0864f68e1a16128028b6fd
+      size: 21902
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 60325680372fed81288a88b54f9eb096
-      size: 34719
+      md5: 9e5c5f8ea587cc7fc247cde09732b90c
+      size: 34222
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: f9dc6b7c53ec3ee3edb8e56948c49e70
-      size: 20997
+      md5: bb3c1ae53200f5bda34605c2e25ae984
+      size: 20216
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -331,16 +327,16 @@ stages:
       size: 1201664
     - path: results/models/model.pkl
       hash: md5
-      md5: 8ab261ae395d64d94814257fd7c3107f
-      size: 33216501
+      md5: 16bebc7696e95616ab95253ecabccdf2
+      size: 33064693
     - path: results/selected_features.yaml
       hash: md5
       md5: f7caf56c01245c1940417a412e49689c
       size: 458
     - path: src/feature_importances.py
       hash: md5
-      md5: 22ab3c1774088c184711668bb088c939
-      size: 2426
+      md5: bbe15d4566957f8e931a1a81f67ba81d
+      size: 2091
     - path: src/plots/feature_importances.py
       hash: md5
       md5: b553c94b9be107402c0cd7216d90c58e
@@ -357,14 +353,12 @@ stages:
         path.feature_importances: results/plots/feature_importances.png
         path.model_bin: results/models/model.pkl
         path.selected_features: results/selected_features.yaml
-        plt_style:
-          style: Solarize_Light2
-          font: Verdana
+        plt_style: Solarize_Light2
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 1770ebf75fa3fa59e8a0d792e24e4839
-      size: 56833
+      md5: f670bc6035fbec3507a61f028dbbc8ce
+      size: 57607
   feature_selection:
     cmd: python src/feature_selection.py
     deps:
@@ -374,8 +368,8 @@ stages:
       size: 3661166
     - path: src/feature_selection.py
       hash: md5
-      md5: f62b11e40cd969b28b8f592236b2269a
-      size: 2425
+      md5: 3b79f89d6af79bed13ad23a7dc2e08f3
+      size: 2087
     - path: src/plots/correlation_matrix.py
       hash: md5
       md5: c31b6d4cdb079375513ffb67ef344a60
@@ -395,14 +389,12 @@ stages:
         path.data_test: data/test.csv
         path.data_train: data/train.csv
         path.selected_features: results/selected_features.yaml
-        plt_style:
-          style: Solarize_Light2
-          font: Verdana
+        plt_style: Solarize_Light2
     outs:
     - path: results/plots/correlation_matrix.png
       hash: md5
-      md5: e31b71b848149aa226ef70a34d5bd395
-      size: 215773
+      md5: d5ec874d8e1c776cfb2896c6ffbfe5d6
+      size: 214821
     - path: results/selected_features.yaml
       hash: md5
       md5: f7caf56c01245c1940417a412e49689c
