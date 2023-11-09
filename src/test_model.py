@@ -3,8 +3,6 @@ import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
 import yaml
-from rich.console import Console
-from rich.syntax import Syntax
 from sklearn.metrics import classification_report
 
 from plots.calibration_curve import plot_calibration_curve
@@ -19,17 +17,6 @@ stage = "test_model"
 
 params = dvc.api.params_show(stages=stage)
 
-console = Console()
-
-console.log(
-    f"[purple]\['{stage}' stage config]",
-    Syntax(
-        yaml.dump(params),
-        "yaml",
-        theme="monokai",
-        background_color="default",
-    ),
-)
 
 plt.style.use(params["plt_style"]["style"])
 plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
@@ -101,15 +88,6 @@ metrics = {
 with open(params["path"]["metrics"], "w", encoding="utf8" "") as fp:
     yaml.safe_dump(metrics, fp)
 
-console.log(
-    "[purple]\[metrics]",
-    Syntax(
-        yaml.dump(metrics),
-        "yaml",
-        theme="monokai",
-        background_color="default",
-    ),
-)
 
 # =========== Plotting confusion matrix ===========
 fig, ax = plt.subplots()

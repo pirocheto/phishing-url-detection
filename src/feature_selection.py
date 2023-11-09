@@ -15,18 +15,6 @@ stage = "feature_selection"
 
 params = dvc.api.params_show(stages=stage)
 
-console = Console()
-
-console.log(
-    f"[purple]['{stage}' stage config]",
-    Syntax(
-        yaml.dump(params),
-        "yaml",
-        theme="monokai",
-        background_color="default",
-    ),
-)
-
 
 plt.style.use(params["plt_style"]["style"])
 plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
@@ -48,10 +36,7 @@ feature_selector = instantiate(params["feature_selection"])
 feature_selector = feature_selector.fit(X_train, y_train)
 
 selected_features = list(feature_selector.get_feature_names_out(X_train.columns))
-console.log(
-    f"[purple]\[selected features ({len(selected_features)})][/purple]",
-    Pretty(selected_features, expand_all=True),
-)
+
 
 with open("results/selected_features.yaml", "w", encoding="utf8") as fp:
     yaml.dump(selected_features, fp)
