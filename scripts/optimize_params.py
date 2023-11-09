@@ -8,6 +8,8 @@ import optuna
 
 logger = logging.getLogger(__name__)
 
+plt.style.use("Solarize_Light2")
+
 
 def generate_experiment_name():
     p1 = random.randint(100, 999)
@@ -64,17 +66,24 @@ def objective(trial):
         return float("-inf")
 
     metric = dvc.api.metrics_show(rev=exp_name)["f1-score"]
-    return max_features, metric
+    return metric
 
 
 N_TRIALS = 10
 N_JOBS = 5
 
 
-study = optuna.create_study(directions=["minimize", "maximize"])
+study = optuna.create_study(direction="maximize")
 study.optimize(objective, n_trials=N_TRIALS, n_jobs=N_JOBS)
 # print(study.best_params)
 # print(study.best_value)
 
 optuna.visualization.matplotlib.plot_timeline(study)
+plt.tight_layout()
 plt.savefig("comparaison/timeline.png")
+optuna.visualization.matplotlib.plot_optimization_history(study)
+plt.tight_layout()
+plt.savefig("comparaison/optimization_history.png")
+optuna.visualization.matplotlib.plot_parallel_coordinate(study)
+plt.tight_layout()
+plt.savefig("comparaison/parallel_coordinate.png")
