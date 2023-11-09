@@ -23,8 +23,7 @@ X_train.to_csv(params["path"]["data_train"])
 X_test.to_csv(params["path"]["data_test"])
 
 # =========== Plotting data proportion ===========
-plt.style.use(params["plt_style"]["style"])
-plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
+plt.style.use(params["plt_style"])
 
 target = params["column_mapping"]["target"]
 labels = X_train[target].value_counts().index

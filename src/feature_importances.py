@@ -13,8 +13,7 @@ params = dvc.api.params_show()
 stage = "feature_importance"
 
 
-plt.style.use(params["plt_style"]["style"])
-plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
+plt.style.use(params["plt_style"])
 
 # ----------- Loading data -----------
 with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:

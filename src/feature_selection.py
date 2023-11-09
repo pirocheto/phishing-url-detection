@@ -16,8 +16,7 @@ stage = "feature_selection"
 params = dvc.api.params_show(stages=stage)
 
 
-plt.style.use(params["plt_style"]["style"])
-plt.rcParams["font.sans-serif"] = params["plt_style"]["font"]
+plt.style.use(params["plt_style"])
 
 df_train = pd.read_csv(
     params["path"]["data_train"], index_col=params["column_mapping"]["id"]

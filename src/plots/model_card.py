@@ -16,8 +16,7 @@ from src.plots.confusion_matrix import plot_confusion_matrix
 
 params = dvc.api.params_show()
 
-plt.style.use(params["model_card_style"]["style"])
-plt.rcParams["font.sans-serif"] = params["model_card_style"]["font"]
+plt.style.use(params["model_card_style"])
 
 
 def plot_intended_use(intented_uses, intended_users, ax):
