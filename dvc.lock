@@ -148,8 +148,8 @@ stages:
       size: 603
     - path: src/plots/confusion_matrix.py
       hash: md5
-      md5: 2f148ca052d40ff673b31b60b26edbb4
-      size: 1056
+      md5: 03e6232020fc4bcb85bfae152ec5e88a
+      size: 987
     - path: src/plots/cumulative_distribution.py
       hash: md5
       md5: d4a182dafa1bd35cb53a6096edc622ef
