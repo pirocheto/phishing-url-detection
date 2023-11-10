@@ -1,188 +1,336 @@
 import dvc.api
 import joblib
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
 import yaml
-from sklearn.metrics import classification_report
+from matplotlib.colors import LinearSegmentedColormap
+from sklearn.metrics import auc, classification_report, confusion_matrix, roc_curve
 
 from plots.calibration_curve import plot_calibration_curve
-from plots.confusion_matrix import plot_confusion_matrix
 from plots.cumulative_distribution import plot_cumulative_distribution
 from plots.metrics_table import plot_metrics_table
 from plots.precision_recall_curve import plot_precision_recall_curve
-from plots.roc_curve import plot_roc_curve
 from plots.score_distribution import plot_score_distribution
 
-stage = "test_model"
-
-params = dvc.api.params_show(stages=stage)
-
-
-plt.style.use(params["plt_style"])
-
+# Get the dvc params
+params = dvc.api.params_show(stages="test_model")
 target = params["column_mapping"]["target"]
-prediction = params["column_mapping"]["prediction"]
-label_pred = f"{prediction}_label"
+proba_pred = params["column_mapping"]["prediction_proba"]
+label_pred = params["column_mapping"]["prediction_label"]
 pos_label = params["column_mapping"]["pos_label"]
 
-# =========== Predict data ===========
-with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:
-    selected_features = yaml.safe_load(fp)
+# Use a matplotlib style to make more beautiful graphics
+plt.style.use(params["plt_style"])
 
 
-df_test = pd.read_csv(
-    params["path"]["data_test"],
-    index_col=params["column_mapping"]["id"],
-    usecols=[
-        params["column_mapping"]["id"],
-        params["column_mapping"]["target"],
-        *selected_features,
-    ],
-)
-X_test = df_test.drop(target, axis=1)
+def plot_confusion_matrix(y_true, y_pred, labels=[0, 1], ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
 
-df_train = pd.read_csv(
-    params["path"]["data_train"],
-    index_col=params["column_mapping"]["id"],
-    usecols=[
-        params["column_mapping"]["id"],
-        params["column_mapping"]["target"],
-        *selected_features,
-    ],
-)
-X_train = df_train.drop(target, axis=1)
+    # Compute confusion matrix using scikit-learn's confusion_matrix function
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
 
-pipeline = joblib.load(params["path"]["model_bin"])
-labels = df_test[target].value_counts().index
+    # Get the default color cycle and select the first two colors
+    # Then create a custom colormap with the selected colors
+    # Useful when a global style is used i.e. with 'plt.style.use()'
+    prop_cycle = plt.rcParams["axes.prop_cycle"]
+    colors = prop_cycle.by_key()["color"]
+    colors = colors[0:2]
+    cmap = LinearSegmentedColormap.from_list("custom_cmap", colors, N=256)
 
-df_test[prediction] = pipeline.predict_proba(X_test)[:, 1]
-df_test[label_pred] = pipeline.predict(X_test)
-df_train[prediction] = pipeline.predict_proba(X_train)[:, 1]
-df_train[label_pred] = pipeline.predict(X_train)
+    # Plot the confusion matrix as a heatmap using seaborn's heatmap function
+    ax = sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        ax=ax,
+        cmap=cmap,
+        linecolor=plt.rcParams["figure.facecolor"],
+        linewidths="2",
+        vmin=0,
+        xticklabels=labels,
+        yticklabels=labels,
+        cbar=False,
+        robust=True,
+        square=True,
+    )
 
-df_test.to_csv(params["path"]["data_test_pred"])
-df_train.to_csv(params["path"]["data_train_pred"])
+    # Remove tick marks (-)
+    ax.tick_params(axis="both", which="both", length=0)
 
-
-y_scores = df_test[prediction]
-y_pred = df_test[label_pred]
-y_true = df_test[target]
-
-# =========== Compute metrics ===========
-metrics = classification_report(
-    df_test[target],
-    df_test[label_pred],
-    output_dict=True,
-)
+    # Set labels and title for the plot
+    ax.set_xlabel("Pred Labels")
+    ax.set_ylabel("True Labels")
+    ax.set_title("Confusion Matrix", fontweight="bold", fontsize=10)
+    return ax
 
 
-metrics = {
-    "accuracy": metrics["accuracy"],
-    "f1-score": metrics[pos_label]["f1-score"],
-    "precision": metrics[pos_label]["precision"],
-    "recall": metrics[pos_label]["recall"],
-}
+def plot_roc_curve(y_true, y_scores, pos_label=1, ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
 
-with open(params["path"]["metrics"], "w", encoding="utf8" "") as fp:
-    yaml.safe_dump(metrics, fp)
+    # Compute ROC curve
+    fpr, tpr, thresholds = roc_curve(
+        y_true, y_scores, pos_label=pos_label, drop_intermediate=False
+    )
 
+    # Compute area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
 
-# =========== Plotting confusion matrix ===========
-fig, ax = plt.subplots()
-plot_confusion_matrix(
-    df_test[target],
-    df_test[label_pred],
-    labels,
-    ax,
-)
+    # Find the best threshold based on maximizing (TPR - FPR)
+    best_threshold_index = np.argmax(tpr - fpr)
+    best_threshold = thresholds[best_threshold_index]
 
-fig.savefig(params["path"]["confusion_matrix"])
+    # Plot the ROC curve
+    ax.plot(
+        fpr,
+        tpr,
+        lw=2,
+        label=f"ROC Curve \n(AUC = {roc_auc:.3f})",
+    )
 
+    # Plot the diagonal line
+    ax.plot(
+        [0, 1],
+        [0, 1],
+        lw=2,
+        linestyle="dotted",
+        alpha=0.3,
+    )
 
-# =========== Plotting ROC curve ===========
-fig, ax = plt.subplots()
-plot_roc_curve(
-    df_test[target],
-    df_test[prediction],
-    pos_label,
-    ax,
-)
+    # Fill the area under the ROC curve
+    ax.fill_between(fpr, tpr, alpha=0.2)
 
-fig.savefig(params["path"]["roc_curve"])
+    # Mark the point on the ROC curve corresponding to the best threshold
+    color = plt.rcParams["axes.prop_cycle"].by_key()["color"][0]
+    ax.scatter(
+        fpr[best_threshold_index],
+        tpr[best_threshold_index],
+        color=color,
+    )
 
-# =========== Plotting score distribution ===========
-fig, ax = plt.subplots()
-plot_score_distribution(
-    df_test[target],
-    df_test[prediction],
-    labels,
-    ax,
-)
+    # Annotate the best threshold on the plot
+    ax.annotate(
+        "Best Threshold\n" + r"$\bf{" + f"{best_threshold:.3f}" + "}$",
+        xy=(
+            fpr[best_threshold_index],
+            tpr[best_threshold_index],
+        ),
+        xytext=(0.5, -0.5),
+        textcoords="offset fontsize",
+        va="top",
+    )
 
-fig.savefig(params["path"]["score_distribution"])
+    # Set axis limits, labels and title
+    ax.set_xlim([0.0, 1.0])
+    ax.set_ylim([0.0, 1.05])
+    ax.set_xlabel("False Positive Rate (FPR)")
+    ax.set_ylabel("True Positive Rate (TPR)")
+    ax.set_title(
+        "Receiver Operating Characteristic (ROC)", fontweight="bold", fontsize=10
+    )
 
+    # Add text annotation for AUC
+    ax.text(
+        0.8,
+        0.15,
+        "AUC\n" + r"$\bf{" + f"{roc_auc:.3f}" + "}$",
+        va="center",
+        ha="center",
+        bbox=dict(
+            boxstyle="square",
+            fc=ax.get_facecolor(),
+            ec="grey",
+            alpha=0.4,
+            pad=0.5,
+        ),
+    )
 
-# =========== Plotting score distribution ===========
-fig, ax = plt.subplots()
+    # Display the grid
+    ax.grid(True)
 
-plot_precision_recall_curve(
-    df_test[target],
-    df_test[prediction],
-    pos_label,
-    ax,
-)
+    # Set the aspect ratio of the plot to be equal
+    ax.set_box_aspect(1)
 
-fig.savefig(params["path"]["precision_recall_curve"])
-
-
-# =========== Plotting calibration curve ===========
-fig, ax = plt.subplots()
-
-plot_calibration_curve(
-    df_test[target],
-    df_test[prediction],
-    pos_label,
-    ax,
-)
-
-fig.savefig(params["path"]["calibration_curve"])
-
-# =========== Plotting cumulative distribution ===========
-fig, ax = plt.subplots()
-
-plot_cumulative_distribution(
-    df_test[target],
-    df_test[prediction],
-    labels,
-    ax,
-)
-
-fig.savefig(params["path"]["cumulative_distribution"])
-
-# =========== Plotting Metrics table ===========
-fig, ax = plt.subplots()
-
-plot_metrics_table(list(metrics.items()), ax=ax)
-
-fig.savefig(params["path"]["metrics_table"])
-
-# =========== Plotting combined curves ===========
-fig, ax = plt.subplots(
-    nrows=3,
-    ncols=2,
-    figsize=(8.27, 11.69),
-)
+    return ax
 
 
-plot_confusion_matrix(df_test[target], df_test[label_pred], labels, ax[0][0])
-plot_metrics_table(list(metrics.items()), ax=ax[0][1])
-plot_roc_curve(df_test[target], df_test[prediction], pos_label, ax[1][0])
-plot_precision_recall_curve(df_test[target], df_test[prediction], pos_label, ax[1][1])
+def plot_score_distribution(y_true, y_scores, labels=[0, 1], ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
 
-plot_score_distribution(df_test[target], df_test[prediction], labels, ax[2][0])
-plot_cumulative_distribution(df_test[target], df_test[prediction], labels, ax[2][1])
+    # Convert y_scores to a NumPy array
+    y_scores = np.array(y_scores)
 
-fig.suptitle("Classification Report", fontsize=13, fontweight="bold")
+    # Extract scores for each class
+    scores1 = y_scores[y_true == labels[0]]
+    scores2 = y_scores[y_true == labels[1]]
 
-fig.subplots_adjust(wspace=0.5, hspace=0.5)
-fig.savefig(params["path"]["classification_report"], dpi=300)
+    # Plot the score distribution for the first class
+    ax = sns.histplot(
+        scores1,
+        kde=True,
+        ax=ax,
+        bins="auto",
+        edgecolor=None,
+        legend=True,
+        label=str(labels[0]),
+    )
+
+    # Plot the score distribution for the second class
+    ax = sns.histplot(
+        scores2,
+        kde=True,
+        ax=ax,
+        bins="auto",
+        edgecolor=None,
+        legend=True,
+        label=str(labels[1]),
+    )
+
+    # Set axis limits and labels
+    ax.set_xlim(0, 1)
+    ax.set_xlabel("Probability")
+    ax.xaxis.set_ticks_position("bottom")
+
+    # Display the grid
+    ax.grid(True)
+
+    # Add legend with some transparency
+    ax.legend(framealpha=0.4)
+
+    # Set the aspect ratio of the plot to be equal
+    ax.set_box_aspect(1)
+
+    # Set the title of the plot
+    ax.set_title("Score distribution", fontweight="bold", fontsize=10)
+
+    return ax
+
+
+if __name__ == "__main__":
+    # 1. Make predictions on test dataset
+    # Read the test dataset
+    df_test = pd.read_csv(
+        params["path"]["data_test_selected"],
+        index_col=params["column_mapping"]["id"],
+    )
+    X_test = df_test.drop(target, axis=1)
+
+    # Load the trained model
+    pipeline = joblib.load(params["path"]["model_bin"])
+
+    # Make predictions on test dataset
+    df_test[proba_pred] = pipeline.predict_proba(X_test)[:, 1]
+    df_test[label_pred] = pipeline.predict(X_test)
+
+    # Save predictions to read them leter if need
+    df_test.to_csv(params["path"]["data_test_predicted"])
+
+    y_scores = df_test[proba_pred]
+    y_pred = df_test[label_pred]
+    y_true = df_test[target]
+
+    # 2. Compute metrics
+    metrics = classification_report(
+        df_test[target],
+        df_test[label_pred],
+        output_dict=True,
+    )
+
+    metrics = {
+        "accuracy": metrics["accuracy"],
+        "f1-score": metrics["1"]["f1-score"],
+        "precision": metrics["1"]["precision"],
+        "recall": metrics["1"]["recall"],
+    }
+
+    # Save metrics to read them leter if need
+    with open(params["path"]["metrics"], "w", encoding="utf8") as fp:
+        yaml.safe_dump(metrics, fp)
+
+    # 2. Creates several plots to more easily interpret the results
+    labels = df_test[target].value_counts().index
+
+    plt.figure()
+    plot_confusion_matrix(df_test[target], df_test[label_pred])
+    plt.savefig(params["path"]["confusion_matrix"])
+
+    plt.figure()
+    plot_roc_curve(df_test[target], df_test[proba_pred])
+    plt.savefig(params["path"]["roc_curve"])
+
+    plt.figure()
+    plot_score_distribution(df_test[target], df_test[proba_pred])
+    plt.savefig(params["path"]["score_distribution"])
+
+
+# # =========== Plotting score distribution ===========
+# fig, ax = plt.subplots()
+
+# plot_precision_recall_curve(
+#     df_test[target],
+#     df_test[prediction],
+#     pos_label,
+#     ax,
+# )
+
+# fig.savefig(params["path"]["precision_recall_curve"])
+
+
+# # =========== Plotting calibration curve ===========
+# fig, ax = plt.subplots()
+
+# plot_calibration_curve(
+#     df_test[target],
+#     df_test[prediction],
+#     pos_label,
+#     ax,
+# )
+
+# fig.savefig(params["path"]["calibration_curve"])
+
+# # =========== Plotting cumulative distribution ===========
+# fig, ax = plt.subplots()
+
+# plot_cumulative_distribution(
+#     df_test[target],
+#     df_test[prediction],
+#     labels,
+#     ax,
+# )
+
+# fig.savefig(params["path"]["cumulative_distribution"])
+
+# # =========== Plotting Metrics table ===========
+# fig, ax = plt.subplots()
+
+# plot_metrics_table(list(metrics.items()), ax=ax)
+
+# fig.savefig(params["path"]["metrics_table"])
+
+# # =========== Plotting combined curves ===========
+# fig, ax = plt.subplots(
+#     nrows=3,
+#     ncols=2,
+#     figsize=(8.27, 11.69),
+# )
+
+
+# plot_confusion_matrix(df_test[target], df_test[label_pred], labels, ax[0][0])
+# plot_metrics_table(list(metrics.items()), ax=ax[0][1])
+# plot_roc_curve(df_test[target], df_test[prediction], pos_label, ax[1][0])
+# plot_precision_recall_curve(df_test[target], df_test[prediction], pos_label, ax[1][1])
+
+# plot_score_distribution(df_test[target], df_test[prediction], labels, ax[2][0])
+# plot_cumulative_distribution(df_test[target], df_test[prediction], labels, ax[2][1])
+
+# fig.suptitle("Classification Report", fontsize=13, fontweight="bold")
+
+# fig.subplots_adjust(wspace=0.5, hspace=0.5)
+# fig.savefig(params["path"]["classification_report"], dpi=300)

@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   download_data:
-    cmd: wget 
+    cmd: wget -q 
       https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
       -O data/all.csv
     deps:
@@ -54,30 +54,31 @@ stages:
       size: 3661166
     - path: src/split_data.py
       hash: md5
-      md5: deef47671bdf6e2601eefdcb81ef5dae
-      size: 2322
+      md5: 466c63c39cf2cd8a0a6dfd98a6b7e557
+      size: 2355
     params:
       params.yaml:
         column_mapping:
           id: url
           target: status
           pos_label: phishing
-          prediction: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
         path.data_all: data/all.csv
         path.data_proportion: results/plots/data_proportion.png
-        path.data_test: data/test.csv
-        path.data_train: data/train.csv
+        path.data_test_raw: data/test/raw.csv
+        path.data_train_raw: data/train/raw.csv
         plt_style: Solarize_Light2
         train_test_split:
           test_size: 0.33
           random_state: 42
           shuffle: true
     outs:
-    - path: data/test.csv
+    - path: data/test/raw.csv
       hash: md5
       md5: 1ab33f0e67f2b269f66a241178d566b4
       size: 1201664
-    - path: data/train.csv
+    - path: data/train/raw.csv
       hash: md5
       md5: de0274753f5d64f0729034afae01c814
       size: 2446644
@@ -88,26 +89,27 @@ stages:
   train_model:
     cmd: python src/train_model.py
     deps:
-    - path: data/train.csv
+    - path: data/train/selected.csv
       hash: md5
-      md5: de0274753f5d64f0729034afae01c814
-      size: 2446644
+      md5: d2d97334fc8836c441488098adb7a754
+      size: 1823407
     - path: results/selected_features.yaml
       hash: md5
-      md5: f7caf56c01245c1940417a412e49689c
-      size: 458
+      md5: 3048a150fdfe040988dc646b1b921192
+      size: 175
     - path: src/train_model.py
       hash: md5
-      md5: 40b3efac67c983f35bfc1dc6fa44e17c
-      size: 1173
+      md5: e460c7ac963837dc31bba620cbf67ea5
+      size: 1477
     params:
       params.yaml:
         column_mapping:
           id: url
           target: status
           pos_label: phishing
-          prediction: phishing
-        path.data_train: data/train.csv
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
+        path.data_train_selected: data/train/selected.csv
         path.model_bin: results/models/model.pkl
         path.selected_features: results/selected_features.yaml
         pipeline:
@@ -121,70 +123,37 @@ stages:
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: f573844662e2c334fcbb0271490aa68e
-      size: 33217493
+      md5: d234aa1e15fea5f2202028ed48ac5dce
+      size: 37546321
   test_model:
     cmd: python src/test_model.py
     deps:
-    - path: data/test.csv
+    - path: data/test/selected.csv
       hash: md5
-      md5: 1ab33f0e67f2b269f66a241178d566b4
-      size: 1201664
+      md5: 58497c9bf999f4c8cf5f7bca3b815138
+      size: 893472
     - path: results/models/model.pkl
       hash: md5
-      md5: f573844662e2c334fcbb0271490aa68e
-      size: 33217493
-    - path: results/selected_features.yaml
-      hash: md5
-      md5: f7caf56c01245c1940417a412e49689c
-      size: 458
-    - path: src/plots/calibration_curve.py
-      hash: md5
-      md5: f98337fcccca18db5d2d290147f49369
-      size: 603
-    - path: src/plots/confusion_matrix.py
-      hash: md5
-      md5: 03e6232020fc4bcb85bfae152ec5e88a
-      size: 987
-    - path: src/plots/cumulative_distribution.py
-      hash: md5
-      md5: d4a182dafa1bd35cb53a6096edc622ef
-      size: 1954
-    - path: src/plots/metrics_table.py
-      hash: md5
-      md5: ab081ba6afbdfb65e5b8a3cd31293040
-      size: 909
-    - path: src/plots/precision_recall_curve.py
-      hash: md5
-      md5: 7f32efebd4c770dea6338dfb8bcf8432
-      size: 1805
-    - path: src/plots/roc_curve.py
-      hash: md5
-      md5: b312a4443fa723ee6d97edc987ace79b
-      size: 2029
-    - path: src/plots/score_distribution.py
-      hash: md5
-      md5: 2c94d321a14aaf1f78d72599532154c6
-      size: 1069
+      md5: d234aa1e15fea5f2202028ed48ac5dce
+      size: 37546321
     - path: src/test_model.py
       hash: md5
-      md5: 691d555e94405f6be3a0595455444ab7
-      size: 4792
+      md5: c9635a674038b1a9f9f3fb57de276c28
+      size: 9285
     params:
       params.yaml:
         column_mapping:
           id: url
           target: status
           pos_label: phishing
-          prediction: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
         path.calibration_curve: results/plots/calibration_curve.png
         path.classification_report: results/plots/classification_report.png
         path.confusion_matrix: results/plots/confusion_matrix.png
         path.cumulative_distribution: results/plots/cumulative_distribution.png
-        path.data_test: data/test.csv
-        path.data_test_pred: data/test_pred.csv
-        path.data_train: data/train.csv
-        path.data_train_pred: data/train_pred.csv
+        path.data_test_predicted: data/test/predicted.csv
+        path.data_test_selected: data/test/selected.csv
         path.metrics: results/metrics.yaml
         path.metrics_table: results/plots/metrics_table.png
         path.model_bin: results/models/model.pkl
@@ -194,50 +163,26 @@ stages:
         path.selected_features: results/selected_features.yaml
         plt_style: Solarize_Light2
     outs:
-    - path: data/test_pred.csv
+    - path: data/test/predicted.csv
       hash: md5
-      md5: 04299c664f2f5cd26e8972e69cec10ee
-      size: 742916
-    - path: data/train_pred.csv
-      hash: md5
-      md5: d3d9bf86baa57dde8d06ec70c61767f6
-      size: 1511148
+      md5: ac81af7380b8c7ce70911e8721bce1aa
+      size: 975063
     - path: results/metrics.yaml
       hash: md5
-      md5: f612003324205b0019959763a1c57bcf
+      md5: b66e5ae78666309106db7c08dfb80fd2
       size: 115
-    - path: results/plots/calibration_curve.png
-      hash: md5
-      md5: c3f59df8de6e9966a5450b8b95108b0a
-      size: 29168
-    - path: results/plots/classification_report.png
-      hash: md5
-      md5: 72a8822ab0e74dde7aa51e4f209b00ef
-      size: 418879
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: 5382f16fba470c37fa451cd4b97d79fc
-      size: 16830
-    - path: results/plots/cumulative_distribution.png
-      hash: md5
-      md5: 1123ee7b2e521ae07f17354770aa267a
-      size: 36152
-    - path: results/plots/metrics_table.png
-      hash: md5
-      md5: 8b7fa2350c40d7961525d384cce93c6c
-      size: 13898
-    - path: results/plots/precision_recall_curve.png
-      hash: md5
-      md5: 5ff142a08aa54c8bca6fcefa845c5011
-      size: 21375
+      md5: 8d7cb13307ab3850405d61f29c7b14d1
+      size: 12615
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 5a93d7d0cec909b13570436b3ee765f5
-      size: 34176
+      md5: c69ca35262ad7d03eeab9c21e11c4a86
+      size: 35242
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: d70c25f0edebc0480a9ee20dab0f9297
-      size: 21388
+      md5: 31e6dc24d4c915b34baf298efb366e64
+      size: 23557
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -364,32 +309,115 @@ stages:
       size: 3661166
     - path: src/feature_selection.py
       hash: md5
-      md5: c88bcbdd0f02de9c7c2aa4c3db5ba2f0
-      size: 4288
+      md5: bd2fc2b98f3d58d90bbef5079f6879d1
+      size: 4800
     params:
       params.yaml:
         column_mapping:
           id: url
           target: status
           pos_label: phishing
-          prediction: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
         feature_selection:
-          _target_: sklearn.feature_selection.VarianceThreshold
-          threshold: 1
+          _target_: sklearn.feature_selection.GenericUnivariateSelect
+          score_func:
+            _target_: builtins.getattr
+            _args_:
+            - _target_: importlib.import_module
+              name: sklearn.feature_selection
+            - f_classif
+          mode: k_best
+          param: 10
         path.correlation_matrix: results/plots/correlation_matrix.png
-        path.data_all: data/all.csv
-        path.data_test: data/test.csv
-        path.data_train: data/train.csv
+        path.data_test_selected: data/test/selected.csv
+        path.data_test_transformed: data/test/transformed.csv
+        path.data_train_selected: data/train/selected.csv
+        path.data_train_transformed: data/train/transformed.csv
         path.selected_features: results/selected_features.yaml
         plt_style: Solarize_Light2
     outs:
     - path: results/plots/correlation_matrix.png
       hash: md5
-      md5: d5ec874d8e1c776cfb2896c6ffbfe5d6
-      size: 214821
+      md5: 575a9cfd32f5648bb83ede2b12badd16
+      size: 94372
     - path: results/selected_features.yaml
       hash: md5
-      md5: f7caf56c01245c1940417a412e49689c
-      size: 458
+      md5: 3048a150fdfe040988dc646b1b921192
+      size: 175
   test:
     cmd: python -c "print('${data}/all.csv')"
+  model_interpretation:
+    cmd:
+    - python src/model_interpretation.py
+    deps:
+    - path: data/train/selected.csv
+      hash: md5
+      md5: d2d97334fc8836c441488098adb7a754
+      size: 1823407
+    - path: data/train/selected.csv
+      hash: md5
+      md5: d2d97334fc8836c441488098adb7a754
+      size: 1823407
+    - path: results/models/model.pkl
+      hash: md5
+      md5: d234aa1e15fea5f2202028ed48ac5dce
+      size: 37546321
+    - path: results/selected_features.yaml
+      hash: md5
+      md5: 3048a150fdfe040988dc646b1b921192
+      size: 175
+    - path: src/model_interpretation.py
+      hash: md5
+      md5: c477bf4c0a66f3d43638579b3967b939
+      size: 1673
+    params:
+      params.yaml:
+        column_mapping:
+          id: url
+          target: status
+          pos_label: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
+        path.data_test_selected: data/test/selected.csv
+        path.data_train_selected: data/train/selected.csv
+        path.feature_importances: results/plots/feature_importances.png
+        path.model_bin: results/models/model.pkl
+        path.selected_features: results/selected_features.yaml
+        plt_style: Solarize_Light2
+    outs:
+    - path: results/plots/feature_importances.png
+      hash: md5
+      md5: 0cbb9ab5ae1dffbcac580bebfb5c6c6f
+      size: 32356
+  preprocessing:
+    cmd: python src/preprocessing.py
+    deps:
+    - path: data/test/raw.csv
+      hash: md5
+      md5: 1ab33f0e67f2b269f66a241178d566b4
+      size: 1201664
+    - path: data/train/raw.csv
+      hash: md5
+      md5: de0274753f5d64f0729034afae01c814
+      size: 2446644
+    - path: src/preprocessing.py
+      hash: md5
+      md5: 6577d1a5752969583abb861eda7f9a87
+      size: 1864
+    params:
+      params.yaml:
+        column_mapping:
+          id: url
+          target: status
+          pos_label: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
+        feature_preprocessing:
+          _target_: sklearn.preprocessing.Normalizer
+        path.data_test_raw: data/test/raw.csv
+        path.data_test_transformed: data/test/transformed.csv
+        path.data_train_raw: data/train/raw.csv
+        path.data_train_transformed: data/train/transformed.csv
+        target_preprocessing:
+          _target_: sklearn.preprocessing.LabelEncoder

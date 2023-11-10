@@ -8,41 +8,35 @@ import yaml
 from hydra.utils import instantiate
 from sklearn.exceptions import ConvergenceWarning
 
+# Ignore this warnings to don't flood the terminal
 warnings.filterwarnings("ignore", category=ConvergenceWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-stage = "train_model"
-
-params = dvc.api.params_show(stages=stage)
-
-
+# Get the dvc params
 params = dvc.api.params_show(stages="train_model")
 
+if __name__ == "__main__":
+    # Get the list of selected features
+    with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:
+        selected_features = yaml.safe_load(fp)
 
-with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:
-    selected_features = yaml.safe_load(fp)
+    # Get the training dataset with only best features
+    df_train = pd.read_csv(
+        params["path"]["data_train_selected"],
+        index_col=params["column_mapping"]["id"],
+        usecols=[
+            params["column_mapping"]["id"],
+            params["column_mapping"]["target"],
+            *selected_features,
+        ],
+    )
 
+    # Seperate data into features (X_train) and target (y_train) to be compliant with sklean API
+    y_train = df_train[params["column_mapping"]["target"]]
+    X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
 
-df_train = pd.read_csv(
-    params["path"]["data_train"],
-    index_col=params["column_mapping"]["id"],
-    usecols=[
-        params["column_mapping"]["id"],
-        params["column_mapping"]["target"],
-        *selected_features,
-    ],
-)
-
-y_train = df_train[params["column_mapping"]["target"]]
-X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
-
-pipeline = instantiate(params["pipeline"])
-
-
-start_time = datetime.now()
-pipeline = pipeline.fit(X_train, y_train)
-end_time = datetime.now()
-
-
-joblib.dump(pipeline, params["path"]["model_bin"])
+    # Load and fit the model on the training dataset, then save it.
+    pipeline = instantiate(params["pipeline"])
+    pipeline = pipeline.fit(X_train, y_train)
+    joblib.dump(pipeline, params["path"]["model_bin"])

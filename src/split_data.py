@@ -4,6 +4,12 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+# Get the dvc params
+params = dvc.api.params_show(stages="split_data")
+
+# Use a matplotlib style to make more beautiful graphics
+plt.style.use(params["plt_style"])
+
 
 def plot_data_proportion(data, labels, ax=None):
     # If ax is not provided, create a new axis
@@ -30,7 +36,7 @@ def plot_data_proportion(data, labels, ax=None):
         b_1, labels=data[1], label_type="center", color=plt.rcParams["figure.facecolor"]
     )
 
-    # Remove ticks (-) on the x-axis
+    # Remove tick mark (-) on the x-axis
     ax.tick_params(axis="x", which="both", length=0)
 
     # Set font weight to "bold" for x-axis labels
@@ -51,12 +57,6 @@ def plot_data_proportion(data, labels, ax=None):
 
 
 if __name__ == "__main__":
-    # Get dvc params
-    params = dvc.api.params_show(stages="split_data")
-
-    # Use a beautiful style
-    plt.style.use(params["plt_style"])
-
     # 1. Split the data
     df = pd.read_csv(
         params["path"]["data_all"],
@@ -64,8 +64,8 @@ if __name__ == "__main__":
     )
 
     X_train, X_test = train_test_split(df, **params["train_test_split"])
-    X_train.to_csv(params["path"]["data_train"])
-    X_test.to_csv(params["path"]["data_test"])
+    X_train.to_csv(params["path"]["data_train_raw"])
+    X_test.to_csv(params["path"]["data_test_raw"])
 
     # 2. Make the plot showing the data proportion
     target = params["column_mapping"]["target"]
