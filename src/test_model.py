@@ -242,7 +242,6 @@ if __name__ == "__main__":
         df_test[label_pred],
         output_dict=True,
     )
-
     metrics = {
         "accuracy": metrics["accuracy"],
         "f1-score": metrics["1"]["f1-score"],
@@ -257,14 +256,17 @@ if __name__ == "__main__":
     # 2. Creates several plots to more easily interpret the results
     labels = df_test[target].value_counts().index
 
+    # Plot and save confusion matrix
     plt.figure()
     plot_confusion_matrix(df_test[target], df_test[label_pred])
     plt.savefig(params["path"]["confusion_matrix"])
 
+    # Plot and save roc curve
     plt.figure()
     plot_roc_curve(df_test[target], df_test[proba_pred])
     plt.savefig(params["path"]["roc_curve"])
 
+    # Plot and save score distribution
     plt.figure()
     plot_score_distribution(df_test[target], df_test[proba_pred])
     plt.savefig(params["path"]["score_distribution"])
