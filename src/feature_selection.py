@@ -13,6 +13,13 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+# Get the dc params
+params = dvc.api.params_show(stages="feature_selection")
+target = params["column_mapping"]["target"]
+
+# Use a matplotlib style to make more beautiful graphics
+plt.style.use(params["plt_style"])
+
 
 # TO DO: Put in a gist
 def plot_correlation_matrix(x, y, color, size, size_scale=400, ax=None):
@@ -65,53 +72,62 @@ def plot_correlation_matrix(x, y, color, size, size_scale=400, ax=None):
 
 
 if __name__ == "__main__":
-    params = dvc.api.params_show(stages="feature_selection")
-
-    # Use a beautiful style
-    plt.style.use(params["plt_style"])
-
-    # Read the data
+    # Read the training dataset
     df_train = pd.read_csv(
-        params["path"]["data_train"],
+        params["path"]["data_train_transformed"],
         index_col=params["column_mapping"]["id"],
     )
+
+    # Read the test dataset
     df_test = pd.read_csv(
-        params["path"]["data_test"],
+        params["path"]["data_test_transformed"],
         index_col=params["column_mapping"]["id"],
     )
 
-    # Seperate data into features (X_train) and target (y_train) to be compliante with sklean API
-    y_train = df_train[params["column_mapping"]["target"]]
-    X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
+    # 1. Select the best features
+    # Seperate data into features and target to be compliant with sklean API
+    y_train = df_train[target]
+    X_train = df_train.drop(target, axis=1)
+    y_test = df_test[target]
+    X_test = df_test.drop(target, axis=1)
 
-    y_test = df_test[params["column_mapping"]["target"]]
-    X_test = df_test.drop(params["column_mapping"]["target"], axis=1)
-
-    # Load and fit the selector on training dataset
+    # Load and fit the selector on the training dataset
     feature_selector = instantiate(params["feature_selection"])
-    feature_selector = feature_selector.fit(X_train, y_train)
+    feature_selector.fit(X_train, y_train)
+
+    # Transform data
+    X_train_selected = feature_selector.transform(X_train)
+    X_test_selected = feature_selector.transform(X_test)
 
     # Save list of selected features to access later if need
     selected_features = list(feature_selector.get_feature_names_out(X_train.columns))
     with open("results/selected_features.yaml", "w", encoding="utf8") as fp:
         yaml.dump(selected_features, fp)
 
-    # Plot correlation matrix of selected features
-    df = pd.read_csv(
-        params["path"]["data_train"],
-        index_col=params["column_mapping"]["id"],
-        usecols=[
-            params["column_mapping"]["id"],
-            params["column_mapping"]["target"],
-            *selected_features,
-        ],
+    # Save transformed data
+    df_train_selected = pd.DataFrame(
+        X_train_selected,
+        columns=selected_features,
+        index=df_train.index,
     )
+    df_test_selected = pd.DataFrame(
+        X_test_selected,
+        columns=selected_features,
+        index=df_test.index,
+    )
+    df_train_selected[target] = y_train
+    df_test_selected[target] = y_test
+    df_train_selected.to_csv(params["path"]["data_train_selected"])
+    df_test_selected.to_csv(params["path"]["data_test_selected"])
+
+    # 2. Plot correlation matrix of selected features
+    df_train = df_train[[*selected_features, "status"]]
 
     # TO DO: replace status and phishing by params
-    df["status"] = df["status"].replace({"phishing": 1, "legitimate": 0})
+    df_train["status"] = df_train["status"].replace({"phishing": 1, "legitimate": 0})
 
     # Compute correlation values and format the dataframe to get a lower triangle in the graph
-    df_corr = df.corr()
+    df_corr = df_train.corr()
     df_corr = df_corr.fillna(0)
     df_corr = df_corr.where((np.tril(np.ones(df_corr.shape), k=-1)).astype(bool))
     df_corr = pd.melt(df_corr.reset_index(), id_vars="index")

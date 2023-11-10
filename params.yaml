@@ -3,7 +3,8 @@ column_mapping:
   id: url
   target: status
   pos_label: phishing
-  prediction: phishing
+  prediction_label: prediction_label
+  prediction_proba: prediction_proba
 train_test_split:
   test_size: 0.33
   random_state: 42
@@ -12,10 +13,16 @@ plt_style: Solarize_Light2
 path:
   data: data
   data_all: data/all.csv
-  data_train: data/train.csv
-  data_test: data/test.csv
-  data_train_pred: data/train_pred.csv
-  data_test_pred: data/test_pred.csv
+  data_train: data/train
+  data_train_raw: data/train/raw.csv
+  data_train_transformed: data/train/transformed.csv
+  data_train_selected: data/train/selected.csv
+  data_train_predicted: data/train/predicted.csv
+  data_test: data/test
+  data_test_raw: data/test/raw.csv
+  data_test_transformed: data/test/transformed.csv
+  data_test_selected: data/test/selected.csv
+  data_test_predicted: data/test/predicted.csv
   results: results
   model_bin: results/models/model.pkl
   metrics: results/metrics.yaml
@@ -37,8 +44,15 @@ target_preprocessing:
 feature_preprocessing:
   _target_: sklearn.preprocessing.Normalizer
 feature_selection:
-  _target_: sklearn.feature_selection.VarianceThreshold
-  threshold: 1
+  _target_: sklearn.feature_selection.GenericUnivariateSelect
+  score_func:
+    _target_: builtins.getattr
+    _args_:
+    - _target_: importlib.import_module
+      name: sklearn.feature_selection
+    - f_classif
+  mode: k_best
+  param: 10
 classifier:
   _target_: sklearn.ensemble.RandomForestClassifier
 calibration:

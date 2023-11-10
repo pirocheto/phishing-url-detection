@@ -1,7 +1,7 @@
 stages:
   # Download data from source.
   download_data:
-    cmd: wget ${data_url} -O ${path.data_all}
+    cmd: wget -q ${data_url} -O ${path.data_all}
     # Set Frozen=True to prevent the step from being re-executed.
     frozen: False
     params:
@@ -20,8 +20,8 @@ stages:
       - train_test_split
       - column_mapping
       - path.data_all
-      - path.data_train
-      - path.data_test
+      - path.data_train_raw
+      - path.data_test_raw
       - path.data_proportion
       - plt_style
     deps:
@@ -31,8 +31,23 @@ stages:
       - ${path.data_proportion}:
           cache: False
     outs:
-      - ${path.data_train}
-      - ${path.data_test}
+      - ${path.data_train_raw}
+      - ${path.data_test_raw}
+
+  preprocessing:
+    cmd: python src/preprocessing.py
+    params:
+      - target_preprocessing
+      - feature_preprocessing
+      - path.data_train_raw
+      - path.data_test_raw
+      - path.data_train_transformed
+      - path.data_test_transformed
+      - column_mapping
+    deps:
+      - src/preprocessing.py
+      - ${path.data_train_raw}
+      - ${path.data_test_raw}
 
   # Remove the least important features
   # to accelerate training and make interpretation easier
@@ -41,9 +56,10 @@ stages:
     params:
       - column_mapping
       - feature_selection
-      - path.data_all
-      - path.data_train
-      - path.data_test
+      - path.data_train_transformed
+      - path.data_test_transformed
+      - path.data_train_selected
+      - path.data_test_selected
       - path.correlation_matrix
       - path.selected_features
       - plt_style
@@ -60,14 +76,14 @@ stages:
   train_model:
     cmd: python src/train_model.py
     params:
-      - path.data_train
+      - path.data_train_selected
       - column_mapping
       - path.selected_features
       - pipeline
       - path.model_bin
     deps:
       - src/train_model.py
-      - ${path.data_train}
+      - ${path.data_train_selected}
       - ${path.selected_features}
     outs:
       - ${path.model_bin}
@@ -75,12 +91,10 @@ stages:
   test_model:
     cmd: python src/test_model.py
     params:
-      - path.data_test
-      - path.data_train
+      - path.data_test_selected
+      - path.data_test_predicted
       - column_mapping
       - path.model_bin
-      - path.data_train_pred
-      - path.data_test_pred
       - path.metrics
       - path.confusion_matrix
       - path.roc_curve
@@ -94,16 +108,8 @@ stages:
       - plt_style
     deps:
       - src/test_model.py
-      - src/plots/confusion_matrix.py
-      - src/plots/roc_curve.py
-      - src/plots/score_distribution.py
-      - src/plots/precision_recall_curve.py
-      - src/plots/cumulative_distribution.py
-      - src/plots/calibration_curve.py
-      - src/plots/metrics_table.py
-      - ${path.data_test}
+      - ${path.data_test_selected}
       - ${path.model_bin}
-      - ${path.selected_features}
     plots:
       - ${path.confusion_matrix}:
           cache: False
@@ -111,63 +117,40 @@ stages:
           cache: False
       - ${path.score_distribution}:
           cache: False
-      - ${path.precision_recall_curve}:
-          cache: False
-      - ${path.cumulative_distribution}:
-          cache: False
-      - ${path.calibration_curve}:
-          cache: False
-      - ${path.metrics_table}:
-          cache: False
-      - ${path.classification_report}:
-          cache: False
+      # - ${path.precision_recall_curve}:
+      #     cache: False
+      # - ${path.cumulative_distribution}:
+      #     cache: False
+      # - ${path.calibration_curve}:
+      #     cache: False
+      # - ${path.metrics_table}:
+      #     cache: False
+      # - ${path.classification_report}:
+      #     cache: False
     outs:
-      - ${path.data_test_pred}:
-          cache: False
-      - ${path.data_train_pred}:
+      - ${path.data_test_predicted}:
           cache: False
     metrics:
       - ${path.metrics}:
           cache: False
 
-  feature_importances:
+  model_interpretation:
     cmd:
-      - python src/feature_importances.py
+      - python src/model_interpretation.py
     params:
-      - path.data_test
-      - path.data_train
+      - path.data_test_selected
+      - path.data_train_selected
       - column_mapping
       - path.model_bin
       - path.feature_importances
       - path.selected_features
       - plt_style
     deps:
-      - src/feature_importances.py
-      - src/plots/feature_importances.py
-      - ${path.data_test}
+      - src/model_interpretation.py
+      - ${path.data_train_selected}
+      - ${path.data_train_selected}
       - ${path.model_bin}
       - ${path.selected_features}
     plots:
       - ${path.feature_importances}:
           cache: False
-
-  # model_card:
-  #   cmd:
-  #     - python src/model_card.py
-  #   params:
-  #     - data_train_pred
-  #     - data_test_pred
-  #     - feature_importance
-  #     - metrics
-  #     - column_mapping.target
-  #     - column_mapping.pos_label
-  #     - model_card
-  #   deps:
-  #     - src/model_card.py
-  #     - src/plots
-  #     - ${data_train_pred}
-  #     - ${data_test_pred}
-  #     - ${feature_importance}
-  #   outs:
-  #     - ${model_card}:
-  #         cache: False
