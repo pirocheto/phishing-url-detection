@@ -11,34 +11,43 @@ train_test_split:
   shuffle: true
 plt_style: Solarize_Light2
 path:
-  data: data
-  data_all: data/all.csv
-  data_train: data/train
-  data_train_raw: data/train/raw.csv
-  data_train_transformed: data/train/transformed.csv
-  data_train_selected: data/train/selected.csv
-  data_train_predicted: data/train/predicted.csv
-  data_test: data/test
-  data_test_raw: data/test/raw.csv
-  data_test_transformed: data/test/transformed.csv
-  data_test_selected: data/test/selected.csv
-  data_test_predicted: data/test/predicted.csv
-  results: results
-  model_bin: results/models/model.pkl
-  metrics: results/metrics.yaml
-  selected_features: results/selected_features.yaml
-  plots: results/plots
-  data_proportion: results/plots/data_proportion.png
-  correlation_matrix: results/plots/correlation_matrix.png
-  metrics_table: results/plots/metrics_table.png
-  feature_importances: results/plots/feature_importances.png
-  confusion_matrix: results/plots/confusion_matrix.png
-  roc_curve: results/plots/roc_curve.png
-  score_distribution: results/plots/score_distribution.png
-  precision_recall_curve: results/plots/precision_recall_curve.png
-  calibration_curve: results/plots/calibration_curve.png
-  cumulative_distribution: results/plots/cumulative_distribution.png
-  classification_report: results/classification_report.png
+  data:
+    dir: data
+    all: data/all.csv
+    raw:
+      dir: data/raw
+      train: data/raw/train.csv
+      test: data/raw/test.csv
+    transformed:
+      dir: data/transformed
+      train: data/transformed/train.csv
+      test: data/transformed/test.csv
+    selected:
+      dir: data/selected
+      train: data/selected/train.csv
+      test: data/selected/test.csv
+    predicted:
+      dir: data/predicted
+      train: data/predicted/train.csv
+      test: data/predicted/test.csv
+  results:
+    dir: results
+    model_bin: results/models/model.pkl
+    metrics: results/metrics.yaml
+    selected_features: results/selected_features.yaml
+    plots:
+      dir: results/plots
+      data_proportion: results/plots/data_proportion.png
+      correlation_matrix: results/plots/correlation_matrix.png
+      metrics_table: results/plots/metrics_table.png
+      feature_importances: results/plots/feature_importances.png
+      confusion_matrix: results/plots/confusion_matrix.png
+      roc_curve: results/plots/roc_curve.png
+      score_distribution: results/plots/score_distribution.png
+      precision_recall_curve: results/plots/precision_recall_curve.png
+      calibration_curve: results/plots/calibration_curve.png
+      cumulative_distribution: results/plots/cumulative_distribution.png
+      classification_report: results/classification_report.png
 target_preprocessing:
   _target_: sklearn.preprocessing.LabelEncoder
 feature_preprocessing:

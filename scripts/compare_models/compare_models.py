@@ -2,7 +2,7 @@ import subprocess
 import time
 
 FORCE = False
-N_JOBS = 4
+N_JOBS = 5
 
 classifiers = [
     "GaussianNB",
@@ -28,5 +28,4 @@ for classifier in classifiers:
     command = f"dvc exp run -n base-{classifier} -S classifier={classifier} --queue {force_flag}"
     subprocess.run(command, shell=True, check=True)
 
-time.sleep(2)
 subprocess.run(f"dvc queue start --jobs {N_JOBS}", shell=True, check=True)
