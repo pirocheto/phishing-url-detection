@@ -43,6 +43,9 @@ path:
     # Path to the selected features file
     selected_features: "${path.results.dir}/selected_features.yaml"
 
+    # Path classification report file
+    classification_report: "${path.results.dir}/classification_report.png"
+
     # Plot
     plots:
       # Directory for generated plots
@@ -77,6 +80,3 @@ path:
 
       # Path to cumulative distribution plot
       cumulative_distribution: ${path.results.plots.dir}/cumulative_distribution.png
-
-      # Path to classification report plot
-      classification_report: ${path.results.dir}/classification_report.png

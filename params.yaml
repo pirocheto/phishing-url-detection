@@ -35,6 +35,7 @@ path:
     model_bin: results/models/model.pkl
     metrics: results/metrics.yaml
     selected_features: results/selected_features.yaml
+    classification_report: results/classification_report.png
     plots:
       dir: results/plots
       data_proportion: results/plots/data_proportion.png
@@ -47,7 +48,6 @@ path:
       precision_recall_curve: results/plots/precision_recall_curve.png
       calibration_curve: results/plots/calibration_curve.png
       cumulative_distribution: results/plots/cumulative_distribution.png
-      classification_report: results/classification_report.png
 target_preprocessing:
   _target_: sklearn.preprocessing.LabelEncoder
 feature_preprocessing:

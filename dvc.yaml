@@ -22,7 +22,8 @@ stages:
     deps:
       - ${data_url}
     outs:
-      - ${path.data.all}
+      - ${path.data.all}:
+          cache: False
 
   # Stage 2: Split Data
   # - Splits the downloaded data into training and testing sets.
@@ -43,7 +44,8 @@ stages:
       - ${path.results.plots.data_proportion}:
           cache: False
     outs:
-      - ${path.data.raw.dir}
+      - ${path.data.raw.dir}:
+          cache: False
 
   # Stage 3: Preprocessing
   # - Applies preprocessing steps to the training and testing data.
@@ -60,7 +62,8 @@ stages:
       - src/preprocessing.py
       - ${path.data.raw.dir}
     outs:
-      - ${path.data.transformed.dir}
+      - ${path.data.transformed.dir}:
+          cache: False
 
   # Stage 4: Feature Selection
   # - Removes the least important features to accelerate training and improve model interpretability.
@@ -82,7 +85,8 @@ stages:
       - ${path.results.plots.correlation_matrix}:
           cache: False
     outs:
-      - ${path.data.selected.dir}
+      - ${path.data.selected.dir}:
+          cache: False
 
   # Stage 5: Train Model
   # - Trains a machine learning model using the selected features from the previous stage.
@@ -99,11 +103,11 @@ stages:
       - src/train_model.py
       - ${path.data.selected.dir}
     outs:
-      - ${path.results.model_bin}
+      - ${path.results.model_bin}:
+          cache: False
 
   # Stage 6: Test Model
   # - Tests the trained model on the testing data and evaluates its performance.
-  # - Generates metrics, a metrics table, and a classification report.
   # - Creates multiple plots, including confusion matrix, ROC curve, and precision-recall curve.
   test_model:
     cmd: python src/test_model.py
@@ -114,6 +118,7 @@ stages:
       - path.data.predicted
       - path.results.model_bin
       - path.results.metrics
+      - path.results.classification_report
       - path.results.plots.confusion_matrix
       - path.results.plots.roc_curve
       - path.results.plots.score_distribution
@@ -121,7 +126,6 @@ stages:
       - path.results.plots.calibration_curve
       - path.results.plots.cumulative_distribution
       - path.results.plots.metrics_table
-      - path.results.plots.classification_report
     deps:
       - src/test_model.py
       - ${path.data.selected.dir}
@@ -141,10 +145,12 @@ stages:
           cache: False
       - ${path.results.plots.metrics_table}:
           cache: False
-      - ${path.results.plots.classification_report}:
-          cache: False
     outs:
-      - ${path.data.predicted.dir}
+      - ${path.data.predicted.dir}:
+          cache: False
+      - ${path.results.classification_report}:
+          cache: False
+
     metrics:
       - ${path.results.metrics}:
           cache: False

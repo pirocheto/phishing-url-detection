@@ -122,8 +122,8 @@ stages:
     outs:
     - path: results/models/model.pkl
       hash: md5
-      md5: ef0cdd8fe52f218ba88debb34dabc190
-      size: 37320257
+      md5: 743b3d5f6f8e2c3474de2ef5bcb85239
+      size: 37363153
   test_model:
     cmd: python src/test_model.py
     deps:
@@ -134,12 +134,12 @@ stages:
       nfiles: 2
     - path: results/models/model.pkl
       hash: md5
-      md5: ef0cdd8fe52f218ba88debb34dabc190
-      size: 37320257
+      md5: 743b3d5f6f8e2c3474de2ef5bcb85239
+      size: 37363153
     - path: src/test_model.py
       hash: md5
-      md5: f4d08e2618d84bea5db2e55cb44ced90
-      size: 15952
+      md5: 3bdbf5faf4259e54cb7efbaa538e1a47
+      size: 15943
     params:
       params.yaml:
         column_mapping:
@@ -156,10 +156,10 @@ stages:
           dir: data/selected
           train: data/selected/train.csv
           test: data/selected/test.csv
+        path.results.classification_report: results/classification_report.png
         path.results.metrics: results/metrics.yaml
         path.results.model_bin: results/models/model.pkl
         path.results.plots.calibration_curve: results/plots/calibration_curve.png
-        path.results.plots.classification_report: results/classification_report.png
         path.results.plots.confusion_matrix: results/plots/confusion_matrix.png
         path.results.plots.cumulative_distribution: results/plots/cumulative_distribution.png
         path.results.plots.metrics_table: results/plots/metrics_table.png
@@ -170,45 +170,45 @@ stages:
     outs:
     - path: data/predicted
       hash: md5
-      md5: 3a0a827398f0917774d6d8420cccc32b.dir
-      size: 2964816
+      md5: 3f2d9b86149b1944acf05833c1dc7009.dir
+      size: 2963502
       nfiles: 2
     - path: results/classification_report.png
       hash: md5
-      md5: 8a61382bda65b73b409531761f53f0f0
-      size: 113039
+      md5: c162bcdde3067916ca1033da2544c94c
+      size: 115912
     - path: results/metrics.yaml
       hash: md5
-      md5: 46eae14830f435f25b2019f6b3af58c7
-      size: 259
+      md5: f255a62b9af7fae066bb788bd2df5299
+      size: 258
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: 8486e81febd6fd8e5b5e7e5605e43893
-      size: 28917
+      md5: 8c3a62c5c6d03431f23b6004883101b3
+      size: 28905
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: 0d42d631c810d13abb15c33cec59e527
-      size: 12457
+      md5: 27f46b1ccd89db808a092f2f6bc17f94
+      size: 12314
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: 4459b145ee99bdd5878b50e4bd6d4938
-      size: 35775
+      md5: f44a8c91a6f84a6a2be5bf0d1ddd168c
+      size: 35790
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: 9d4ae87d58283915ffe72dbe419f5c85
-      size: 14385
+      md5: cd7dfa7451b2c1ca3b148d1eb669e617
+      size: 14204
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: f40d49be94850bb544fb526e78c81637
-      size: 22772
+      md5: 59125813269c5f445d5db33f2d363626
+      size: 22481
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 8ce3b215a629798f242e98754828d7e2
-      size: 35335
+      md5: cf59aca0efe7fe80b7ea3b9339808e74
+      size: 34957
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: 216509b1937145d51f93c79131f1ef98
-      size: 19753
+      md5: 2e209a8dee0c351b08670d8198986803
+      size: 23526
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -336,8 +336,8 @@ stages:
       nfiles: 2
     - path: src/feature_selection.py
       hash: md5
-      md5: 8d5ac0b6d1d4d99133faf775d5ef1213
-      size: 4789
+      md5: f886e3d29bd7a7c620ddc1d81748a96a
+      size: 4783
     params:
       params.yaml:
         column_mapping:
@@ -375,8 +375,8 @@ stages:
       nfiles: 2
     - path: results/plots/correlation_matrix.png
       hash: md5
-      md5: 2eeedf296f835c7392c90e881fab1584
-      size: 93278
+      md5: 5452830662e896c0379c513a42febf2c
+      size: 77386
   test:
     cmd: python -c "print('${data}/all.csv')"
   model_interpretation:
@@ -390,8 +390,8 @@ stages:
       nfiles: 2
     - path: results/models/model.pkl
       hash: md5
-      md5: ef0cdd8fe52f218ba88debb34dabc190
-      size: 37320257
+      md5: 743b3d5f6f8e2c3474de2ef5bcb85239
+      size: 37363153
     - path: src/model_interpretation.py
       hash: md5
       md5: bf261d1804e95733260e1df063effa4b
@@ -414,8 +414,8 @@ stages:
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 74a5f2ea1d8712b77d39f2073e9f4b03
-      size: 24660
+      md5: 79d3751c6dd559a9e44f697e3f0f369e
+      size: 24803
   preprocessing:
     cmd: python src/preprocessing.py
     deps:

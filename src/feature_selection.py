@@ -24,8 +24,7 @@ path_data_selected = params["path"]["data"]["selected"]
 plt.style.use(params["plt_style"])
 
 
-# TO DO: Put in a gist
-def plot_correlation_matrix(x, y, color, size, size_scale=500, ax=None):
+def plot_correlation_matrix(x, y, color, size, size_scale=300, ax=None):
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()
@@ -140,7 +139,9 @@ if __name__ == "__main__":
     df_corr.columns = ["x", "y", "value"]
 
     # Plot correlation matrix and save it in file
-    plt.figure(figsize=(10, 10))
+    plt.figure(
+        # figsize=(10, 10),
+    )
     plot_correlation_matrix(
         df_corr["x"],
         df_corr["y"],

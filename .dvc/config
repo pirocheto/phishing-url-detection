@@ -1,2 +1,4 @@
 [hydra]
     enabled = True
+[plots]
+    auto_open = true
