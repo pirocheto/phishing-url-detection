@@ -10,6 +10,7 @@ from sklearn.inspection import permutation_importance
 
 # Get the dvc params
 params = dvc.api.params_show(stages="model_interpretation")
+path_data_selected = params["path"]["data"]["selected"]
 
 # Use a matplotlib style to make more beautiful graphics
 plt.style.use(params["plt_style"])
@@ -88,17 +89,17 @@ def plot_feature_importances(
 if __name__ == "__main__":
     # Load test and train datasets
     df_test = pd.read_csv(
-        params["path"]["data_test_selected"],
+        path_data_selected["test"],
         index_col=params["column_mapping"]["id"],
     )
 
     df_train = pd.read_csv(
-        params["path"]["data_train_selected"],
+        path_data_selected["train"],
         index_col=params["column_mapping"]["id"],
     )
 
     # Load the trained model from the saved file
-    pipeline = joblib.load(params["path"]["model_bin"])
+    pipeline = joblib.load(params["path"]["results"]["model_bin"])
 
     # Create a subplot with two columns and specified figure size
     fig, ax = plt.subplots(
@@ -137,4 +138,4 @@ if __name__ == "__main__":
     fig.subplots_adjust(top=0.90, bottom=0.05, wspace=0.05)
 
     # Save the figure with feature importances
-    fig.savefig(params["path"]["feature_importances"])
+    fig.savefig(params["path"]["results"]["plots"]["feature_importances"])

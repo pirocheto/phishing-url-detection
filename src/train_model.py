@@ -17,19 +17,10 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 params = dvc.api.params_show(stages="train_model")
 
 if __name__ == "__main__":
-    # Get the list of selected features
-    with open(params["path"]["selected_features"], "r", encoding="utf8") as fp:
-        selected_features = yaml.safe_load(fp)
-
     # Get the training dataset with only best features
     df_train = pd.read_csv(
-        params["path"]["data_train_selected"],
+        params["path"]["data"]["selected"]["train"],
         index_col=params["column_mapping"]["id"],
-        usecols=[
-            params["column_mapping"]["id"],
-            params["column_mapping"]["target"],
-            *selected_features,
-        ],
     )
 
     # Seperate data into features (X_train) and target (y_train) to be compliant with sklean API
@@ -38,5 +29,6 @@ if __name__ == "__main__":
 
     # Load and fit the model on the training dataset, then save it.
     pipeline = instantiate(params["pipeline"])
-    pipeline = pipeline.fit(X_train, y_train)
-    joblib.dump(pipeline, params["path"]["model_bin"])
+    pipeline.fit(X_train, y_train)
+
+    joblib.dump(pipeline, params["path"]["results"]["model_bin"])

@@ -1,3 +1,4 @@
+import os
 import warnings
 
 import dvc.api
@@ -16,6 +17,8 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 # Get the dc params
 params = dvc.api.params_show(stages="feature_selection")
 target = params["column_mapping"]["target"]
+path_data_transformed = params["path"]["data"]["transformed"]
+path_data_selected = params["path"]["data"]["selected"]
 
 # Use a matplotlib style to make more beautiful graphics
 plt.style.use(params["plt_style"])
@@ -77,13 +80,13 @@ def plot_correlation_matrix(x, y, color, size, size_scale=500, ax=None):
 if __name__ == "__main__":
     # Read the training dataset
     df_train = pd.read_csv(
-        params["path"]["data_train_transformed"],
+        path_data_transformed["train"],
         index_col=params["column_mapping"]["id"],
     )
 
     # Read the test dataset
     df_test = pd.read_csv(
-        params["path"]["data_test_transformed"],
+        path_data_transformed["test"],
         index_col=params["column_mapping"]["id"],
     )
 
@@ -102,10 +105,8 @@ if __name__ == "__main__":
     X_train_selected = feature_selector.transform(X_train)
     X_test_selected = feature_selector.transform(X_test)
 
-    # Save list of selected features to access later if need
+    # Get list of selected features
     selected_features = list(feature_selector.get_feature_names_out(X_train.columns))
-    with open("results/selected_features.yaml", "w", encoding="utf8") as fp:
-        yaml.dump(selected_features, fp)
 
     # Save transformed data
     df_train_selected = pd.DataFrame(
@@ -120,8 +121,12 @@ if __name__ == "__main__":
     )
     df_train_selected[target] = y_train
     df_test_selected[target] = y_test
-    df_train_selected.to_csv(params["path"]["data_train_selected"])
-    df_test_selected.to_csv(params["path"]["data_test_selected"])
+
+    # Create directory for selected data
+    os.makedirs(path_data_selected["dir"], exist_ok=True)
+
+    df_train_selected.to_csv(path_data_selected["train"])
+    df_test_selected.to_csv(path_data_selected["test"])
 
     # 2. Plot correlation matrix of selected features
     df_train = df_train[[*selected_features, "status"]]
@@ -143,4 +148,4 @@ if __name__ == "__main__":
         df_corr["value"].abs(),
     )
     plt.tight_layout()
-    plt.savefig(params["path"]["correlation_matrix"])
+    plt.savefig(params["path"]["results"]["plots"]["correlation_matrix"])

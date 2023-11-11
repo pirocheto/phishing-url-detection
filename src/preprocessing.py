@@ -1,22 +1,25 @@
+import os
+from pathlib import Path
+
 import dvc.api
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from hydra.utils import instantiate
 
 # Get the dvc params
 params = dvc.api.params_show(stages="preprocessing")
+path_data_raw = params["path"]["data"]["raw"]
+path_data_transformed = params["path"]["data"]["transformed"]
 target = params["column_mapping"]["target"]
 
 if __name__ == "__main__":
     # Load the test dataset
     df_test = pd.read_csv(
-        params["path"]["data_test_raw"],
+        path_data_raw["test"],
         index_col=params["column_mapping"]["id"],
     )
     # Load the training dataset
     df_train = pd.read_csv(
-        params["path"]["data_train_raw"],
+        path_data_raw["train"],
         index_col=params["column_mapping"]["id"],
     )
 
@@ -61,5 +64,8 @@ if __name__ == "__main__":
     df_train_transformed[target] = y_train
     df_test_transformed[target] = y_test
 
-    df_train_transformed.to_csv(params["path"]["data_train_transformed"])
-    df_test_transformed.to_csv(params["path"]["data_test_transformed"])
+    # Create directory for transformed data
+    os.makedirs(path_data_transformed["dir"], exist_ok=True)
+
+    df_train_transformed.to_csv(path_data_transformed["train"])
+    df_test_transformed.to_csv(path_data_transformed["test"])
