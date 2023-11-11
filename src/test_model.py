@@ -551,4 +551,4 @@ if __name__ == "__main__":
         hspace=0.4,
     )
 
-    fig.savefig(params["path"]["results"]["plots"]["classification_report"])
+    fig.savefig(params["path"]["results"]["classification_report"])
