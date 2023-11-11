@@ -75,7 +75,7 @@ stages:
       - path.data.transformed
       - path.data.selected
       - path.results.plots.correlation_matrix
-      - path.results.plots.selected_features
+      - path.results.selected_features
       - plt_style
     deps:
       - ${path.data.transformed.dir}
@@ -85,6 +85,8 @@ stages:
           cache: False
     outs:
       - ${path.results.selected_features}:
+          cache: False
+      - ${path.data.selected.dir}:
           cache: False
 
   # Stage 5: Train Model
@@ -101,7 +103,6 @@ stages:
     deps:
       - src/train_model.py
       - ${path.data.selected.dir}
-      - ${path.results.selected_features}
     outs:
       - ${path.results.model_bin}
 
