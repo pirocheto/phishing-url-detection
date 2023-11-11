@@ -117,16 +117,16 @@ stages:
           cache: False
       - ${path.score_distribution}:
           cache: False
-      # - ${path.precision_recall_curve}:
-      #     cache: False
-      # - ${path.cumulative_distribution}:
-      #     cache: False
-      # - ${path.calibration_curve}:
-      #     cache: False
-      # - ${path.metrics_table}:
-      #     cache: False
-      # - ${path.classification_report}:
-      #     cache: False
+      - ${path.precision_recall_curve}:
+          cache: False
+      - ${path.cumulative_distribution}:
+          cache: False
+      - ${path.calibration_curve}:
+          cache: False
+      - ${path.metrics_table}:
+          cache: False
+      - ${path.classification_report}:
+          cache: False
     outs:
       - ${path.data_test_predicted}:
           cache: False

@@ -62,10 +62,13 @@ def plot_correlation_matrix(x, y, color, size, size_scale=400, ax=None):
     ax.yaxis.set_ticks_position("right")
     ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation=45, ha="right")
 
-    # Remove ticks (-) on the axis
+    # Remove tick marks (-)
     ax.tick_params(axis="both", labelsize=10, which="both", length=0)
 
+    # Set title
     ax.set_title("Correlation Matrix", fontweight="bold", fontsize=10)
+
+    # Set the aspect ratio of the plot to be equal
     ax.set_box_aspect(1)
 
     return ax
@@ -122,9 +125,6 @@ if __name__ == "__main__":
 
     # 2. Plot correlation matrix of selected features
     df_train = df_train[[*selected_features, "status"]]
-
-    # TO DO: replace status and phishing by params
-    df_train["status"] = df_train["status"].replace({"phishing": 1, "legitimate": 0})
 
     # Compute correlation values and format the dataframe to get a lower triangle in the graph
     df_corr = df_train.corr()

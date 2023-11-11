@@ -6,12 +6,14 @@ path:
   # Path to the all data file
   data_all: ${path.data}/all.csv
 
+  # Path to training data
   data_train: ${path.data}/train
   data_train_raw: ${path.data_train}/raw.csv
   data_train_transformed: ${path.data_train}/transformed.csv
   data_train_selected: ${path.data_train}/selected.csv
   data_train_predicted: ${path.data_train}/predicted.csv
 
+  # Path to test data
   data_test: ${path.data}/test
   data_test_raw: ${path.data_test}/raw.csv
   data_test_transformed: ${path.data_test}/transformed.csv
@@ -65,4 +67,4 @@ path:
   cumulative_distribution: ${path.plots}/cumulative_distribution.png
 
   # Path to classification report plot
-  classification_report: ${path.plots}/classification_report.png
+  classification_report: ${path.results}/classification_report.png

@@ -6,13 +6,16 @@ import pandas as pd
 import seaborn as sns
 import yaml
 from matplotlib.colors import LinearSegmentedColormap
-from sklearn.metrics import auc, classification_report, confusion_matrix, roc_curve
-
-from plots.calibration_curve import plot_calibration_curve
-from plots.cumulative_distribution import plot_cumulative_distribution
-from plots.metrics_table import plot_metrics_table
-from plots.precision_recall_curve import plot_precision_recall_curve
-from plots.score_distribution import plot_score_distribution
+from scipy.stats import ks_2samp
+from sklearn.calibration import calibration_curve
+from sklearn.metrics import (
+    auc,
+    average_precision_score,
+    classification_report,
+    confusion_matrix,
+    precision_recall_curve,
+    roc_curve,
+)
 
 # Get the dvc params
 params = dvc.api.params_show(stages="test_model")
@@ -159,7 +162,7 @@ def plot_roc_curve(y_true, y_scores, pos_label=1, ax=None):
     return ax
 
 
-def plot_score_distribution(y_true, y_scores, labels=[0, 1], ax=None):
+def plot_score_distribution(y_true, y_scores, labels=(0, 1), ax=None):
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()
@@ -209,6 +212,224 @@ def plot_score_distribution(y_true, y_scores, labels=[0, 1], ax=None):
 
     # Set the title of the plot
     ax.set_title("Score distribution", fontweight="bold", fontsize=10)
+    return ax
+
+
+def plot_precision_recall_curve(y_true, y_scores, pos_label=1, ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
+
+    # Get the default color cycle and select the first color
+    # Useful when a global style is used i.e. with 'plt.style.use()'
+    prop_cycle = plt.rcParams["axes.prop_cycle"]
+    colors = prop_cycle.by_key()["color"]
+    color = colors[1]
+
+    # Compute precision-recall curve
+    precision, recall, threshold = precision_recall_curve(
+        y_true, y_scores, pos_label=pos_label
+    )
+
+    # Find the best threshold based on maximizing F1 score
+    fscore = 2 * (precision * recall) / (precision + recall)
+    best_threshold_index = fscore.argmax()
+    best_threshold = threshold[best_threshold_index]
+
+    # Plot the precision-recall curve
+    ax.step(recall, precision, where="post", color=color)
+    ax.fill_between(recall, precision, step="post", alpha=0.2, color=color)
+
+    # Compute average precision
+    average_precision = average_precision_score(y_true, y_scores, pos_label=pos_label)
+
+    # Add text annotation for Average Precision (AP)
+    ax.text(
+        0.20,
+        0.15,
+        "AP\n" + r"$\bf{" + f"{average_precision:.3f}" + "}$",
+        va="center",
+        ha="center",
+        bbox=dict(
+            boxstyle="square",
+            fc=ax.get_facecolor(),
+            ec="grey",
+            alpha=0.4,
+            pad=0.5,
+        ),
+    )
+
+    # Mark the point on the curve corresponding to the best threshold
+    ax.scatter(
+        recall[best_threshold_index],
+        precision[best_threshold_index],
+        color=color,
+    )
+
+    # Annotate the best threshold on the plot
+    ax.annotate(
+        "Best Threshold\n" + r"$\bf{" + f"{best_threshold:.3f}" + "}$",
+        xy=(
+            recall[best_threshold_index],
+            precision[best_threshold_index],
+        ),
+        xytext=(-0.5, -0.5),
+        textcoords="offset fontsize",
+        va="top",
+        ha="right",
+    )
+
+    # Set axis limits and labels
+    ax.set_ylim([0.0, 1.05])
+    ax.set_xlim([0.0, 1.0])
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+
+    # Set the title of the plot
+    ax.set_title("Precision-Recall Curve", fontweight="bold", fontsize=10)
+
+    # Display the grid
+    ax.grid(True)
+
+    # Set the aspect ratio of the plot to be equal
+    ax.set_box_aspect(1)
+
+    return ax
+
+
+def plot_calibration_curve(y_true, y_scores, pos_label=1, ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
+
+    # Compute calibration curve
+    prob_true, prob_pred = calibration_curve(
+        y_true, y_scores, pos_label=pos_label, n_bins=10
+    )
+
+    # Plot the calibration curve
+    ax.plot(prob_pred, prob_true, marker="o", linestyle="-")
+
+    # Plot the diagonal line (perfect line)
+    ax.plot([0, 1], [0, 1], linestyle="--", color="gray")
+
+    # Set axis limits
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+
+    # Set axis labels
+    ax.set_xlabel("Mean Predicted Probability")
+    ax.set_ylabel("Fraction of Positives")
+
+    # Set title
+    ax.set_title("Calibration Curve", fontweight="bold", fontsize=10)
+
+    # Display the grid
+    ax.grid(True)
+
+    # Set the aspect ratio of the plot to be equal
+    ax.set_box_aspect(1)
+
+    return ax
+
+
+def plot_cumulative_distribution(y_true, y_scores, labels=(0, 1), ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
+
+    # Extract scores for each class
+    y_scores = np.array(y_scores)
+    scores1 = y_scores[y_true == labels[0]]
+    scores2 = y_scores[y_true == labels[1]]
+
+    # Sort the data for ECDF calculation
+    sorted_data1 = np.sort(scores1)
+    ecdf1 = np.arange(1, len(sorted_data1) + 1) / len(sorted_data1)
+    sorted_data2 = np.sort(scores2)
+    ecdf2 = np.arange(1, len(sorted_data2) + 1) / len(sorted_data2)
+
+    # Plots the curves
+    ax.plot(sorted_data1, ecdf1, label=labels[0])
+    ax.plot(sorted_data2, ecdf2, label=labels[1])
+
+    # Compute the Kolmogorov-Smirnov (KS) statistic and p-value
+    ks_statistic, p_value = ks_2samp(scores1, scores2)
+
+    # Add text annotation for KS Statistic and p-value
+    ax.text(
+        0.5,
+        0.5,
+        "KS Statistic:" + r"$\bf{" + f"{ks_statistic:.3f}" + "}$\n"
+        "p-value:" + r"$\bf{" + f"{p_value:.3}" + "}$",
+        va="center",
+        ha="center",
+        bbox=dict(
+            boxstyle="square",
+            fc=ax.get_facecolor(),
+            ec="grey",
+            alpha=0.6,
+            pad=0.5,
+        ),
+    )
+    # Set axis limits
+    ax.set_xlim(0.0, 1.0)
+    ax.set_ylim(0.0, 1.0)
+
+    # Set labels
+    ax.set_xlabel("Predicted Probabilities")
+    ax.set_ylabel("Cumulative Distribution")
+
+    # Set the title of the plot
+    ax.set_title(
+        "Empirical Cumulative Distribution Function",
+        fontweight="bold",
+        fontsize=10,
+    )
+
+    # Display legend and the grid
+    ax.legend()
+    ax.grid(True)
+
+    # Set the aspect ratio of the plot to be equal
+    ax.set_box_aspect(1)
+
+    return ax
+
+
+def plot_metrics_table(metrics, ax=None):
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
+
+    # Format metrics to display as strings with three decimal places
+    metrics = [(name, f"{value:.3f}") for name, value in metrics]
+
+    # Create a table with the specified metrics
+    table = ax.table(cellText=metrics, loc="upper center", edges="horizontal")
+
+    # Customize the appearance of the table cells
+    for i, cell in enumerate(table.get_celld().values()):
+        cell.set_facecolor(plt.rcParams["figure.facecolor"])
+        cell.set_edgecolor(plt.rcParams["text.color"])
+
+        # Alternate background colors for better readability
+        if i % 2 == 0:
+            cell.get_text().set_ha("right")
+        else:
+            cell.get_text().set_ha("center")
+            cell.get_text().set_fontweight("bold")
+
+    # Adjust font size and scale of the table
+    table.auto_set_font_size(False)
+    table.set_fontsize(11)
+    table.scale(1, 2.5)
+
+    # Hide axis
+    ax.axis("off")
+
+    # Set the title of the plot
+    ax.set_title("Metrics", fontweight="bold", fontsize=10)
 
     return ax
 
@@ -232,10 +453,6 @@ if __name__ == "__main__":
     # Save predictions to read them leter if need
     df_test.to_csv(params["path"]["data_test_predicted"])
 
-    y_scores = df_test[proba_pred]
-    y_pred = df_test[label_pred]
-    y_true = df_test[target]
-
     # 2. Compute metrics
     metrics = classification_report(
         df_test[target],
@@ -254,7 +471,10 @@ if __name__ == "__main__":
         yaml.safe_dump(metrics, fp)
 
     # 2. Creates several plots to more easily interpret the results
-    labels = df_test[target].value_counts().index
+    # Plot and save metrics table
+    plt.figure()
+    plot_metrics_table(metrics.items())
+    plt.savefig(params["path"]["metrics_table"])
 
     # Plot and save confusion matrix
     plt.figure()
@@ -271,68 +491,40 @@ if __name__ == "__main__":
     plot_score_distribution(df_test[target], df_test[proba_pred])
     plt.savefig(params["path"]["score_distribution"])
 
+    # Plot and save precision recall curve
+    plt.figure()
+    plot_precision_recall_curve(df_test[target], df_test[proba_pred])
+    plt.savefig(params["path"]["precision_recall_curve"])
 
-# # =========== Plotting score distribution ===========
-# fig, ax = plt.subplots()
+    # Plot and save calibration curve
+    plt.figure()
+    plot_calibration_curve(df_test[target], df_test[proba_pred])
+    plt.savefig(params["path"]["calibration_curve"])
 
-# plot_precision_recall_curve(
-#     df_test[target],
-#     df_test[prediction],
-#     pos_label,
-#     ax,
-# )
+    # Plot and save cumulative distribution
+    plt.figure()
+    plot_cumulative_distribution(df_test[target], df_test[proba_pred])
+    plt.savefig(params["path"]["cumulative_distribution"])
 
-# fig.savefig(params["path"]["precision_recall_curve"])
+    # Create classification report containing multiple charts to see results on a single page
+    fig, ax = plt.subplots(
+        nrows=3,
+        ncols=2,
+        figsize=(8.27, 11.69),
+    )
 
-
-# # =========== Plotting calibration curve ===========
-# fig, ax = plt.subplots()
-
-# plot_calibration_curve(
-#     df_test[target],
-#     df_test[prediction],
-#     pos_label,
-#     ax,
-# )
-
-# fig.savefig(params["path"]["calibration_curve"])
-
-# # =========== Plotting cumulative distribution ===========
-# fig, ax = plt.subplots()
-
-# plot_cumulative_distribution(
-#     df_test[target],
-#     df_test[prediction],
-#     labels,
-#     ax,
-# )
-
-# fig.savefig(params["path"]["cumulative_distribution"])
-
-# # =========== Plotting Metrics table ===========
-# fig, ax = plt.subplots()
-
-# plot_metrics_table(list(metrics.items()), ax=ax)
-
-# fig.savefig(params["path"]["metrics_table"])
-
-# # =========== Plotting combined curves ===========
-# fig, ax = plt.subplots(
-#     nrows=3,
-#     ncols=2,
-#     figsize=(8.27, 11.69),
-# )
-
-
-# plot_confusion_matrix(df_test[target], df_test[label_pred], labels, ax[0][0])
-# plot_metrics_table(list(metrics.items()), ax=ax[0][1])
-# plot_roc_curve(df_test[target], df_test[prediction], pos_label, ax[1][0])
-# plot_precision_recall_curve(df_test[target], df_test[prediction], pos_label, ax[1][1])
-
-# plot_score_distribution(df_test[target], df_test[prediction], labels, ax[2][0])
-# plot_cumulative_distribution(df_test[target], df_test[prediction], labels, ax[2][1])
-
-# fig.suptitle("Classification Report", fontsize=13, fontweight="bold")
-
-# fig.subplots_adjust(wspace=0.5, hspace=0.5)
-# fig.savefig(params["path"]["classification_report"], dpi=300)
+    plot_metrics_table(metrics.items(), ax=ax[0][0])
+    plot_confusion_matrix(df_test[target], df_test[label_pred], ax=ax[0][1])
+    plot_roc_curve(df_test[target], df_test[proba_pred], ax=ax[1][0])
+    plot_precision_recall_curve(df_test[target], df_test[proba_pred], ax=ax[1][1])
+    plot_score_distribution(df_test[target], df_test[proba_pred], ax=ax[2][0])
+    plot_cumulative_distribution(df_test[target], df_test[proba_pred], ax=ax[2][1])
+    fig.subplots_adjust(
+        left=0.05,
+        right=1,
+        top=0.92,
+        bottom=0.08,
+        wspace=0.10,
+        hspace=0.4,
+    )
+    fig.savefig(params["path"]["classification_report"])
