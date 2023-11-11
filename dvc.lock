@@ -138,8 +138,8 @@ stages:
       size: 37546321
     - path: src/test_model.py
       hash: md5
-      md5: c9635a674038b1a9f9f3fb57de276c28
-      size: 9285
+      md5: fc2586b5483b68eabf8fe5da42180b18
+      size: 15064
     params:
       params.yaml:
         column_mapping:
@@ -149,7 +149,7 @@ stages:
           prediction_label: prediction_label
           prediction_proba: prediction_proba
         path.calibration_curve: results/plots/calibration_curve.png
-        path.classification_report: results/plots/classification_report.png
+        path.classification_report: results/classification_report.png
         path.confusion_matrix: results/plots/confusion_matrix.png
         path.cumulative_distribution: results/plots/cumulative_distribution.png
         path.data_test_predicted: data/test/predicted.csv
@@ -171,10 +171,22 @@ stages:
       hash: md5
       md5: b66e5ae78666309106db7c08dfb80fd2
       size: 115
+    - path: results/plots/calibration_curve.png
+      hash: md5
+      md5: 43a1069a7eee5af80083df25330075f6
+      size: 28455
     - path: results/plots/confusion_matrix.png
       hash: md5
       md5: 8d7cb13307ab3850405d61f29c7b14d1
       size: 12615
+    - path: results/plots/cumulative_distribution.png
+      hash: md5
+      md5: 44ecaff8108c9a05201fabb06325a1fa
+      size: 35906
+    - path: results/plots/precision_recall_curve.png
+      hash: md5
+      md5: 092a4ce6ab8936d9fb7bd47b07da87ff
+      size: 22530
     - path: results/plots/roc_curve.png
       hash: md5
       md5: c69ca35262ad7d03eeab9c21e11c4a86
@@ -309,8 +321,8 @@ stages:
       size: 3661166
     - path: src/feature_selection.py
       hash: md5
-      md5: bd2fc2b98f3d58d90bbef5079f6879d1
-      size: 4800
+      md5: 5a78b7125f11a95f8af0f8758ae40aa7
+      size: 4723
     params:
       params.yaml:
         column_mapping:
