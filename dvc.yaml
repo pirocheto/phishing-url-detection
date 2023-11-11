@@ -84,8 +84,8 @@ stages:
       - ${path.results.plots.correlation_matrix}:
           cache: False
     outs:
-      - ${path.results.selected_features}:
-          cache: False
+      # - ${path.results.selected_features}:
+      #     cache: False
       - ${path.data.selected.dir}:
           cache: False
 
