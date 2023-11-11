@@ -138,8 +138,8 @@ stages:
       size: 37408801
     - path: src/test_model.py
       hash: md5
-      md5: 38bf8d42d4921a9e21c5caab46f99053
-      size: 15947
+      md5: f4d08e2618d84bea5db2e55cb44ced90
+      size: 15952
     params:
       params.yaml:
         column_mapping:
