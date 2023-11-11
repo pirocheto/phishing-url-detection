@@ -1,3 +1,5 @@
+import os
+
 import dvc.api
 import joblib
 import matplotlib.pyplot as plt
@@ -436,22 +438,37 @@ def plot_metrics_table(metrics, ax=None):
 
 if __name__ == "__main__":
     # 1. Make predictions on test dataset
+    # Read the train dataset
+    df_train = pd.read_csv(
+        params["path"]["data"]["selected"]["train"],
+        index_col=params["column_mapping"]["id"],
+    )
+    X_train = df_train.drop(target, axis=1)
+
     # Read the test dataset
     df_test = pd.read_csv(
-        params["path"]["data_test_selected"],
+        params["path"]["data"]["selected"]["test"],
         index_col=params["column_mapping"]["id"],
     )
     X_test = df_test.drop(target, axis=1)
 
     # Load the trained model
-    pipeline = joblib.load(params["path"]["model_bin"])
+    pipeline = joblib.load(params["path"]["results"]["model_bin"])
+
+    # Make predictions on train dataset
+    df_train[proba_pred] = pipeline.predict_proba(X_train)[:, 1]
+    df_train[label_pred] = pipeline.predict(X_train)
 
     # Make predictions on test dataset
     df_test[proba_pred] = pipeline.predict_proba(X_test)[:, 1]
     df_test[label_pred] = pipeline.predict(X_test)
 
     # Save predictions to read them leter if need
-    df_test.to_csv(params["path"]["data_test_predicted"])
+    # Create directory for predicted data
+    os.makedirs(params["path"]["data"]["predicted"]["dir"])
+
+    df_test.to_csv(params["path"]["data"]["predicted"]["test"])
+    df_train.to_csv(params["path"]["data"]["predicted"]["train"])
 
     # 2. Compute metrics
     metrics = classification_report(
@@ -467,44 +484,44 @@ if __name__ == "__main__":
     }
 
     # Save metrics to read them leter if need
-    with open(params["path"]["metrics"], "w", encoding="utf8") as fp:
+    with open(params["path"]["results"]["metrics"], "w", encoding="utf8") as fp:
         yaml.safe_dump(metrics, fp)
 
     # 2. Creates several plots to more easily interpret the results
     # Plot and save metrics table
     plt.figure()
     plot_metrics_table(metrics.items())
-    plt.savefig(params["path"]["metrics_table"])
+    plt.savefig(params["path"]["results"]["plots"]["metrics_table"])
 
     # Plot and save confusion matrix
     plt.figure()
     plot_confusion_matrix(df_test[target], df_test[label_pred])
-    plt.savefig(params["path"]["confusion_matrix"])
+    plt.savefig(params["path"]["results"]["plots"]["confusion_matrix"])
 
     # Plot and save roc curve
     plt.figure()
     plot_roc_curve(df_test[target], df_test[proba_pred])
-    plt.savefig(params["path"]["roc_curve"])
+    plt.savefig(params["path"]["results"]["plots"]["roc_curve"])
 
     # Plot and save score distribution
     plt.figure()
     plot_score_distribution(df_test[target], df_test[proba_pred])
-    plt.savefig(params["path"]["score_distribution"])
+    plt.savefig(params["path"]["results"]["plots"]["score_distribution"])
 
     # Plot and save precision recall curve
     plt.figure()
     plot_precision_recall_curve(df_test[target], df_test[proba_pred])
-    plt.savefig(params["path"]["precision_recall_curve"])
+    plt.savefig(params["path"]["results"]["plots"]["precision_recall_curve"])
 
     # Plot and save calibration curve
     plt.figure()
     plot_calibration_curve(df_test[target], df_test[proba_pred])
-    plt.savefig(params["path"]["calibration_curve"])
+    plt.savefig(params["path"]["results"]["plots"]["calibration_curve"])
 
     # Plot and save cumulative distribution
     plt.figure()
     plot_cumulative_distribution(df_test[target], df_test[proba_pred])
-    plt.savefig(params["path"]["cumulative_distribution"])
+    plt.savefig(params["path"]["results"]["plots"]["cumulative_distribution"])
 
     # Create classification report containing multiple charts to see results on a single page
     fig, ax = plt.subplots(
@@ -519,6 +536,7 @@ if __name__ == "__main__":
     plot_precision_recall_curve(df_test[target], df_test[proba_pred], ax=ax[1][1])
     plot_score_distribution(df_test[target], df_test[proba_pred], ax=ax[2][0])
     plot_cumulative_distribution(df_test[target], df_test[proba_pred], ax=ax[2][1])
+
     fig.subplots_adjust(
         left=0.05,
         right=1,
@@ -527,4 +545,5 @@ if __name__ == "__main__":
         wspace=0.10,
         hspace=0.4,
     )
-    fig.savefig(params["path"]["classification_report"])
+
+    fig.savefig(params["path"]["results"]["plots"]["classification_report"])
