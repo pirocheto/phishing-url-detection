@@ -39,6 +39,9 @@ if __name__ == "__main__":
     # 2. Process features
     feature_preprocessor = instantiate(params["feature_preprocessing"])
 
+    # Fit the feature preprocessor
+    feature_preprocessor.fit(X_train)
+
     # Transform the features
     X_train = feature_preprocessor.transform(X_train)
     X_test = feature_preprocessor.transform(X_test)

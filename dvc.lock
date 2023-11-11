@@ -14,7 +14,7 @@ stages:
       params.yaml:
         data_url: 
           https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
-        path.data_all: data/all.csv
+        path.data.all: data/all.csv
     outs:
     - path: data/all.csv
       hash: md5
@@ -167,6 +167,10 @@ stages:
       hash: md5
       md5: ac81af7380b8c7ce70911e8721bce1aa
       size: 975063
+    - path: results/classification_report.png
+      hash: md5
+      md5: fb0b5c4a733d71195141c1f821932f3b
+      size: 116233
     - path: results/metrics.yaml
       hash: md5
       md5: b66e5ae78666309106db7c08dfb80fd2
@@ -183,6 +187,10 @@ stages:
       hash: md5
       md5: 44ecaff8108c9a05201fabb06325a1fa
       size: 35906
+    - path: results/plots/metrics_table.png
+      hash: md5
+      md5: 7fc15ed70cec47ffb3690ac42a5e8859
+      size: 14041
     - path: results/plots/precision_recall_curve.png
       hash: md5
       md5: 092a4ce6ab8936d9fb7bd47b07da87ff
@@ -315,13 +323,17 @@ stages:
   feature_selection:
     cmd: python src/feature_selection.py
     deps:
-    - path: data/all.csv
+    - path: data/test/transformed.csv
       hash: md5
-      md5: ed9850d990e6aa169afcd23497397fcd
-      size: 3661166
+      md5: 46fff18ea027cfeb7cac8da95916cb79
+      size: 3671198
+    - path: data/train/transformed.csv
+      hash: md5
+      md5: a063ef286b9f5088095e765a514c8623
+      size: 7470761
     - path: src/feature_selection.py
       hash: md5
-      md5: 5a78b7125f11a95f8af0f8758ae40aa7
+      md5: a6b5632f042ac40a346ff5b3d1c67545
       size: 4723
     params:
       params.yaml:
@@ -351,8 +363,8 @@ stages:
     outs:
     - path: results/plots/correlation_matrix.png
       hash: md5
-      md5: 575a9cfd32f5648bb83ede2b12badd16
-      size: 94372
+      md5: 2eeedf296f835c7392c90e881fab1584
+      size: 93278
     - path: results/selected_features.yaml
       hash: md5
       md5: 3048a150fdfe040988dc646b1b921192
@@ -381,8 +393,8 @@ stages:
       size: 175
     - path: src/model_interpretation.py
       hash: md5
-      md5: c477bf4c0a66f3d43638579b3967b939
-      size: 1673
+      md5: fc95201db37a0ce8b995df40a3217f7c
+      size: 4103
     params:
       params.yaml:
         column_mapping:
@@ -400,8 +412,8 @@ stages:
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 0cbb9ab5ae1dffbcac580bebfb5c6c6f
-      size: 32356
+      md5: d7eba36dd1c1f73797812c2d1e0ec620
+      size: 24679
   preprocessing:
     cmd: python src/preprocessing.py
     deps:
@@ -415,8 +427,8 @@ stages:
       size: 2446644
     - path: src/preprocessing.py
       hash: md5
-      md5: 6577d1a5752969583abb861eda7f9a87
-      size: 1864
+      md5: 15059e7def1799a31c3a4b92386e7187
+      size: 1938
     params:
       params.yaml:
         column_mapping:
@@ -433,3 +445,12 @@ stages:
         path.data_train_transformed: data/train/transformed.csv
         target_preprocessing:
           _target_: sklearn.preprocessing.LabelEncoder
+    outs:
+    - path: data/test/transformed.csv
+      hash: md5
+      md5: 46fff18ea027cfeb7cac8da95916cb79
+      size: 3671198
+    - path: data/train/transformed.csv
+      hash: md5
+      md5: a063ef286b9f5088095e765a514c8623
+      size: 7470761

@@ -1,156 +1,174 @@
+# This DVC pipeline defines a sequence of stages for a machine learning workflow.
+# The workflow involves downloading, preprocessing, feature selection, training,
+# testing, and interpreting a model. It utilizes Data Version Control (DVC) to
+# manage and version the data and code dependencies.
+
+# Each stage specifies the commands ('cmd'), parameters, dependencies, outputs,
+# and optional plots associated with the corresponding task.
+
+# To understand the role of each section see:
+#
+
 stages:
-  # Download data from source.
+  # Stage 1: Download Data
+  # - Downloads data from a specified source using the 'wget' command.
+  # - The 'frozen' parameter is set to 'False' to allow re-execution of the step.
   download_data:
-    cmd: wget -q ${data_url} -O ${path.data_all}
-    # Set Frozen=True to prevent the step from being re-executed.
+    cmd: wget -q ${data_url} -O ${path.data.all}
     frozen: False
     params:
       - data_url
-      - path.data_all
+      - path.data.all
     deps:
       - ${data_url}
     outs:
-      - ${path.data_all}
+      - ${path.data.all}
 
-  # Split the dataframe and generate a plot to easily
-  # view the data size later.
+  # Stage 2: Split Data
+  # - Splits the downloaded data into training and testing sets.
+  # - Generates a plot to visualize the proportion of data in each split.
   split_data:
     cmd: python src/split_data.py
     params:
       - train_test_split
       - column_mapping
-      - path.data_all
-      - path.data_train_raw
-      - path.data_test_raw
-      - path.data_proportion
+      - path.data.all
+      - path.data.raw
+      - path.results.plots.data_proportion
       - plt_style
     deps:
       - src/split_data.py
-      - ${path.data_all}
+      - ${path.data.all}
     plots:
-      - ${path.data_proportion}:
+      - ${path.results.plots.data_proportion}:
           cache: False
     outs:
-      - ${path.data_train_raw}
-      - ${path.data_test_raw}
+      - ${path.data.raw.dir}:
+          cache: False
 
+  # Stage 3: Preprocessing
+  # - Applies preprocessing steps to the training and testing data.
+  # - Includes tasks like label encoding, feature normalization, and standardization.
   preprocessing:
     cmd: python src/preprocessing.py
     params:
       - target_preprocessing
       - feature_preprocessing
-      - path.data_train_raw
-      - path.data_test_raw
-      - path.data_train_transformed
-      - path.data_test_transformed
+      - path.data.raw
+      - path.data.transformed
       - column_mapping
     deps:
       - src/preprocessing.py
-      - ${path.data_train_raw}
-      - ${path.data_test_raw}
+      - ${path.data.raw.dir}
+    outs:
+      - ${path.data.transformed.dir}:
+          cache: False
 
-  # Remove the least important features
-  # to accelerate training and make interpretation easier
+  # Stage 4: Feature Selection
+  # - Removes the least important features to accelerate training and improve model interpretability.
+  # - Generates a correlation matrix plot to visualize feature relationships.
   feature_selection:
     cmd: python src/feature_selection.py
     params:
       - column_mapping
       - feature_selection
-      - path.data_train_transformed
-      - path.data_test_transformed
-      - path.data_train_selected
-      - path.data_test_selected
-      - path.correlation_matrix
-      - path.selected_features
+      - path.data.transformed
+      - path.data.selected
+      - path.results.plots.correlation_matrix
+      - path.results.plots.selected_features
       - plt_style
     deps:
-      - ${path.data_all}
+      - ${path.data.transformed.dir}
       - src/feature_selection.py
     plots:
-      - ${path.correlation_matrix}:
+      - ${path.results.plots.correlation_matrix}:
           cache: False
     outs:
-      - ${path.selected_features}:
+      - ${path.results.selected_features}:
           cache: False
 
+  # Stage 5: Train Model
+  # - Trains a machine learning model using the selected features from the previous stage.
+  # - Saves the trained model in binary format.
   train_model:
     cmd: python src/train_model.py
     params:
-      - path.data_train_selected
       - column_mapping
-      - path.selected_features
       - pipeline
-      - path.model_bin
+      - path.data.selected
+      - path.results.selected_features
+      - path.results.model_bin
     deps:
       - src/train_model.py
-      - ${path.data_train_selected}
-      - ${path.selected_features}
+      - ${path.data.selected.dir}
+      - ${path.results.selected_features}
     outs:
-      - ${path.model_bin}
+      - ${path.results.model_bin}
 
+  # Stage 6: Test Model
+  # - Tests the trained model on the testing data and evaluates its performance.
+  # - Generates metrics, a metrics table, and a classification report.
+  # - Creates multiple plots, including confusion matrix, ROC curve, and precision-recall curve.
   test_model:
     cmd: python src/test_model.py
     params:
-      - path.data_test_selected
-      - path.data_test_predicted
       - column_mapping
-      - path.model_bin
-      - path.metrics
-      - path.confusion_matrix
-      - path.roc_curve
-      - path.score_distribution
-      - path.precision_recall_curve
-      - path.calibration_curve
-      - path.cumulative_distribution
-      - path.metrics_table
-      - path.classification_report
-      - path.selected_features
       - plt_style
+      - path.data.selected.test
+      - path.data.predicted.test
+      - path.results.model_bin
+      - path.results.metrics
+      - path.results.plots.confusion_matrix
+      - path.results.plots.roc_curve
+      - path.results.plots.score_distribution
+      - path.results.plots.precision_recall_curve
+      - path.results.plots.calibration_curve
+      - path.results.plots.cumulative_distribution
+      - path.results.plots.metrics_table
+      - path.results.plots.classification_report
     deps:
       - src/test_model.py
-      - ${path.data_test_selected}
-      - ${path.model_bin}
+      - ${path.data.selected.test}
+      - ${path.results.model_bin}
     plots:
-      - ${path.confusion_matrix}:
+      - ${path.results.plots.confusion_matrix}:
           cache: False
-      - ${path.roc_curve}:
+      - ${path.results.plots.roc_curve}:
           cache: False
-      - ${path.score_distribution}:
+      - ${path.results.plots.score_distribution}:
           cache: False
-      - ${path.precision_recall_curve}:
+      - ${path.results.plots.precision_recall_curve}:
           cache: False
-      - ${path.cumulative_distribution}:
+      - ${path.results.plots.cumulative_distribution}:
           cache: False
-      - ${path.calibration_curve}:
+      - ${path.results.plots.calibration_curve}:
           cache: False
-      - ${path.metrics_table}:
+      - ${path.results.plots.metrics_table}:
           cache: False
-      - ${path.classification_report}:
+      - ${path.results.plots.classification_report}:
           cache: False
     outs:
-      - ${path.data_test_predicted}:
+      - ${path.data.predicted.test}:
           cache: False
     metrics:
-      - ${path.metrics}:
+      - ${path.results.metrics}:
           cache: False
 
+  # Stage 7: Model Interpretation
+  # - Provides interpretation of the trained model by creating plots such as feature importances.
   model_interpretation:
     cmd:
       - python src/model_interpretation.py
     params:
-      - path.data_test_selected
-      - path.data_train_selected
+      - path.data.selected
       - column_mapping
-      - path.model_bin
-      - path.feature_importances
-      - path.selected_features
+      - path.results.model_bin
+      - path.results.plots.feature_importances
       - plt_style
     deps:
       - src/model_interpretation.py
-      - ${path.data_train_selected}
-      - ${path.data_train_selected}
-      - ${path.model_bin}
-      - ${path.selected_features}
+      - ${path.data.selected.dir}
+      - ${path.results.model_bin}
     plots:
-      - ${path.feature_importances}:
+      - ${path.results.plots.feature_importances}:
           cache: False
