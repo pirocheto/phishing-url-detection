@@ -115,8 +115,8 @@ stages:
     params:
       - column_mapping
       - plt_style
-      - path.data.selected.test
-      - path.data.predicted.test
+      - path.data.selected
+      - path.data.predicted
       - path.results.model_bin
       - path.results.metrics
       - path.results.plots.confusion_matrix
@@ -129,7 +129,7 @@ stages:
       - path.results.plots.classification_report
     deps:
       - src/test_model.py
-      - ${path.data.selected.test}
+      - ${path.data.selected.dir}
       - ${path.results.model_bin}
     plots:
       - ${path.results.plots.confusion_matrix}:
@@ -149,7 +149,7 @@ stages:
       - ${path.results.plots.classification_report}:
           cache: False
     outs:
-      - ${path.data.predicted.test}:
+      - ${path.data.predicted.dir}:
           cache: False
     metrics:
       - ${path.results.metrics}:
