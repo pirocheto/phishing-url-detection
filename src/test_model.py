@@ -70,6 +70,7 @@ def plot_confusion_matrix(y_true, y_pred, labels=[0, 1], ax=None):
     ax.set_xlabel("Pred Labels")
     ax.set_ylabel("True Labels")
     ax.set_title("Confusion Matrix", fontweight="bold", fontsize=10)
+
     return ax
 
 
@@ -214,6 +215,7 @@ def plot_score_distribution(y_true, y_scores, labels=(0, 1), ax=None):
 
     # Set the title of the plot
     ax.set_title("Score distribution", fontweight="bold", fontsize=10)
+
     return ax
 
 
@@ -471,17 +473,20 @@ if __name__ == "__main__":
     df_train.to_csv(params["path"]["data"]["predicted"]["train"])
 
     # 2. Compute metrics
-    metrics = classification_report(
-        df_test[target],
-        df_test[label_pred],
-        output_dict=True,
-    )
-    metrics = {
-        "accuracy": metrics["accuracy"],
-        "f1-score": metrics["1"]["f1-score"],
-        "precision": metrics["1"]["precision"],
-        "recall": metrics["1"]["recall"],
-    }
+    metrics = {}
+    for dataset, df in zip(("train", "test"), (df_train, df_test)):
+        report = classification_report(
+            df[target],
+            df[label_pred],
+            output_dict=True,
+        )
+
+        metrics[dataset] = {
+            "accuracy": report["accuracy"],
+            "f1-score": report["1"]["f1-score"],
+            "precision": report["1"]["precision"],
+            "recall": report["1"]["recall"],
+        }
 
     # Save metrics to read them leter if need
     with open(params["path"]["results"]["metrics"], "w", encoding="utf8") as fp:
@@ -490,7 +495,7 @@ if __name__ == "__main__":
     # 2. Creates several plots to more easily interpret the results
     # Plot and save metrics table
     plt.figure()
-    plot_metrics_table(metrics.items())
+    plot_metrics_table(metrics["test"].items())
     plt.savefig(params["path"]["results"]["plots"]["metrics_table"])
 
     # Plot and save confusion matrix
@@ -530,7 +535,7 @@ if __name__ == "__main__":
         figsize=(8.27, 11.69),
     )
 
-    plot_metrics_table(metrics.items(), ax=ax[0][0])
+    plot_metrics_table(metrics["test"].items(), ax=ax[0][0])
     plot_confusion_matrix(df_test[target], df_test[label_pred], ax=ax[0][1])
     plot_roc_curve(df_test[target], df_test[proba_pred], ax=ax[1][0])
     plot_precision_recall_curve(df_test[target], df_test[proba_pred], ax=ax[1][1])

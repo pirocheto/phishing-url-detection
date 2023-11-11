@@ -138,8 +138,8 @@ stages:
       size: 37408801
     - path: src/test_model.py
       hash: md5
-      md5: 89da5b9e88578dcf1d419ff08a6ad071
-      size: 15810
+      md5: 38bf8d42d4921a9e21c5caab46f99053
+      size: 15947
     params:
       params.yaml:
         column_mapping:
@@ -179,8 +179,8 @@ stages:
       size: 113319
     - path: results/metrics.yaml
       hash: md5
-      md5: 23e352b567ca15423ff24b6f5f9e5b02
-      size: 114
+      md5: 57b7b0122d8abbb27bca0011be37fd9a
+      size: 243
     - path: results/plots/calibration_curve.png
       hash: md5
       md5: d58bd4639a0e873ee18d3550fa11202f
