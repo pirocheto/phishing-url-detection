@@ -43,8 +43,7 @@ stages:
       - ${path.results.plots.data_proportion}:
           cache: False
     outs:
-      - ${path.data.raw.dir}:
-          cache: False
+      - ${path.data.raw.dir}
 
   # Stage 3: Preprocessing
   # - Applies preprocessing steps to the training and testing data.
@@ -61,8 +60,7 @@ stages:
       - src/preprocessing.py
       - ${path.data.raw.dir}
     outs:
-      - ${path.data.transformed.dir}:
-          cache: False
+      - ${path.data.transformed.dir}
 
   # Stage 4: Feature Selection
   # - Removes the least important features to accelerate training and improve model interpretability.
@@ -84,8 +82,7 @@ stages:
       - ${path.results.plots.correlation_matrix}:
           cache: False
     outs:
-      - ${path.data.selected.dir}:
-          cache: False
+      - ${path.data.selected.dir}
 
   # Stage 5: Train Model
   # - Trains a machine learning model using the selected features from the previous stage.
@@ -147,8 +144,7 @@ stages:
       - ${path.results.plots.classification_report}:
           cache: False
     outs:
-      - ${path.data.predicted.dir}:
-          cache: False
+      - ${path.data.predicted.dir}
     metrics:
       - ${path.results.metrics}:
           cache: False
