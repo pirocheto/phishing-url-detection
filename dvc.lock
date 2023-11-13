@@ -336,8 +336,8 @@ stages:
       nfiles: 2
     - path: src/feature_selection.py
       hash: md5
-      md5: f886e3d29bd7a7c620ddc1d81748a96a
-      size: 4783
+      md5: 0d7bb47215675a9b19848bc49dd71587
+      size: 2428
     params:
       params.yaml:
         column_mapping:
@@ -364,7 +364,6 @@ stages:
           dir: data/transformed
           train: data/transformed/train.csv
           test: data/transformed/test.csv
-        path.results.plots.correlation_matrix: results/plots/correlation_matrix.png
         path.results.selected_features: results/selected_features.yaml
         plt_style: Solarize_Light2
     outs:
@@ -373,10 +372,6 @@ stages:
       md5: 7af30aeb390a021657032e7a0a9b87b1.dir
       size: 2716879
       nfiles: 2
-    - path: results/plots/correlation_matrix.png
-      hash: md5
-      md5: 5452830662e896c0379c513a42febf2c
-      size: 77386
   test:
     cmd: python -c "print('${data}/all.csv')"
   model_interpretation:
@@ -454,3 +449,76 @@ stages:
       md5: c1c759dd22e24c6dcb40e77aa18febc3.dir
       size: 11141959
       nfiles: 2
+  analyze_data:
+    cmd:
+    - wget -q 
+      https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+      -O data/all.csv
+    - python src/analyze_data.py
+    deps:
+    - path: 
+        https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+      hash: md5
+      checksum: '"6dbb847da1445c6e0bbdd4384878a6415cbeb462afe134c88ba4492e0e6c0c13"'
+      size: 3661166
+    - path: src/analyze_data.py
+      hash: md5
+      md5: ccf37a5fa4a94f75eeb728476e09c30b
+      size: 4726
+    params:
+      params.yaml:
+        column_mapping:
+          id: url
+          target: status
+          pos_label: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
+        data_url: 
+          https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+        feature_dtypes:
+          ip: bool
+          https_token: bool
+          punycode: bool
+          port: bool
+          tld_in_path: bool
+          tld_in_subdomain: bool
+          abnormal_subdomain: bool
+          prefix_suffix: bool
+          random_domain: bool
+          shortening_service: bool
+          path_extension: bool
+          domain_in_brand: bool
+          brand_in_subdomain: bool
+          brand_in_path: bool
+          suspecious_tld: bool
+          login_form: bool
+          external_favicon: bool
+          submit_email: bool
+          sfh: bool
+          iframe: bool
+          popup_window: bool
+          onmouseover: bool
+          right_clic: bool
+          empty_title: bool
+          domain_in_title: bool
+          domain_with_copyright: bool
+          whois_registered_domain: bool
+          dns_record: bool
+          google_index: bool
+        path.data.all: data/all.csv
+        path.results.plots.correlation_matrix: results/plots/correlation_matrix.png
+        path.results.plots.feature_statistics: results/plots/feature_statistics.pdf
+        plt_style: Solarize_Light2
+    outs:
+    - path: data/all.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: results/plots/correlation_matrix.png
+      hash: md5
+      md5: 222b3f46665986358159b26533d5eea4
+      size: 683184
+    - path: results/plots/feature_statistics.pdf
+      hash: md5
+      md5: 55dce156c25a23d7f548c6c801b9a238
+      size: 274371

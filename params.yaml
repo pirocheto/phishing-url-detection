@@ -1,4 +1,34 @@
 data_url: https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+feature_dtypes:
+  ip: bool
+  https_token: bool
+  punycode: bool
+  port: bool
+  tld_in_path: bool
+  tld_in_subdomain: bool
+  abnormal_subdomain: bool
+  prefix_suffix: bool
+  random_domain: bool
+  shortening_service: bool
+  path_extension: bool
+  domain_in_brand: bool
+  brand_in_subdomain: bool
+  brand_in_path: bool
+  suspecious_tld: bool
+  login_form: bool
+  external_favicon: bool
+  submit_email: bool
+  sfh: bool
+  iframe: bool
+  popup_window: bool
+  onmouseover: bool
+  right_clic: bool
+  empty_title: bool
+  domain_in_title: bool
+  domain_with_copyright: bool
+  whois_registered_domain: bool
+  dns_record: bool
+  google_index: bool
 column_mapping:
   id: url
   target: status
@@ -40,6 +70,7 @@ path:
       dir: results/plots
       data_proportion: results/plots/data_proportion.png
       correlation_matrix: results/plots/correlation_matrix.png
+      feature_statistics: results/plots/feature_statistics.pdf
       metrics_table: results/plots/metrics_table.png
       feature_importances: results/plots/feature_importances.png
       confusion_matrix: results/plots/confusion_matrix.png
