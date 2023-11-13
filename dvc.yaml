@@ -6,21 +6,35 @@
 # Each stage specifies the commands ('cmd'), parameters, dependencies, outputs,
 # and optional plots associated with the corresponding task.
 
-# To understand the role of each section see:
-#
+# To understand the role of each parameter see:
+# https://dvc.org/doc/user-guide/project-structure/dvcyaml-files
 
 stages:
   # Stage 1: Download Data
   # - Downloads data from a specified source using the 'wget' command.
+  # - Analyze data with feature correlations and statistics plots
   # - The 'frozen' parameter is set to 'False' to allow re-execution of the step.
-  download_data:
-    cmd: wget -q ${data_url} -O ${path.data.all}
+  analyze_data:
     frozen: False
+    cmd:
+      - wget -q ${data_url} -O ${path.data.all}
+      - python src/analyze_data.py
     params:
       - data_url
+      - column_mapping
       - path.data.all
+      - path.results.plots.correlation_matrix
+      - path.results.plots.feature_statistics
+      - plt_style
+      - feature_dtypes
     deps:
       - ${data_url}
+      - src/analyze_data.py
+    plots:
+      - ${path.results.plots.correlation_matrix}:
+          cache: False
+      - ${path.results.plots.feature_statistics}:
+          cache: False
     outs:
       - ${path.data.all}:
           cache: False
@@ -49,7 +63,7 @@ stages:
 
   # Stage 3: Preprocessing
   # - Applies preprocessing steps to the training and testing data.
-  # - Includes tasks like label encoding, feature normalization, and standardization.
+  # - Includes tasks like label encoding, feature normalization, and/or standardization.
   preprocessing:
     cmd: python src/preprocessing.py
     params:
@@ -67,7 +81,6 @@ stages:
 
   # Stage 4: Feature Selection
   # - Removes the least important features to accelerate training and improve model interpretability.
-  # - Generates a correlation matrix plot to visualize feature relationships.
   feature_selection:
     cmd: python src/feature_selection.py
     params:
@@ -75,15 +88,11 @@ stages:
       - feature_selection
       - path.data.transformed
       - path.data.selected
-      - path.results.plots.correlation_matrix
       - path.results.selected_features
       - plt_style
     deps:
       - ${path.data.transformed.dir}
       - src/feature_selection.py
-    plots:
-      - ${path.results.plots.correlation_matrix}:
-          cache: False
     outs:
       - ${path.data.selected.dir}:
           cache: False

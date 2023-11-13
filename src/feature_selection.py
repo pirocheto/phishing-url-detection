@@ -20,61 +20,6 @@ target = params["column_mapping"]["target"]
 path_data_transformed = params["path"]["data"]["transformed"]
 path_data_selected = params["path"]["data"]["selected"]
 
-# Use a matplotlib style to make more beautiful graphics
-plt.style.use(params["plt_style"])
-
-
-def plot_correlation_matrix(x, y, color, size, size_scale=300, ax=None):
-    # If ax is not provided, create a new axis
-    if ax is None:
-        ax = plt.gca()
-
-    n_colors = 256
-
-    # Create a color palette for the correlation values
-    palette = sns.diverging_palette(20, 220, n=n_colors)
-    color_min, color_max = [-1, 1]
-
-    def value_to_color(val):
-        # Convert a correlation value to a color in the palette
-        val_position = float((val - color_min)) / (color_max - color_min)
-        ind = int(val_position * (n_colors - 1))
-        return palette[ind]
-
-    # Create a scatter plot with size and color based on correlation values
-    ax.scatter(
-        x=x,
-        y=y,
-        s=size * size_scale,
-        c=[value_to_color(v) for v in color],
-        marker="o",
-    )
-
-    # Configure the plot to become a matrix
-    ax.set_xlim(-0.5, len(np.unique(x)) - 0.5)
-    ax.set_ylim(-0.5, len(np.unique(y)) - 0.5)
-    ax.set_xticks([t + 0.5 for t in ax.get_xticks()], minor=True)
-    ax.set_yticks([t + 0.5 for t in ax.get_yticks()], minor=True)
-
-    # Configure grid lines
-    ax.grid(False, "major")
-    ax.grid(True, "minor")
-
-    # Change y-axis ticks position to appear on the right
-    ax.yaxis.set_ticks_position("right")
-    ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation=45, ha="right")
-
-    # Remove tick marks (-)
-    ax.tick_params(axis="both", labelsize=10, which="both", length=0)
-
-    # Set title
-    ax.set_title("Correlation Matrix", fontweight="bold", fontsize=10)
-
-    # Set the aspect ratio of the plot to be equal
-    ax.set_box_aspect(1)
-
-    return ax
-
 
 if __name__ == "__main__":
     # Read the training dataset
@@ -107,6 +52,10 @@ if __name__ == "__main__":
     # Get list of selected features
     selected_features = list(feature_selector.get_feature_names_out(X_train.columns))
 
+    # Save selected features to read them later if need
+    with open(params["path"]["results"]["selected_features"], "w") as fp:
+        yaml.dump(selected_features, fp)
+
     # Save transformed data
     df_train_selected = pd.DataFrame(
         X_train_selected,
@@ -126,27 +75,3 @@ if __name__ == "__main__":
 
     df_train_selected.to_csv(path_data_selected["train"])
     df_test_selected.to_csv(path_data_selected["test"])
-
-    # 2. Plot correlation matrix of selected features
-    df_train = df_train[[*selected_features, "status"]]
-
-    # Compute correlation values and format the dataframe to get a lower triangle in the graph
-    df_corr = df_train.corr()
-    df_corr = df_corr.fillna(0)
-    df_corr = df_corr.where((np.tril(np.ones(df_corr.shape), k=-1)).astype(bool))
-    df_corr = pd.melt(df_corr.reset_index(), id_vars="index")
-    df_corr = df_corr.dropna()
-    df_corr.columns = ["x", "y", "value"]
-
-    # Plot correlation matrix and save it in file
-    plt.figure(
-        # figsize=(10, 10),
-    )
-    plot_correlation_matrix(
-        df_corr["x"],
-        df_corr["y"],
-        df_corr["value"],
-        df_corr["value"].abs(),
-    )
-    plt.tight_layout()
-    plt.savefig(params["path"]["results"]["plots"]["correlation_matrix"])
