@@ -34,6 +34,7 @@ path:
     # Directory for generated files except data
     dir: results
 
+    # TODO Create model directory and store all models inside.
     # Path to the trained model binary
     model_bin: ${path.results.dir}/models/model.pkl
 

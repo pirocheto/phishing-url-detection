@@ -2,10 +2,7 @@ import os
 import warnings
 
 import dvc.api
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-import seaborn as sns
 import yaml
 from hydra.utils import instantiate
 
