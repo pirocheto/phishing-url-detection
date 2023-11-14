@@ -1,3 +1,23 @@
+"""
+DVC Metrics Display Script
+
+This script displays experiment metrics using DVC's exp show command.
+It allows filtering and sorting metrics based on specified columns.
+
+Script Functionality:
+- The show_metrics function displays experiment metrics with specified columns.
+- The number of experiments to display can be controlled using the max_exp parameter.
+
+Usage:
+1. Adjust the columns variable to include the desired metric columns.
+2. Run the script to display experiment metrics.
+
+Note:
+- This script assumes that DVC experiments are properly configured in the project.
+- Make sure to customize the columns variable based on the metrics available in your experiments.
+
+"""
+
 import subprocess
 
 

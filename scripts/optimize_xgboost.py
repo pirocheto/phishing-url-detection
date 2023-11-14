@@ -1,3 +1,27 @@
+"""
+This script automates the execution of DVC experiments for the XGBoost classifier with random parameter sampling.
+It generates random parameter samples, executes DVC experiments, and processes the DVC queue.
+
+Script Configuration:
+- STAGE: DVC stage name for the experiments.
+- N_EXPS: Number of experiments to run.
+- N_JOBS: Number of jobs for DVC queue processing.
+- RANDOM_STATE: Seed for reproducibility.
+- REMOVE_EXISTING: Flag to remove existing DVC experiments.
+
+Parameter Grid for XGBoost Model:
+- param_grid: Dictionary defining the parameter grid for the XGBoost model.
+
+Usage:
+1. Configure the script parameters and the parameter grid.
+2. Run the script to execute DVC experiments for random parameter samples.
+
+Note:
+- This script assumes that the DVC project is properly configured with the specified stage.
+- Make sure to adjust the parameter grid and other configurations based on your project's requirements.
+
+"""
+
 import subprocess
 import time
 
