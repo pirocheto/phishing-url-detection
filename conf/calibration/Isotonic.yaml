@@ -1,3 +1,4 @@
+# https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html
 _target_: sklearn.calibration.CalibratedClassifierCV
 method: isotonic
 cv: 5
