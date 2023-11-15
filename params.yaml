@@ -79,10 +79,23 @@ path:
       precision_recall_curve: results/plots/precision_recall_curve.png
       calibration_curve: results/plots/calibration_curve.png
       cumulative_distribution: results/plots/cumulative_distribution.png
-target_preprocessing:
-  _target_: sklearn.preprocessing.LabelEncoder
-feature_preprocessing:
-  _target_: sklearn.preprocessing.Normalizer
+calibration:
+  estimator:
+    _target_: sklearn.ensemble.RandomForestClassifier
+  _target_: sklearn.calibration.CalibratedClassifierCV
+  method: isotonic
+  cv: 5
+pipeline:
+  _target_: sklearn.pipeline.make_pipeline
+  _args_:
+  - estimator:
+      _target_: sklearn.ensemble.RandomForestClassifier
+    _target_: sklearn.calibration.CalibratedClassifierCV
+    method: isotonic
+    cv: 5
+preprocessing:
+  target:
+    _target_: sklearn.preprocessing.LabelEncoder
 feature_selection:
   _target_: sklearn.feature_selection.GenericUnivariateSelect
   score_func:
@@ -95,17 +108,3 @@ feature_selection:
   param: 10
 classifier:
   _target_: sklearn.ensemble.RandomForestClassifier
-calibration:
-  _target_: sklearn.calibration.CalibratedClassifierCV
-  method: isotonic
-  cv: 5
-  estimator:
-    _target_: sklearn.ensemble.RandomForestClassifier
-pipeline:
-  _target_: sklearn.pipeline.make_pipeline
-  _args_:
-  - _target_: sklearn.calibration.CalibratedClassifierCV
-    method: isotonic
-    cv: 5
-    estimator:
-      _target_: sklearn.ensemble.RandomForestClassifier
