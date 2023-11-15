@@ -22,7 +22,7 @@ import subprocess
 import sys
 
 
-def show_metrics(max_exp=10):
+def show_metrics(max_exps=10):
     # Columns to display
     columns = ["Experiment", "test.f1-score"]
 
@@ -40,11 +40,11 @@ def show_metrics(max_exp=10):
         metrics = metrics.splitlines()
 
         # Calculate the number of experiments not shown
-        exps_not_shown = len(metrics) - max_exp - 6
+        exps_not_shown = len(metrics) - max_exps - 6
 
         # Display metrics with headers and the specified number of experiments
         print(*metrics[0:5], sep="\n")
-        print(*metrics[5:-1][:max_exp], sep="\n")
+        print(*metrics[5:-1][:max_exps], sep="\n")
         if exps_not_shown > 0:
             print(f"  ... ({exps_not_shown} experiments not shown)")
         print(metrics[-1])
