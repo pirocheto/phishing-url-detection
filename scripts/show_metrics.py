@@ -19,40 +19,28 @@ Note:
 """
 
 import subprocess
-import sys
 
 
-def show_metrics(max_exps=10):
+def show_metrics():
     # Columns to display
-    columns = ["Experiment", "test.f1-score", "State"]
+    columns = [
+        "Experiment",
+        "test.f1-score",
+        "State",
+    ]
 
     # Convert columns into a regular expression for filtering metrics
     column_regex = "|".join(columns)
 
     # Use dvc exp show to obtain filtered and sorted metrics
-    cmd = f'dvc exp show -n 3 --drop "^(?!({column_regex})$).*" --sort-by test.f1-score --sort-order desc'
+    cmd = f'dvc exp show --drop "^(?!({column_regex})$).*" --sort-by test.f1-score --sort-order desc'
 
     try:
-        process = subprocess.run(
-            cmd, shell=True, check=True, capture_output=True, text=True
-        )
-        metrics = process.stdout
-        metrics = metrics.splitlines()
-
-        # Calculate the number of experiments not shown
-        exps_not_shown = len(metrics) - max_exps - 6
-
-        # Display metrics with headers and the specified number of experiments
-        print(*metrics[0:5], sep="\n")
-        print(*metrics[5:-1][:max_exps], sep="\n")
-        if exps_not_shown > 0:
-            print(f"  ... ({exps_not_shown} experiments not shown)")
-        print(metrics[-1])
+        subprocess.run(cmd, shell=True, check=True)
 
     except subprocess.CalledProcessError:
         print("DVC processing in progress ... run this script later")
 
 
 if __name__ == "__main__":
-    n_exps = int(sys.argv[1]) if len(sys.argv) > 1 else 10
-    show_metrics(n_exps)
+    show_metrics()
