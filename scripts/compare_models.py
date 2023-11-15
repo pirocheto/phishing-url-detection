@@ -42,7 +42,7 @@ classifiers = [
     ("rf", "null", "RandomForest"),
     ("dt", "null", "TreeDecisionClassifier"),
     ("pct", "null", "Perceptron"),
-    ("xgboost", "null", "XGBoostClassifier"),
+    ("xgboost", "null", "XGBClassifier"),
     ("gbc", "null", "GradientBoostingClassifier"),
     ("ada", "null", "AdaBoostClassifier"),
     ("et", "null", "ExtraTreesClassifier"),
