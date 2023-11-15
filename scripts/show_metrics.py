@@ -31,21 +31,26 @@ def show_metrics(max_exp=10):
 
     # Use dvc exp show to obtain filtered and sorted metrics
     cmd = f'dvc exp show --drop "^(?!({column_regex})$).*" --sort-by test.f1-score --sort-order desc'
-    process = subprocess.run(
-        cmd, shell=True, check=True, capture_output=True, text=True
-    )
-    metrics = process.stdout
-    metrics = metrics.splitlines()
 
-    # Calculate the number of experiments not shown
-    exps_not_shown = len(metrics) - max_exp - 6
+    try:
+        process = subprocess.run(
+            cmd, shell=True, check=True, capture_output=True, text=True
+        )
+        metrics = process.stdout
+        metrics = metrics.splitlines()
 
-    # Display metrics with headers and the specified number of experiments
-    print(*metrics[0:5], sep="\n")
-    print(*metrics[5:-1][:max_exp], sep="\n")
-    if exps_not_shown > 0:
-        print(f"  ... ({exps_not_shown} experiments not shown)")
-    print(metrics[-1])
+        # Calculate the number of experiments not shown
+        exps_not_shown = len(metrics) - max_exp - 6
+
+        # Display metrics with headers and the specified number of experiments
+        print(*metrics[0:5], sep="\n")
+        print(*metrics[5:-1][:max_exp], sep="\n")
+        if exps_not_shown > 0:
+            print(f"  ... ({exps_not_shown} experiments not shown)")
+        print(metrics[-1])
+
+    except subprocess.CalledProcessError:
+        print("DVC processing in progress ... run this script later")
 
 
 if __name__ == "__main__":
