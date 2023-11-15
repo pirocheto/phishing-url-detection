@@ -11,17 +11,27 @@
 
 # TODO: Add cross validation (with foreach ?)
 stages:
-  # Stage 1: Download Data
+  # Stage 0: Download Data
   # - Downloads data from a specified source using the 'wget' command.
-  # - Analyze data with feature correlations and statistics plots
-  # - The 'frozen' parameter is set to 'False' to allow re-execution of the step.
-  analyze_data:
-    frozen: False
+  download_data:
     cmd:
       - wget -q ${data_url} -O ${path.data.all}
-      - python src/analyze_data.py
     params:
       - data_url
+      - path.data.all
+    deps:
+      - ${data_url}
+      - src/analyze_data.py
+    outs:
+      - ${path.data.all}:
+          cache: False
+
+  # Stage 1: Analyze Data
+  # - Analyze data with feature correlations and statistics plots
+  analyze_data:
+    cmd:
+      - python src/analyze_data.py
+    params:
       - column_mapping
       - path.data.all
       - path.results.plots.correlation_matrix
@@ -29,15 +39,12 @@ stages:
       - plt_style
       - feature_dtypes
     deps:
-      - ${data_url}
+      - ${path.data.all}
       - src/analyze_data.py
     plots:
       - ${path.results.plots.correlation_matrix}:
           cache: False
       - ${path.results.plots.feature_statistics}:
-          cache: False
-    outs:
-      - ${path.data.all}:
           cache: False
 
   # Stage 2: Split Data
