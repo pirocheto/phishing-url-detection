@@ -36,22 +36,22 @@ REMOVE_EXISTING = True
 
 # List of classifiers with their codes
 classifiers = [
-    ("nb", "null", "GaussianNB"),
+    ("nb", None, "GaussianNB"),
     ("svm", "StandardScaler", "LinearSVC"),
     ("lr", "StandardScaler", "LogisticRegression"),
-    ("rf", "null", "RandomForest"),
-    ("dt", "null", "TreeDecisionClassifier"),
-    ("pct", "null", "Perceptron"),
-    ("xgboost", "null", "XGBClassifier"),
-    ("gbc", "null", "GradientBoostingClassifier"),
-    ("ada", "null", "AdaBoostClassifier"),
-    ("et", "null", "ExtraTreesClassifier"),
+    ("rf", None, "RandomForest"),
+    ("dt", None, "TreeDecisionClassifier"),
+    ("pct", None, "Perceptron"),
+    ("xgboost", None, "XGBClassifier"),
+    ("gbc", None, "GradientBoostingClassifier"),
+    ("ada", None, "AdaBoostClassifier"),
+    ("et", None, "ExtraTreesClassifier"),
     ("knn", "Normalizer", "KNeighborsClassifier"),
-    ("ridge", "null", "RidgeClassifier"),
-    ("lda", "null", "LinearDiscriminantAnalysis"),
-    ("qda", "null", "QuadraticDiscriminantAnalysis"),
-    ("lightgdm", "null", "LGBMClassifier"),
-    ("catboost", "null", "CatBoostClassifier"),
+    ("ridge", None, "RidgeClassifier"),
+    ("lda", None, "LinearDiscriminantAnalysis"),
+    ("qda", None, "QuadraticDiscriminantAnalysis"),
+    ("lightgdm", None, "LGBMClassifier"),
+    ("catboost", None, "CatBoostClassifier"),
 ]
 
 # Loop over the classifiers
@@ -63,11 +63,10 @@ for code_name, preprocessor, classifier in classifiers:
         subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 
     # Build the DVC experiment run command
-    cmd = (
-        f"dvc exp run {STAGE} -n {exp_name} --queue"
-        f" -S +preprocessing.feature={preprocessor}"
-        f" -S classifier={classifier}"
-    )
+    cmd = f"dvc exp run {STAGE} -n {exp_name} --queue -S classifier={classifier}"
+    if preprocessor:
+        cmd += f" -S preprocessing/feature={preprocessor}"
+
     try:
         # Execute the DVC experiment run command
         subprocess.run(cmd, shell=True, check=True)
