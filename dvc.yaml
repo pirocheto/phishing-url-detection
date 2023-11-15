@@ -62,7 +62,7 @@ stages:
       - ${path.data.raw.dir}:
           cache: False
 
-  # Stage 4: Feature Selection
+  # Stage 3: Feature Selection
   # - Removes the least important features to accelerate training and improve model interpretability.
   feature_selection:
     cmd: python src/feature_selection.py
@@ -80,7 +80,7 @@ stages:
       - ${path.data.selected.dir}:
           cache: False
 
-  # Stage 3: Preprocessing
+  # Stage 4: Preprocessing
   # - Applies preprocessing steps to the training and testing data.
   # - Includes tasks like label encoding, feature normalization, and/or standardization.
   preprocessing:
