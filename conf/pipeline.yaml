@@ -1,7 +1,8 @@
 # Configuration defaults for the machine learning pipeline
 defaults:
-  - target_preprocessing: LabelEncoder # Default target preprocessing method
-  - feature_preprocessing: Normalizer # Default feature preprocessing method
+  - _self_
+  - preprocessing/target: LabelEncoder
+  - preprocessing/feature: null
   - feature_selection: UnivariateFeatureSelection # Default feature selection method
   - classifier: RandomForest # Default classifier for the pipeline
   - calibration: Isotonic # Default calibration method

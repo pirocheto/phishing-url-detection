@@ -29,7 +29,7 @@ if __name__ == "__main__":
     y_train = df_train[target]
 
     # 1. Process target
-    target_preprocessor = instantiate(params["target_preprocessing"])
+    target_preprocessor = instantiate(params["preprocessing"]["target"])
 
     # Fit the target preprocessor
     target_preprocessor.fit(y_train)
@@ -39,14 +39,15 @@ if __name__ == "__main__":
     y_test = target_preprocessor.transform(y_test)
 
     # 2. Process features
-    feature_preprocessor = instantiate(params["feature_preprocessing"])
+    if "feature" in params["preprocessing"]:
+        feature_preprocessor = instantiate(params["preprocessing"]["feature"])
 
-    # Fit the feature preprocessor
-    feature_preprocessor.fit(X_train)
+        # Fit the feature preprocessor
+        feature_preprocessor.fit(X_train)
 
-    # Transform the features
-    X_train = feature_preprocessor.transform(X_train)
-    X_test = feature_preprocessor.transform(X_test)
+        # Transform the features
+        X_train = feature_preprocessor.transform(X_train)
+        X_test = feature_preprocessor.transform(X_test)
 
     # Save the transformed data
     df_train_transformed = pd.DataFrame(

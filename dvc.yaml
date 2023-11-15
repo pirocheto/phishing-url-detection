@@ -67,8 +67,7 @@ stages:
   preprocessing:
     cmd: python src/preprocessing.py
     params:
-      - target_preprocessing
-      - feature_preprocessing
+      - preprocessing
       - path.data.raw
       - path.data.transformed
       - column_mapping
