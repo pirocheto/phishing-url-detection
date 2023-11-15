@@ -2,7 +2,7 @@
 # https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.GenericUnivariateSelect.html
 _target_: sklearn.feature_selection.GenericUnivariateSelect
 
-# Possible values: chi2, f_classif ,mutual_info_classif
+# Possible values: chi2, f_classif, mutual_info_classif
 score_func:
   _target_: builtins.getattr
   _args_:
