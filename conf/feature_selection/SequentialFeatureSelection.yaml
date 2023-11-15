@@ -4,7 +4,7 @@ _target_: sklearn.feature_selection.SequentialFeatureSelector
 
 # An unfitted estimator.
 estimator:
-  _target_: sklearn.ensemble.TreeDecisionClassifier
+  _target_: sklearn.tree.DecisionTreeClassifier
 
 # If "auto", the behaviour depends on the tol parameter:
 # if tol is not None, then features are selected while the score change does not exceed tol.

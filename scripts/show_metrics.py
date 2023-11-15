@@ -30,7 +30,7 @@ def show_metrics(max_exps=10):
     column_regex = "|".join(columns)
 
     # Use dvc exp show to obtain filtered and sorted metrics
-    cmd = f'dvc exp show --drop "^(?!({column_regex})$).*" --sort-by test.f1-score --sort-order desc'
+    cmd = f'dvc exp show -3 --drop "^(?!({column_regex})$).*" --sort-by test.f1-score --sort-order desc'
 
     try:
         process = subprocess.run(
