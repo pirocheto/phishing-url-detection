@@ -4,12 +4,12 @@ _target_: sklearn.feature_selection.SequentialFeatureSelector
 
 # An unfitted estimator.
 estimator:
-  _target_: sklearn.ensemble.RandomForestClassifier
+  _target_: sklearn.ensemble.TreeDecisionClassifier
 
 # If "auto", the behaviour depends on the tol parameter:
 # if tol is not None, then features are selected while the score change does not exceed tol.
 # otherwise, half of the features are selected.
-# If integer, the parameter is the absolute number of features to select. 
+# If integer, the parameter is the absolute number of features to select.
 # If float between 0 and 1, it is the fraction of features to select.
 n_features_to_select: 10
 
@@ -34,7 +34,7 @@ scoring: null
 # An iterable yielding (train, test) splits as arrays of indices.
 cv: null
 
-# Number of jobs to run in parallel. 
-# When evaluating a new feature to add or remove, the cross-validation procedure is parallel over the folds. 
+# Number of jobs to run in parallel.
+# When evaluating a new feature to add or remove, the cross-validation procedure is parallel over the folds.
 # None means 1 unless in a joblib.parallel_backend context. -1 means using all processors.
 n_jobs: null

@@ -67,8 +67,8 @@ param_sample = list(
 classifier = "XGBClassifier"
 
 # Loop over the generated parameter samples
-for i, params in enumerate(param_sample):
-    exp_name = f"xgb-opt-{i}"
+for i, params in enumerate(param_sample, start=1):
+    exp_name = f"xgb-rs-{i}"
 
     # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:

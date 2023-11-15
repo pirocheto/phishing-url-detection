@@ -56,13 +56,13 @@ classifiers = [
 
 
 # Loop over the classifiers
-for code_name, preprocessor, classifier in classifiers:
+for exp_name, preprocessor, classifier in classifiers:
     # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:
-        subprocess.run(f"dvc exp remove {code_name} -q", shell=True)
+        subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 
     # Build the DVC experiment run command
-    cmd = f"dvc exp run {STAGE} -n {code_name} --queue -S classifier={classifier}"
+    cmd = f"dvc exp run {STAGE} -n {exp_name} --queue -S classifier={classifier}"
     if preprocessor:
         cmd += f" -S preprocessing/feature={preprocessor}"
 
