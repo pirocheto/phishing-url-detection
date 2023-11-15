@@ -7,7 +7,7 @@ _target_: sklearn.feature_selection.SelectFromModel
 # The estimator should have a feature_importances_ or coef_ attribute after fitting.
 # Otherwise, the importance_getter parameter should be used.estimator:
 estimator:
-  _target_: sklearn.ensemble.DecisionTreeClassifier
+  _target_: sklearn.tree.DecisionTreeClassifier
 
 # The threshold value to use for feature selection.
 # Features whose absolute importance value is greater or equal are kept while the others are discarded.
