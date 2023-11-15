@@ -1,7 +1,8 @@
 schema: '2.0'
 stages:
   download_data:
-    cmd: wget -q 
+    cmd:
+    - wget -q 
       https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
       -O data/all.csv
     deps:
@@ -10,6 +11,10 @@ stages:
       hash: md5
       checksum: '"6dbb847da1445c6e0bbdd4384878a6415cbeb462afe134c88ba4492e0e6c0c13"'
       size: 3661166
+    - path: src/analyze_data.py
+      hash: md5
+      md5: a67e66a4340ee57524751f3cb72f0a38
+      size: 4651
     params:
       params.yaml:
         data_url: 
@@ -449,15 +454,11 @@ stages:
       nfiles: 2
   analyze_data:
     cmd:
-    - wget -q 
-      https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
-      -O data/all.csv
     - python src/analyze_data.py
     deps:
-    - path: 
-        https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
+    - path: data/all.csv
       hash: md5
-      checksum: '"6dbb847da1445c6e0bbdd4384878a6415cbeb462afe134c88ba4492e0e6c0c13"'
+      md5: ed9850d990e6aa169afcd23497397fcd
       size: 3661166
     - path: src/analyze_data.py
       hash: md5
@@ -471,8 +472,6 @@ stages:
           pos_label: phishing
           prediction_label: prediction_label
           prediction_proba: prediction_proba
-        data_url: 
-          https://raw.githubusercontent.com/pirocheto/dataset-registry/master/phishing-detection/data/dataset_B_05_2020.csv
         feature_dtypes:
           ip: bool
           https_token: bool
@@ -508,15 +507,11 @@ stages:
         path.results.plots.feature_statistics: results/plots/feature_statistics.pdf
         plt_style: Solarize_Light2
     outs:
-    - path: data/all.csv
-      hash: md5
-      md5: ed9850d990e6aa169afcd23497397fcd
-      size: 3661166
     - path: results/plots/correlation_matrix.png
       hash: md5
       md5: 222b3f46665986358159b26533d5eea4
       size: 683184
     - path: results/plots/feature_statistics.pdf
       hash: md5
-      md5: d420b1b089b9bf2ff9565621651c1a96
+      md5: d8eca8644058a170f404fc48a102097f
       size: 274371

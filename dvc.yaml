@@ -9,7 +9,6 @@
 # To understand the role of each parameter see:
 # https://dvc.org/doc/user-guide/project-structure/dvcyaml-files
 
-# TODO: Add cross validation (with foreach ?)
 stages:
   # Stage 0: Download Data
   # - Downloads data from a specified source using the 'wget' command.
@@ -187,3 +186,5 @@ stages:
     plots:
       - ${path.results.plots.feature_importances}:
           cache: False
+
+  # TODO: Build Pipeline with fitted estimators and save it in ONNX Format
