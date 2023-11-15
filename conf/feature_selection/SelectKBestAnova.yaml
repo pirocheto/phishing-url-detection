@@ -1,5 +1,9 @@
 # TODO: Add docs and comments
 _target_: sklearn.feature_selection.SelectKBest
 score_func:
-  _target_: sklearn.feature_selection.f_classif
+  _target_: builtins.getattr
+  _args_:
+    - _target_: importlib.import_module
+      name: sklearn.feature_selection
+    - f_classif
 k: 10
