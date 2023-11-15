@@ -64,18 +64,18 @@ param_sample = list(
 )
 
 # Specify the classifier
-classifier = "XGBoostClassifier"
+classifier = "XGBClassifier"
 
 # Loop over the generated parameter samples
 for i, params in enumerate(param_sample):
-    exp_name = f"opt-xgb-{i}"
+    exp_name = f"xgb-{i}"
 
     # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:
         subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 
     # Build the DVC experiment run command
-    cmd = f"dvc exp run {STAGE} --queue -S classifier={classifier} -n {exp_name}"
+    cmd = f"dvc exp run {STAGE} --queue  -n {exp_name} -S classifier={classifier}"
     for param_name, param_value in params.items():
         cmd += f" -S +classifier.{param_name}={param_value}"
 
