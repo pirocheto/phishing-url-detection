@@ -24,7 +24,7 @@ import sys
 
 def show_metrics(max_exps=10):
     # Columns to display
-    columns = ["Experiment", "test.f1-score"]
+    columns = ["Experiment", "test.f1-score", "State"]
 
     # Convert columns into a regular expression for filtering metrics
     column_regex = "|".join(columns)
