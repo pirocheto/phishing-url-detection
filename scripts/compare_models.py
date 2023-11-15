@@ -32,38 +32,42 @@ STAGE = "test_model"
 N_JOBS = 5
 
 # Flag to remove existing DVC experiments
-REMOVE_EXISTING = False
+REMOVE_EXISTING = True
 
 # List of classifiers with their codes
 classifiers = [
-    ("nb", "GaussianNB"),
-    ("svm", "LinearSVC"),
-    ("lr", "LogisticRegression"),
-    ("rf", "RandomForest"),
-    ("dt", "TreeDecisionClassifier"),
-    ("pct", "Perceptron"),
-    ("xgboost", "XGBoostClassifier"),
-    ("gbc", "GradientBoostingClassifier"),
-    ("ada", "AdaBoostClassifier"),
-    ("et", "ExtraTreesClassifier"),
-    ("knn", "KNeighborsClassifier"),
-    ("ridge", "RidgeClassifier"),
-    ("lda", "LinearDiscriminantAnalysis"),
-    ("qda", "QuadraticDiscriminantAnalysis"),
-    ("lightgdm", "LGBMClassifier"),
-    ("catboost", "CatBoostClassifier"),
+    ("nb", "null", "GaussianNB"),
+    ("svm", "StandardScaler", "LinearSVC"),
+    ("lr", "StandardScaler", "LogisticRegression"),
+    ("rf", "null", "RandomForest"),
+    ("dt", "null", "TreeDecisionClassifier"),
+    ("pct", "null", "Perceptron"),
+    ("xgboost", "null", "XGBoostClassifier"),
+    ("gbc", "null", "GradientBoostingClassifier"),
+    ("ada", "null", "AdaBoostClassifier"),
+    ("et", "null", "ExtraTreesClassifier"),
+    ("knn", "Normalizer", "KNeighborsClassifier"),
+    ("ridge", "null", "RidgeClassifier"),
+    ("lda", "null", "LinearDiscriminantAnalysis"),
+    ("qda", "null", "QuadraticDiscriminantAnalysis"),
+    ("lightgdm", "null", "LGBMClassifier"),
+    ("catboost", "null", "CatBoostClassifier"),
 ]
 
 # Loop over the classifiers
-for code, classifier in classifiers:
-    exp_name = f"base-{code}"
+for code_name, preprocessor, classifier in classifiers:
+    exp_name = f"base-{code_name}"
 
     # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:
         subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 
     # Build the DVC experiment run command
-    cmd = f"dvc exp run {STAGE} -n {exp_name} -S classifier={classifier} --queue"
+    cmd = (
+        f"dvc exp run {STAGE} -n {exp_name} --queue"
+        f" -S +preprocessing.feature={preprocessor}"
+        f" -S classifier={classifier}"
+    )
     try:
         # Execute the DVC experiment run command
         subprocess.run(cmd, shell=True, check=True)
