@@ -13,12 +13,13 @@ REMOVE_EXISTING = True
 # Define the parameter grid for the XGBoost model
 feature_selection_params = [
     ("xgb-fs-rfe", "RecursiveFeatureElimination"),
-    # ("xgb-fs-sfm", "SelectFromModel"),
-    # ("xgb-fs-sfs", "SequentialFeatureSelection"),
-    # ("xgb-fs-ufs", "UnivariateFeatureSelection"),
-    # ("xgb-fs-vt", "VarianceThreshold"),
+    ("xgb-fs-sfm", "SelectFromModel"),
+    ("xgb-fs-sfs", "SequentialFeatureSelection"),
+    ("xgb-fs-kbmi", "SelectKBestMutualInfo"),
+    ("xgb-fs-kbc2", "SelectKBestChi2"),
+    ("xgb-fs-kban", "SelectKBestAnova"),
+    ("xgb-fs-vt", "VarianceThreshold"),
 ]
-
 
 # Specify the classifier
 classifier = "XGBClassifier"

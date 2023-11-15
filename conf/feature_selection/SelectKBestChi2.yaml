@@ -1,0 +1,5 @@
+# TODO: Add docs and comments
+_target_: sklearn.feature_selection.SelectKBest
+score_func:
+  _target_: sklearn.feature_selection.chi2
+k: 10
