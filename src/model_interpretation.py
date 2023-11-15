@@ -10,7 +10,7 @@ from sklearn.inspection import permutation_importance
 
 # Get the dvc params
 params = dvc.api.params_show(stages="model_interpretation")
-path_data_selected = params["path"]["data"]["selected"]
+path_data_selected = params["path"]["data"]["transformed"]
 
 # Use a matplotlib style to make more beautiful graphics
 plt.style.use(params["plt_style"])

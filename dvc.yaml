@@ -9,6 +9,7 @@
 # To understand the role of each parameter see:
 # https://dvc.org/doc/user-guide/project-structure/dvcyaml-files
 
+# TODO: Add cross validation (with foreach ?)
 stages:
   # Stage 1: Download Data
   # - Downloads data from a specified source using the 'wget' command.
@@ -61,23 +62,6 @@ stages:
       - ${path.data.raw.dir}:
           cache: False
 
-  # Stage 3: Preprocessing
-  # - Applies preprocessing steps to the training and testing data.
-  # - Includes tasks like label encoding, feature normalization, and/or standardization.
-  preprocessing:
-    cmd: python src/preprocessing.py
-    params:
-      - preprocessing
-      - path.data.raw
-      - path.data.transformed
-      - column_mapping
-    deps:
-      - src/preprocessing.py
-      - ${path.data.raw.dir}
-    outs:
-      - ${path.data.transformed.dir}:
-          cache: False
-
   # Stage 4: Feature Selection
   # - Removes the least important features to accelerate training and improve model interpretability.
   feature_selection:
@@ -85,15 +69,32 @@ stages:
     params:
       - column_mapping
       - feature_selection
-      - path.data.transformed
+      - path.data.raw
       - path.data.selected
       - path.results.selected_features
       - plt_style
     deps:
-      - ${path.data.transformed.dir}
+      - ${path.data.raw.dir}
       - src/feature_selection.py
     outs:
       - ${path.data.selected.dir}:
+          cache: False
+
+  # Stage 3: Preprocessing
+  # - Applies preprocessing steps to the training and testing data.
+  # - Includes tasks like label encoding, feature normalization, and/or standardization.
+  preprocessing:
+    cmd: python src/preprocessing.py
+    params:
+      - preprocessing
+      - path.data.selected
+      - path.data.transformed
+      - column_mapping
+    deps:
+      - src/preprocessing.py
+      - ${path.data.selected.dir}
+    outs:
+      - ${path.data.transformed.dir}:
           cache: False
 
   # Stage 5: Train Model
@@ -104,12 +105,11 @@ stages:
     params:
       - column_mapping
       - pipeline
-      - path.data.selected
-      - path.results.selected_features
+      - path.data.transformed
       - path.results.model_bin
     deps:
       - src/train_model.py
-      - ${path.data.selected.dir}
+      - ${path.data.transformed.dir}
     outs:
       - ${path.results.model_bin}:
           cache: False
@@ -122,7 +122,7 @@ stages:
     params:
       - column_mapping
       - plt_style
-      - path.data.selected
+      - path.data.transformed
       - path.data.predicted
       - path.results.model_bin
       - path.results.metrics
@@ -136,7 +136,7 @@ stages:
       - path.results.plots.metrics_table
     deps:
       - src/test_model.py
-      - ${path.data.selected.dir}
+      - ${path.data.transformed.dir}
       - ${path.results.model_bin}
     plots:
       - ${path.results.plots.confusion_matrix}:
@@ -169,14 +169,14 @@ stages:
     cmd:
       - python src/model_interpretation.py
     params:
-      - path.data.selected
+      - path.data.transformed
       - column_mapping
       - path.results.model_bin
       - path.results.plots.feature_importances
       - plt_style
     deps:
       - src/model_interpretation.py
-      - ${path.data.selected.dir}
+      - ${path.data.transformed.dir}
       - ${path.results.model_bin}
     plots:
       - ${path.results.plots.feature_importances}:
