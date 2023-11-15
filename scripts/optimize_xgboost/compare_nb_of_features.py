@@ -11,21 +11,19 @@ N_JOBS = 5
 REMOVE_EXISTING = True
 
 # Define the parameter grid for the XGBoost model
-feature_selection_params = [
-    ("xgb-fs-rfe", "RecursiveFeatureElimination"),
-    # ("xgb-fs-sfm", "SelectFromModel"),
-    # ("xgb-fs-sfs", "SequentialFeatureSelection"),
-    # ("xgb-fs-ufs", "UnivariateFeatureSelection"),
-    # ("xgb-fs-vt", "VarianceThreshold"),
-]
-
+feature_selection_params = []
 
 # Specify the classifier
 classifier = "XGBClassifier"
+feature_selector = "RecursiveFeatureElimination"
+
+params = [3, 5, 8, 10, 15, 20, 30, 50]
 
 # Loop over the generated parameter samples
-for exp_name, feature_selector in feature_selection_params:
+for nb_features in params:
     # Remove existing DVC experiment if specified
+    exp_name = f"xgb-nf-{nb_features}"
+
     if REMOVE_EXISTING:
         subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 
@@ -33,6 +31,7 @@ for exp_name, feature_selector in feature_selection_params:
     cmd = (
         f"dvc exp run {STAGE} --queue  -n {exp_name}"
         f" -S feature_selection={feature_selector}"
+        f" -S feature_selection.param={feature_selector}"
         f" -S classifier={classifier}"
     )
 
