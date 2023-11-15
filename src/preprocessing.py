@@ -6,19 +6,19 @@ from hydra.utils import instantiate
 
 # Get the dvc params
 params = dvc.api.params_show(stages="preprocessing")
-path_data_raw = params["path"]["data"]["raw"]
+path_data_selected = params["path"]["data"]["selected"]
 path_data_transformed = params["path"]["data"]["transformed"]
 target = params["column_mapping"]["target"]
 
 if __name__ == "__main__":
     # Load the test dataset
     df_test = pd.read_csv(
-        path_data_raw["test"],
+        path_data_selected["test"],
         index_col=params["column_mapping"]["id"],
     )
     # Load the training dataset
     df_train = pd.read_csv(
-        path_data_raw["train"],
+        path_data_selected["train"],
         index_col=params["column_mapping"]["id"],
     )
 

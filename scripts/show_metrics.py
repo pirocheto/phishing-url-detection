@@ -19,6 +19,7 @@ Note:
 """
 
 import subprocess
+import sys
 
 
 def show_metrics(max_exp=10):
@@ -48,4 +49,5 @@ def show_metrics(max_exp=10):
 
 
 if __name__ == "__main__":
-    show_metrics()
+    n_exps = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+    show_metrics(n_exps)

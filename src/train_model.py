@@ -17,7 +17,7 @@ params = dvc.api.params_show(stages="train_model")
 if __name__ == "__main__":
     # Get the training dataset with only best features
     df_train = pd.read_csv(
-        params["path"]["data"]["selected"]["train"],
+        params["path"]["data"]["transformed"]["train"],
         index_col=params["column_mapping"]["id"],
     )
 

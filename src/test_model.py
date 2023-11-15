@@ -442,14 +442,14 @@ if __name__ == "__main__":
     # 1. Make predictions on test dataset
     # Read the train dataset
     df_train = pd.read_csv(
-        params["path"]["data"]["selected"]["train"],
+        params["path"]["data"]["transformed"]["train"],
         index_col=params["column_mapping"]["id"],
     )
     X_train = df_train.drop(target, axis=1)
 
     # Read the test dataset
     df_test = pd.read_csv(
-        params["path"]["data"]["selected"]["test"],
+        params["path"]["data"]["transformed"]["test"],
         index_col=params["column_mapping"]["id"],
     )
     X_test = df_test.drop(target, axis=1)

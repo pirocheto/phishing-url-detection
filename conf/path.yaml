@@ -34,7 +34,8 @@ path:
     # Directory for generated files except data
     dir: results
 
-    # TODO Create model directory and store all models inside.
+    # TODO: Create model directory and store all models inside (feature preprocessing and classifier)
+    # TODO: Make a Pipeline object at the end of training
     # Path to the trained model binary
     model_bin: ${path.results.dir}/models/model.pkl
 
