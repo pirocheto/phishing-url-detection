@@ -21,7 +21,6 @@ stages:
       - path.data.all
     deps:
       - ${data_url}
-      - src/analyze_data.py
     outs:
       - ${path.data.all}:
           cache: False
