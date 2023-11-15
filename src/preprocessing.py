@@ -39,7 +39,7 @@ if __name__ == "__main__":
     y_test = target_preprocessor.transform(y_test)
 
     # 2. Process features
-    if "feature" in params["preprocessing"]:
+    if params["preprocessing"].get("feature", None):
         feature_preprocessor = instantiate(params["preprocessing"]["feature"])
 
         # Fit the feature preprocessor
