@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: Train model
+name: Train Model
+run-name: Run dvc pipeline
 on: [push]
 jobs:
   train_model:
@@ -12,12 +12,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.10.x
-          
+      - name: Install Poetry
+        uses: snok/install-poetry@v1 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install .
-
+          poetry install --no-root
       - name: Train model
         run: |
           dvc repro
