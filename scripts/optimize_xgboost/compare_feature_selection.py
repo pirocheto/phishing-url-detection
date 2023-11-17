@@ -1,8 +1,6 @@
 import subprocess
 import time
 
-# TODO: Update comments
-
 # DVC stage name
 STAGE = "test_model"
 
@@ -12,7 +10,7 @@ N_JOBS = 5
 # Flag to remove existing DVC experiments
 REMOVE_EXISTING = True
 
-# Define the parameter grid for the XGBoost model
+# Define the FeatureSlection strategies
 feature_selection_params = [
     ("xgb-fs-rfe", "RecursiveFeatureElimination"),
     ("xgb-fs-sfm", "SelectFromModel"),
@@ -26,7 +24,7 @@ feature_selection_params = [
 # Specify the classifier
 classifier = "XGBClassifier"
 
-# Loop over the generated parameter samples
+
 for exp_name, feature_selector in feature_selection_params:
     # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:

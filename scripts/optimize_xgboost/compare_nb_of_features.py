@@ -1,8 +1,6 @@
 import subprocess
 import time
 
-# TODO: Update comments
-
 # DVC stage name
 STAGE = "test_model"
 
@@ -12,20 +10,18 @@ N_JOBS = 5
 # Flag to remove existing DVC experiments
 REMOVE_EXISTING = True
 
-# Define the parameter grid for the XGBoost model
-feature_selection_params = []
-
 # Specify the classifier
 classifier = "XGBClassifier"
 feature_selector = "RecursiveFeatureElimination"
 
+# Define the space for the number of features
 params = [3, 5, 8, 10, 15, 20, 30, 50]
 
-# Loop over the generated parameter samples
 for nb_features in params:
     # Remove existing DVC experiment if specified
     exp_name = f"xgb-nf-{nb_features}"
 
+    # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:
         subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 

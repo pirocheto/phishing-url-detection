@@ -1,9 +1,11 @@
-# TODO: Add docs and comments
+# https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html
 _target_: sklearn.feature_selection.SelectKBest
+# Function taking two arrays X and y, and returning a pair of arrays (scores, pvalues) or a single array with scores.
 score_func:
   _target_: builtins.getattr
   _args_:
     - _target_: importlib.import_module
       name: sklearn.feature_selection
     - mutual_info_classif
+# Number of top features to select. The “all” option bypasses selection, for use in a parameter search.
 k: 10
