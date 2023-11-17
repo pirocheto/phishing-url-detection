@@ -1,3 +1,4 @@
+import os
 import warnings
 
 import dill
@@ -6,7 +7,6 @@ import numpy as np
 import pandas as pd
 from hydra.utils import instantiate
 from skl2onnx import to_onnx
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.pipeline import make_pipeline
 
@@ -41,14 +41,14 @@ if __name__ == "__main__":
 
     X_train = feature_selector.fit_transform(df_train, y_train)
 
-    # X_train = X_train.astype(np.float32)
-
     model.fit(X_train, y_train)
 
     onx = to_onnx(model, X_train[:1].astype(np.float32))
 
-    with open(params["path"]["results"]["models"]["onnx_model"], "wb") as fp:
+    os.makedirs(params["path"]["final_models"]["dir"], exist_ok=True)
+
+    with open(params["path"]["final_models"]["onnx_model"], "wb") as fp:
         fp.write(onx.SerializeToString())
 
-    with open(params["path"]["results"]["models"]["pkl_model"], "wb") as fp:
+    with open(params["path"]["final_models"]["pkl_model"], "wb") as fp:
         dill.dump(model, fp)
