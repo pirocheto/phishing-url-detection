@@ -21,4 +21,4 @@ jobs:
       - name: Train model
         run: |
           source .venv/bin/activate
-          dvc repro finalyze_model
+          dvc repro finalize_model
