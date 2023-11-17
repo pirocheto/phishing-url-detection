@@ -455,15 +455,15 @@ if __name__ == "__main__":
     X_test = df_test.drop(target, axis=1)
 
     # Load the trained model
-    pipeline = joblib.load(params["path"]["results"]["model_bin"])
+    classifier = joblib.load(params["path"]["results"]["models"]["classifier"])
 
     # Make predictions on train dataset
-    df_train[proba_pred] = pipeline.predict_proba(X_train)[:, 1]
-    df_train[label_pred] = pipeline.predict(X_train)
+    df_train[proba_pred] = classifier.predict_proba(X_train)[:, 1]
+    df_train[label_pred] = classifier.predict(X_train)
 
     # Make predictions on test dataset
-    df_test[proba_pred] = pipeline.predict_proba(X_test)[:, 1]
-    df_test[label_pred] = pipeline.predict(X_test)
+    df_test[proba_pred] = classifier.predict_proba(X_test)[:, 1]
+    df_test[label_pred] = classifier.predict(X_test)
 
     # Save predictions to read them leter if need
     # Create directory for predicted data

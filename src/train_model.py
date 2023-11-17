@@ -26,7 +26,7 @@ if __name__ == "__main__":
     X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
 
     # Load and fit the model on the training dataset, then save it.
-    pipeline = instantiate(params["pipeline"])
-    pipeline.fit(X_train, y_train)
+    classifier = instantiate(params["classifier"])
+    classifier.fit(X_train, y_train)
 
-    joblib.dump(pipeline, params["path"]["results"]["model_bin"])
+    joblib.dump(classifier, params["path"]["results"]["models"]["classifier"])

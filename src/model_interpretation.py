@@ -99,7 +99,7 @@ if __name__ == "__main__":
     )
 
     # Load the trained model from the saved file
-    pipeline = joblib.load(params["path"]["results"]["model_bin"])
+    classifier = joblib.load(params["path"]["results"]["models"]["classifier"])
 
     # Create a subplot with two columns and specified figure size
     fig, ax = plt.subplots(
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
         # Perform permutation importance analysis
         results = permutation_importance(
-            pipeline,
+            classifier,
             data,
             targets,
             scoring="f1_macro",

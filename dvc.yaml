@@ -84,6 +84,8 @@ stages:
     outs:
       - ${path.data.selected.dir}:
           cache: False
+      - ${path.results.selected_features}:
+          cache: False
 
   # Stage 4: Preprocessing
   # - Applies preprocessing steps to the training and testing data.
@@ -95,11 +97,14 @@ stages:
       - path.data.selected
       - path.data.transformed
       - column_mapping
+      - path.results.models.preprocessor
     deps:
       - src/preprocessing.py
       - ${path.data.selected.dir}
     outs:
       - ${path.data.transformed.dir}:
+          cache: False
+      - ${path.results.models.preprocessor}:
           cache: False
 
   # Stage 5: Train Model
@@ -109,14 +114,14 @@ stages:
     cmd: python src/train_model.py
     params:
       - column_mapping
-      - pipeline
+      - classifier
       - path.data.transformed
-      - path.results.model_bin
+      - path.results.models.classifier
     deps:
       - src/train_model.py
       - ${path.data.transformed.dir}
     outs:
-      - ${path.results.model_bin}:
+      - ${path.results.models.classifier}:
           cache: False
 
   # Stage 6: Test Model
@@ -129,7 +134,7 @@ stages:
       - plt_style
       - path.data.transformed
       - path.data.predicted
-      - path.results.model_bin
+      - path.results.models.classifier
       - path.results.metrics
       - path.results.classification_report
       - path.results.plots.confusion_matrix
@@ -142,7 +147,7 @@ stages:
     deps:
       - src/test_model.py
       - ${path.data.transformed.dir}
-      - ${path.results.model_bin}
+      - ${path.results.models.classifier}
     plots:
       - ${path.results.plots.confusion_matrix}:
           cache: False
@@ -176,15 +181,33 @@ stages:
     params:
       - path.data.transformed
       - column_mapping
-      - path.results.model_bin
+      - path.results.models.classifier
       - path.results.plots.feature_importances
       - plt_style
     deps:
       - src/model_interpretation.py
       - ${path.data.transformed.dir}
-      - ${path.results.model_bin}
+      - ${path.results.models.classifier}
     plots:
       - ${path.results.plots.feature_importances}:
           cache: False
 
-  # TODO: Build Pipeline with fitted estimators and save it in ONNX Format
+  finalize_model:
+    cmd:
+      - python src/finalize_model.py
+    params:
+      - path.data.all
+      - feature_selection
+      - column_mapping
+      - preprocessing
+      - classifier
+      - path.results.models.onnx_model
+      - path.results.models.pkl_model
+    deps:
+      - ${path.data.all}
+      - src/finalize_model.py
+    outs:
+      - ${path.results.models.onnx_model}:
+          cache: False
+      - ${path.results.models.pkl_model}:
+          cache: False

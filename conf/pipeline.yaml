@@ -4,15 +4,13 @@ defaults:
   - preprocessing/target: LabelEncoder
   - preprocessing/feature: null
   - feature_selection: SelectKBestMutualInfo # Default feature selection method
-  - classifier: RandomForest # Default classifier for the pipeline
+  - estimator: RandomForest # Default classifier for the pipeline
   - calibration: Isotonic # Default calibration method
 
 # Calibration configuration
 calibration:
-  estimator: ${classifier} # Calibration estimator, using the default classifier
+  estimator: ${estimator} # Calibration estimator, using the default classifier
+  cv: 5
 
 # Pipeline configuration
-pipeline:
-  _target_: sklearn.pipeline.make_pipeline # Define a pipeline with default parameters
-  _args_:
-    - ${calibration} # Include calibration step as the first step in the pipeline
+classifier: ${estimator} # Include calibration step as the first step in the pipeline

@@ -1,0 +1,2 @@
+# https://xgboost.readthedocs.io/en/stable/python/python_api.html#module-xgboost.sklearn
+_target_: xgboost.XGBClassifier

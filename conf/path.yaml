@@ -34,9 +34,14 @@ path:
     # Directory for generated files except data
     dir: results
 
-    # TODO: Create model directory and store all models inside (feature preprocessing and classifier)
     # Path to the trained model binary
-    model_bin: ${path.results.dir}/models/model.pkl
+    models:
+      dir: ${path.results.dir}/models
+      preprocessor: ${path.results.models.dir}/preprocessor.pkl
+      classifier: ${path.results.models.dir}/classifier.pkl
+
+      onnx_model: ${path.results.models.dir}/model.onnx
+      pkl_model: ${path.results.models.dir}/model.pkl
 
     # Path to the metrics file
     metrics: ${path.results.dir}/metrics.yaml
