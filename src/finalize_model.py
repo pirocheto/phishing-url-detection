@@ -20,35 +20,45 @@ params = dvc.api.params_show(stages="finalize_model")
 
 
 if __name__ == "__main__":
-    target_preprocessor = instantiate(params["preprocessing"]["target"])
+    # Load all Sklearn objects
     classifier = instantiate(params["classifier"])
     feature_selector = instantiate(params["feature_selection"])
+    target_preprocessor = instantiate(params["preprocessing"]["target"])
 
     feature_preprocessing = params["preprocessing"].get("feature", None)
     if feature_preprocessing:
         feature_preprocessor = instantiate(params["preprocessing"]["feature"])
 
-    df_train = pd.read_csv("data/all.csv", index_col=params["column_mapping"]["id"])
+    # 1. Load data
+    df_train = pd.read_csv(
+        params["path"]["data"]["all"],
+        index_col=params["column_mapping"]["id"],
+    )
+
+    # Get features and labels
     y_train = df_train[params["column_mapping"]["target"]]
     df_train = df_train.drop(params["column_mapping"]["target"], axis=1)
 
-    if feature_preprocessing:
-        model = make_pipeline(feature_preprocessor, classifier)
-    else:
-        model = classifier
-
+    # Encode the labels
     y_train = target_preprocessor.fit_transform(y_train)
 
+    # Keep only the relevant features
     X_train = feature_selector.fit_transform(df_train, y_train)
 
-    model.fit(X_train, y_train)
+    # 2. Build and train the model
+    if feature_preprocessing:
+        pipeline = make_pipeline(feature_preprocessor, classifier)
+        model = pipeline.fit(X_train, y_train)
+    else:
+        model = classifier.fit(X_train, y_train)
 
-    onx = to_onnx(model, X_train[:1].astype(np.float32))
-
+    # 3. Save the model
+    # Save model in pickle format
     os.makedirs(params["path"]["final_models"]["dir"], exist_ok=True)
-
-    with open(params["path"]["final_models"]["onnx_model"], "wb") as fp:
-        fp.write(onx.SerializeToString())
-
     with open(params["path"]["final_models"]["pkl_model"], "wb") as fp:
         dill.dump(model, fp)
+
+    # Save model in onnx format
+    onx = to_onnx(model, X_train[:1].astype(np.float32), options={"zipmap": False})
+    with open(params["path"]["final_models"]["onnx_model"], "wb") as fp:
+        fp.write(onx.SerializeToString())

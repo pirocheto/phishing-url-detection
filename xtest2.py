@@ -1,43 +1,45 @@
-from datetime import datetime
-from pprint import pprint
-
-import dill
 import numpy as np
 import onnxruntime
 import pandas as pd
-import yaml
 
-# Charger le modèle ONNX
-onnx_model_path = "models/model.onnx"
-sess = onnxruntime.InferenceSession(onnx_model_path, providers=["CPUExecutionProvider"])
+# Defining a list of URLs with characteristics
+urls = [
+    {
+        "url": "https://www.rga.com/about/workplace",
+        "nb_hyperlinks": 97.0,
+        "ratio_intHyperlinks": 0.969072165,
+        "ratio_extHyperlinks": 0.030927835,
+        "ratio_extRedirection": 0.0,
+        "safe_anchor": 25.0,
+        "domain_registration_length": 3571.0,
+        "domain_age": 11039,
+        "web_traffic": 178542.0,
+        "google_index": 0.0,
+        "page_rank": 5,
+    },
+]
 
-pkl_model_path = "models/model.pkl"
-with open(pkl_model_path, "rb") as fp:
-    pkl_model = dill.load(fp)
+# Initializing the ONNX Runtime session with the pre-trained model
+sess = onnxruntime.InferenceSession(
+    "models/model.onnx",
+    providers=["CPUExecutionProvider"],
+)
 
-with open("results/selected_features.yaml", "r") as fp:
-    selected_features = yaml.safe_load(fp)
+# Creating a DataFrame from the list of URLs
+df = pd.DataFrame(urls)
+df = df.set_index("url")
 
-df = pd.read_csv("data/all.csv")
-X_test = df[selected_features]
-
-inputs = X_test.astype(np.float32).to_numpy()
-
-
-start = datetime.now()
-# Effectuer des prédictions avec le modèle ONNX
-output = sess.run(["output_probability"], {"X": inputs})
-time_onnx = datetime.now() - start
+# Converting DataFrame data to a float32 NumPy array
+inputs = df.astype(np.float32).to_numpy()
 
 
-start = datetime.now()
-# Effectuer des prédictions avec le modèle ONNX
-output = pkl_model.predict_proba(inputs)
-time_pkl = datetime.now() - start
+# Using the ONNX model to make predictions on the input data
+probas = sess.run(None, {"X": inputs})[1]
 
 
-print(time_pkl / time_onnx)
-
-# # Les prédictions sont dans la variable 'output'. Vous pouvez les utiliser comme nécessaire.
-# for result in output[0]:
-#     print(result[1])
+# Displaying the results
+for url, proba in zip(urls, probas):
+    print(proba)
+    print(f"URL: {url['url']}")
+    print(f"Likelihood of being a phishing site: {proba[1] * 100:.1f}%")
+    print("----")

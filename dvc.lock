@@ -101,7 +101,11 @@ stages:
     params:
       params.yaml:
         classifier:
-          _target_: sklearn.ensemble.RandomForestClassifier
+          estimator:
+            _target_: sklearn.ensemble.RandomForestClassifier
+          cv: 5
+          _target_: sklearn.calibration.CalibratedClassifierCV
+          method: isotonic
         column_mapping:
           id: url
           target: status
@@ -116,8 +120,8 @@ stages:
     outs:
     - path: results/models/classifier.pkl
       hash: md5
-      md5: 4f600c9ec4efee7222325ce08626e075
-      size: 7961289
+      md5: 304e6dcf867e41755067ad488aae46bd
+      size: 32833776
   test_model:
     cmd: python src/test_model.py
     deps:
@@ -128,8 +132,8 @@ stages:
       nfiles: 2
     - path: results/models/classifier.pkl
       hash: md5
-      md5: 4f600c9ec4efee7222325ce08626e075
-      size: 7961289
+      md5: 304e6dcf867e41755067ad488aae46bd
+      size: 32833776
     - path: src/test_model.py
       hash: md5
       md5: 3462397b28f7cbff6b7c8c1222927541
@@ -164,45 +168,45 @@ stages:
     outs:
     - path: data/predicted
       hash: md5
-      md5: 51e23e1b4687d1717fd040f92fa7733f.dir
-      size: 1540502
+      md5: 00eeab9258eec25a7e244a179bda7d02.dir
+      size: 1716514
       nfiles: 2
     - path: results/classification_report.png
       hash: md5
-      md5: ed8306a9a035d21afd1a131edc44fd0e
-      size: 109684
+      md5: ae3bcf4b2fc91c881a7e4329ac5d6f3c
+      size: 111089
     - path: results/metrics.yaml
       hash: md5
-      md5: ed151ac91449939f50800e5e506371a9
-      size: 243
+      md5: aaccd82173b11f70dc197dd445ff5625
+      size: 258
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: b250a0bd843a19fa1a50a06fba4fea54
-      size: 29434
+      md5: 3d53b701f9e73c3e54c611229cfe9e0e
+      size: 28733
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: 19723f6bdb294f5d194e2c859dfa4afc
-      size: 12393
+      md5: 69eeca1d2840e8b0f3d5e2d428f500fb
+      size: 12522
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: 69a992ddea5d680866c3fe1854b1601e
-      size: 31837
+      md5: 9139aac797cb518dd15f750738983ee7
+      size: 34212
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: c2a74ec22a4267dc62ce275726f7d3f9
-      size: 14072
+      md5: b5b2da60c39ec5ad5c2a62163c1ca765
+      size: 14222
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: a9bb1a6074c371f5ccaf979b9156d081
-      size: 20746
+      md5: 12436cbcf5f8353d9fe656f565ecf583
+      size: 22320
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 74135f2322e73df856cf1db9d36fc68c
-      size: 35378
+      md5: 67f5fe94f71bef17e163f9b5f2143fea
+      size: 35239
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: 286d081a810a61f38ad9ae30d60fcc7a
-      size: 19886
+      md5: c36cea5a95f781c8321bddd139c6b2e7
+      size: 18458
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -382,8 +386,8 @@ stages:
       nfiles: 2
     - path: results/models/classifier.pkl
       hash: md5
-      md5: 4f600c9ec4efee7222325ce08626e075
-      size: 7961289
+      md5: 304e6dcf867e41755067ad488aae46bd
+      size: 32833776
     - path: src/model_interpretation.py
       hash: md5
       md5: bcf21b7cb41a8158f530459f4b4bff53
@@ -406,8 +410,8 @@ stages:
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 531b2c99dc5c1f00145d23ada484d942
-      size: 24828
+      md5: 065f31e3d5bda00566f26b866d82a960
+      size: 25060
   preprocessing:
     cmd: python src/preprocessing.py
     deps:
@@ -511,7 +515,7 @@ stages:
       size: 683184
     - path: results/plots/feature_statistics.pdf
       hash: md5
-      md5: 58ef202204e08dcc167eabfc8b58a603
+      md5: c62643401aa2bc3fc5cbfffdb2d434aa
       size: 274371
   finalize_model:
     cmd:
@@ -523,12 +527,16 @@ stages:
       size: 3661166
     - path: src/finalize_model.py
       hash: md5
-      md5: 638970f3af819b492a3ec57469aafb88
-      size: 1809
+      md5: 69f2cb34b8cbb6d987420e01dc9a0ab5
+      size: 2212
     params:
       params.yaml:
         classifier:
-          _target_: sklearn.ensemble.RandomForestClassifier
+          estimator:
+            _target_: sklearn.ensemble.RandomForestClassifier
+          cv: 5
+          _target_: sklearn.calibration.CalibratedClassifierCV
+          method: isotonic
         column_mapping:
           id: url
           target: status
@@ -552,9 +560,11 @@ stages:
         preprocessing:
           target:
             _target_: sklearn.preprocessing.LabelEncoder
+          feature:
+            _target_: sklearn.preprocessing.StandardScaler
     outs:
     - path: models
       hash: md5
-      md5: 200b936ec575ada5cf4287a285ddb71a.dir
-      size: 16602217
+      md5: c44e33ce04dd10101afbd09c97b0c287.dir
+      size: 68032937
       nfiles: 2
