@@ -1,10 +1,10 @@
-- ip
-- nb_qm
-- nb_www
-- ratio_digits_url
-- phish_hints
 - nb_hyperlinks
-- domain_in_title
+- ratio_intHyperlinks
+- ratio_extHyperlinks
+- ratio_extRedirection
+- safe_anchor
+- domain_registration_length
 - domain_age
+- web_traffic
 - google_index
 - page_rank

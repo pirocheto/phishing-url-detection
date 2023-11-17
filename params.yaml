@@ -66,8 +66,6 @@ path:
       dir: results/models
       preprocessor: results/models/preprocessor.pkl
       classifier: results/models/classifier.pkl
-      onnx_model: results/models/model.onnx
-      pkl_model: results/models/model.pkl
     metrics: results/metrics.yaml
     selected_features: results/selected_features.yaml
     classification_report: results/classification_report.png
@@ -84,20 +82,18 @@ path:
       precision_recall_curve: results/plots/precision_recall_curve.png
       calibration_curve: results/plots/calibration_curve.png
       cumulative_distribution: results/plots/cumulative_distribution.png
+  final_models:
+    dir: models
+    onnx_model: models/model.onnx
+    pkl_model: models/model.pkl
 calibration:
   estimator:
     _target_: sklearn.ensemble.RandomForestClassifier
+  cv: 5
   _target_: sklearn.calibration.CalibratedClassifierCV
   method: isotonic
-  cv: 5
-pipeline:
-  _target_: sklearn.pipeline.make_pipeline
-  _args_:
-  - estimator:
-      _target_: sklearn.ensemble.RandomForestClassifier
-    _target_: sklearn.calibration.CalibratedClassifierCV
-    method: isotonic
-    cv: 5
+classifier:
+  _target_: sklearn.ensemble.RandomForestClassifier
 preprocessing:
   target:
     _target_: sklearn.preprocessing.LabelEncoder
@@ -110,5 +106,5 @@ feature_selection:
       name: sklearn.feature_selection
     - mutual_info_classif
   k: 10
-classifier:
+estimator:
   _target_: sklearn.ensemble.RandomForestClassifier

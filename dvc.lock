@@ -11,10 +11,6 @@ stages:
       hash: md5
       checksum: '"6dbb847da1445c6e0bbdd4384878a6415cbeb462afe134c88ba4492e0e6c0c13"'
       size: 3661166
-    - path: src/analyze_data.py
-      hash: md5
-      md5: a67e66a4340ee57524751f3cb72f0a38
-      size: 4651
     params:
       params.yaml:
         data_url: 
@@ -95,15 +91,17 @@ stages:
     deps:
     - path: data/transformed
       hash: md5
-      md5: b2fdda98b92e7edba4170abb0db77f6b.dir
-      size: 1268326
+      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
+      size: 1466073
       nfiles: 2
     - path: src/train_model.py
       hash: md5
-      md5: 75de5ed9d8ad5dcc3bf970c686ca914e
-      size: 1124
+      md5: 8621ab47c5a872380d2e1f19e1f8e0f2
+      size: 1143
     params:
       params.yaml:
+        classifier:
+          _target_: sklearn.ensemble.RandomForestClassifier
         column_mapping:
           id: url
           target: status
@@ -114,36 +112,28 @@ stages:
           dir: data/transformed
           train: data/transformed/train.csv
           test: data/transformed/test.csv
-        path.results.model_bin: results/models/model.pkl
-        pipeline:
-          _target_: sklearn.pipeline.make_pipeline
-          _args_:
-          - estimator:
-              _target_: sklearn.ensemble.RandomForestClassifier
-            _target_: sklearn.calibration.CalibratedClassifierCV
-            method: isotonic
-            cv: 5
+        path.results.models.classifier: results/models/classifier.pkl
     outs:
-    - path: results/models/model.pkl
+    - path: results/models/classifier.pkl
       hash: md5
-      md5: dc0420f73ce86b3d56e19805fd0f49af
-      size: 35967955
+      md5: 4f600c9ec4efee7222325ce08626e075
+      size: 7961289
   test_model:
     cmd: python src/test_model.py
     deps:
     - path: data/transformed
       hash: md5
-      md5: b2fdda98b92e7edba4170abb0db77f6b.dir
-      size: 1268326
+      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
+      size: 1466073
       nfiles: 2
-    - path: results/models/model.pkl
+    - path: results/models/classifier.pkl
       hash: md5
-      md5: dc0420f73ce86b3d56e19805fd0f49af
-      size: 35967955
+      md5: 4f600c9ec4efee7222325ce08626e075
+      size: 7961289
     - path: src/test_model.py
       hash: md5
-      md5: d23a8bf5596e92677bd1598638c1cd27
-      size: 15949
+      md5: 3462397b28f7cbff6b7c8c1222927541
+      size: 15970
     params:
       params.yaml:
         column_mapping:
@@ -162,7 +152,7 @@ stages:
           test: data/transformed/test.csv
         path.results.classification_report: results/classification_report.png
         path.results.metrics: results/metrics.yaml
-        path.results.model_bin: results/models/model.pkl
+        path.results.models.classifier: results/models/classifier.pkl
         path.results.plots.calibration_curve: results/plots/calibration_curve.png
         path.results.plots.confusion_matrix: results/plots/confusion_matrix.png
         path.results.plots.cumulative_distribution: results/plots/cumulative_distribution.png
@@ -174,45 +164,45 @@ stages:
     outs:
     - path: data/predicted
       hash: md5
-      md5: ebb57859b28c35f8ecf6b083ea580a56.dir
-      size: 1520112
+      md5: 51e23e1b4687d1717fd040f92fa7733f.dir
+      size: 1540502
       nfiles: 2
     - path: results/classification_report.png
       hash: md5
-      md5: 02101d83dd8e428a301b7024ed065e79
-      size: 110205
+      md5: ed8306a9a035d21afd1a131edc44fd0e
+      size: 109684
     - path: results/metrics.yaml
       hash: md5
-      md5: 83ecd8a6c2cb30040d154ddc7bfe2d59
-      size: 258
+      md5: ed151ac91449939f50800e5e506371a9
+      size: 243
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: 7e690dd2b2523f43d9c25a8124d0548c
-      size: 29645
+      md5: b250a0bd843a19fa1a50a06fba4fea54
+      size: 29434
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: 967acbdd47865e9365649fe9d14c5941
-      size: 12191
+      md5: 19723f6bdb294f5d194e2c859dfa4afc
+      size: 12393
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: 05f5e0f802bfb1e5b662a0835076801e
-      size: 33439
+      md5: 69a992ddea5d680866c3fe1854b1601e
+      size: 31837
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: 4f85f28ad1e6559408e9134c36aef21a
-      size: 14192
+      md5: c2a74ec22a4267dc62ce275726f7d3f9
+      size: 14072
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: cb83496b71d9520ceba4889bfc4d9e30
-      size: 22002
+      md5: a9bb1a6074c371f5ccaf979b9156d081
+      size: 20746
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: ccd5e1a1b76b5d95be6245632c4b28c1
-      size: 34643
+      md5: 74135f2322e73df856cf1db9d36fc68c
+      size: 35378
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: f176da8ed24603ff19809f6343fd27dc
-      size: 18980
+      md5: 286d081a810a61f38ad9ae30d60fcc7a
+      size: 19886
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -351,15 +341,14 @@ stages:
           prediction_label: prediction_label
           prediction_proba: prediction_proba
         feature_selection:
-          _target_: sklearn.feature_selection.GenericUnivariateSelect
+          _target_: sklearn.feature_selection.SelectKBest
           score_func:
             _target_: builtins.getattr
             _args_:
             - _target_: importlib.import_module
               name: sklearn.feature_selection
-            - f_classif
-          mode: k_best
-          param: 10
+            - mutual_info_classif
+          k: 10
         path.data.raw:
           dir: data/raw
           train: data/raw/train.csv
@@ -373,9 +362,13 @@ stages:
     outs:
     - path: data/selected
       hash: md5
-      md5: c1b4f8d057878643ed3f8dc73a771bf2.dir
-      size: 1359766
+      md5: 6e0905ea6b999eac12432d9e93c3417d.dir
+      size: 1557513
       nfiles: 2
+    - path: results/selected_features.yaml
+      hash: md5
+      md5: d9f684dc4517215b90baf3f895ea606b
+      size: 180
   test:
     cmd: python -c "print('${data}/all.csv')"
   model_interpretation:
@@ -384,17 +377,17 @@ stages:
     deps:
     - path: data/transformed
       hash: md5
-      md5: b2fdda98b92e7edba4170abb0db77f6b.dir
-      size: 1268326
+      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
+      size: 1466073
       nfiles: 2
-    - path: results/models/model.pkl
+    - path: results/models/classifier.pkl
       hash: md5
-      md5: dc0420f73ce86b3d56e19805fd0f49af
-      size: 35967955
+      md5: 4f600c9ec4efee7222325ce08626e075
+      size: 7961289
     - path: src/model_interpretation.py
       hash: md5
-      md5: db772b485e1cc12b9883077362872e81
-      size: 4238
+      md5: bcf21b7cb41a8158f530459f4b4bff53
+      size: 4253
     params:
       params.yaml:
         column_mapping:
@@ -407,26 +400,26 @@ stages:
           dir: data/transformed
           train: data/transformed/train.csv
           test: data/transformed/test.csv
-        path.results.model_bin: results/models/model.pkl
+        path.results.models.classifier: results/models/classifier.pkl
         path.results.plots.feature_importances: results/plots/feature_importances.png
         plt_style: Solarize_Light2
     outs:
     - path: results/plots/feature_importances.png
       hash: md5
-      md5: 4e6ef3cee83d77c7b1766eaa1883bccd
-      size: 21130
+      md5: 531b2c99dc5c1f00145d23ada484d942
+      size: 24828
   preprocessing:
     cmd: python src/preprocessing.py
     deps:
     - path: data/selected
       hash: md5
-      md5: c1b4f8d057878643ed3f8dc73a771bf2.dir
-      size: 1359766
+      md5: 6e0905ea6b999eac12432d9e93c3417d.dir
+      size: 1557513
       nfiles: 2
     - path: src/preprocessing.py
       hash: md5
-      md5: be779aa693c86962d646a3b8663e0c03
-      size: 2175
+      md5: 322288efbcb6d86d05480b07f8c24545
+      size: 2471
     params:
       params.yaml:
         column_mapping:
@@ -443,15 +436,20 @@ stages:
           dir: data/transformed
           train: data/transformed/train.csv
           test: data/transformed/test.csv
+        path.results.models.preprocessor: results/models/preprocessor.pkl
         preprocessing:
           target:
             _target_: sklearn.preprocessing.LabelEncoder
     outs:
     - path: data/transformed
       hash: md5
-      md5: b2fdda98b92e7edba4170abb0db77f6b.dir
-      size: 1268326
+      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
+      size: 1466073
       nfiles: 2
+    - path: results/models/preprocessor.pkl
+      hash: md5
+      md5: 1b516670557c88fe8e03df4315e99c92
+      size: 234
   analyze_data:
     cmd:
     - python src/analyze_data.py
@@ -513,7 +511,7 @@ stages:
       size: 683184
     - path: results/plots/feature_statistics.pdf
       hash: md5
-      md5: d8eca8644058a170f404fc48a102097f
+      md5: 58ef202204e08dcc167eabfc8b58a603
       size: 274371
   finalize_model:
     cmd:
@@ -525,8 +523,8 @@ stages:
       size: 3661166
     - path: src/finalize_model.py
       hash: md5
-      md5: 95a1bfd0865b41f8a983186e1a86ac81
-      size: 1834
+      md5: 638970f3af819b492a3ec57469aafb88
+      size: 1809
     params:
       params.yaml:
         classifier:
@@ -547,17 +545,16 @@ stages:
             - mutual_info_classif
           k: 10
         path.data.all: data/all.csv
-        path.results.models.onnx_model: results/models/model.onnx
-        path.results.models.pkl_model: results/models/model.pkl
+        path.final_models:
+          dir: models
+          onnx_model: models/model.onnx
+          pkl_model: models/model.pkl
         preprocessing:
           target:
             _target_: sklearn.preprocessing.LabelEncoder
     outs:
-    - path: results/models/model.onnx
+    - path: models
       hash: md5
-      md5: 65a68d6416db8e26524fcb5b5cd9bb09
-      size: 5363142
-    - path: results/models/model.pkl
-      hash: md5
-      md5: b60b242d1e0122174f70fef5f1f2002a
-      size: 11098644
+      md5: 200b936ec575ada5cf4287a285ddb71a.dir
+      size: 16602217
+      nfiles: 2

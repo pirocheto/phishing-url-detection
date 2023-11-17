@@ -8,10 +8,10 @@ import pandas as pd
 import yaml
 
 # Charger le modèle ONNX
-onnx_model_path = "results/models/model.onnx"
+onnx_model_path = "models/model.onnx"
 sess = onnxruntime.InferenceSession(onnx_model_path, providers=["CPUExecutionProvider"])
 
-pkl_model_path = "results/models/model.pkl"
+pkl_model_path = "models/model.pkl"
 with open(pkl_model_path, "rb") as fp:
     pkl_model = dill.load(fp)
 

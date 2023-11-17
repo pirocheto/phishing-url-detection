@@ -40,9 +40,6 @@ path:
       preprocessor: ${path.results.models.dir}/preprocessor.pkl
       classifier: ${path.results.models.dir}/classifier.pkl
 
-      onnx_model: ${path.results.models.dir}/model.onnx
-      pkl_model: ${path.results.models.dir}/model.pkl
-
     # Path to the metrics file
     metrics: ${path.results.dir}/metrics.yaml
 
@@ -89,3 +86,8 @@ path:
 
       # Path to cumulative distribution plot
       cumulative_distribution: ${path.results.plots.dir}/cumulative_distribution.png
+
+  final_models:
+    dir: models
+    onnx_model: ${path.final_models.dir}/model.onnx
+    pkl_model: ${path.final_models.dir}/model.pkl

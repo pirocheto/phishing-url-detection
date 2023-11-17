@@ -201,13 +201,10 @@ stages:
       - column_mapping
       - preprocessing
       - classifier
-      - path.results.models.onnx_model
-      - path.results.models.pkl_model
+      - path.final_models
     deps:
       - ${path.data.all}
       - src/finalize_model.py
     outs:
-      - ${path.results.models.onnx_model}:
-          cache: False
-      - ${path.results.models.pkl_model}:
+      - ${path.final_models.dir}:
           cache: False
