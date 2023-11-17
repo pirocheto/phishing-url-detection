@@ -2,7 +2,7 @@
 name = "phishing-detection"
 version = "0.1.0"
 description = ""
-authors = ["prochet <pierre-rochet@outlook.com>"]
+authors = ["pirocheto"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -15,7 +15,11 @@ catboost = "^1.2.2"
 lightgbm = "^4.1.0"
 xgboost = "^2.0.1"
 scikit-learn = "^1.3.2"
+dill = "^0.3.7"
 
+
+[tool.poetry.group.jupyter-env.dependencies]
+ipykernel = "^6.26.0"
 
 [build-system]
 requires = ["poetry-core"]
