@@ -62,7 +62,12 @@ path:
       test: data/predicted/test.csv
   results:
     dir: results
-    model_bin: results/models/model.pkl
+    models:
+      dir: results/models
+      preprocessor: results/models/preprocessor.pkl
+      classifier: results/models/classifier.pkl
+      onnx_model: results/models/model.onnx
+      pkl_model: results/models/model.pkl
     metrics: results/metrics.yaml
     selected_features: results/selected_features.yaml
     classification_report: results/classification_report.png
@@ -97,14 +102,13 @@ preprocessing:
   target:
     _target_: sklearn.preprocessing.LabelEncoder
 feature_selection:
-  _target_: sklearn.feature_selection.GenericUnivariateSelect
+  _target_: sklearn.feature_selection.SelectKBest
   score_func:
     _target_: builtins.getattr
     _args_:
     - _target_: importlib.import_module
       name: sklearn.feature_selection
-    - f_classif
-  mode: k_best
-  param: 10
+    - mutual_info_classif
+  k: 10
 classifier:
   _target_: sklearn.ensemble.RandomForestClassifier

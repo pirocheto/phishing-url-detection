@@ -515,3 +515,49 @@ stages:
       hash: md5
       md5: d8eca8644058a170f404fc48a102097f
       size: 274371
+  finalize_model:
+    cmd:
+    - python src/finalize_model.py
+    deps:
+    - path: data/all.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/finalize_model.py
+      hash: md5
+      md5: 95a1bfd0865b41f8a983186e1a86ac81
+      size: 1834
+    params:
+      params.yaml:
+        classifier:
+          _target_: sklearn.ensemble.RandomForestClassifier
+        column_mapping:
+          id: url
+          target: status
+          pos_label: phishing
+          prediction_label: prediction_label
+          prediction_proba: prediction_proba
+        feature_selection:
+          _target_: sklearn.feature_selection.SelectKBest
+          score_func:
+            _target_: builtins.getattr
+            _args_:
+            - _target_: importlib.import_module
+              name: sklearn.feature_selection
+            - mutual_info_classif
+          k: 10
+        path.data.all: data/all.csv
+        path.results.models.onnx_model: results/models/model.onnx
+        path.results.models.pkl_model: results/models/model.pkl
+        preprocessing:
+          target:
+            _target_: sklearn.preprocessing.LabelEncoder
+    outs:
+    - path: results/models/model.onnx
+      hash: md5
+      md5: 65a68d6416db8e26524fcb5b5cd9bb09
+      size: 5363142
+    - path: results/models/model.pkl
+      hash: md5
+      md5: b60b242d1e0122174f70fef5f1f2002a
+      size: 11098644

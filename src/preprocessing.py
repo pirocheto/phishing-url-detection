@@ -1,8 +1,10 @@
 import os
 
+import dill
 import dvc.api
 import pandas as pd
 from hydra.utils import instantiate
+from sklearn.preprocessing import FunctionTransformer
 
 # Get the dvc params
 params = dvc.api.params_show(stages="preprocessing")
@@ -48,6 +50,12 @@ if __name__ == "__main__":
         # Transform the features
         X_train = feature_preprocessor.transform(X_train)
         X_test = feature_preprocessor.transform(X_test)
+    else:
+        feature_preprocessor = FunctionTransformer()
+
+    path_preprocessor = params["path"]["results"]["models"]["preprocessor"]
+    with open(path_preprocessor, "wb") as fp:
+        dill.dump(feature_preprocessor, fp)
 
     # Save the transformed data
     df_train_transformed = pd.DataFrame(
