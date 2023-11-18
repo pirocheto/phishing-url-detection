@@ -1,7 +1,7 @@
+import pickle
 from typing import Dict
 
 import dvc.api
-import joblib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -99,7 +99,8 @@ if __name__ == "__main__":
     )
 
     # Load the trained model from the saved file
-    classifier = joblib.load(params["path"]["results"]["models"]["classifier"])
+    with open(params["path"]["results"]["models"]["classifier"], "rb") as fp:
+        classifier = pickle.load(fp)
 
     # Create a subplot with two columns and specified figure size
     fig, ax = plt.subplots(

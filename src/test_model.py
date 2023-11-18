@@ -1,7 +1,7 @@
 import os
+import pickle
 
 import dvc.api
-import joblib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -455,7 +455,8 @@ if __name__ == "__main__":
     X_test = df_test.drop(target, axis=1)
 
     # Load the trained model
-    classifier = joblib.load(params["path"]["results"]["models"]["classifier"])
+    with open(params["path"]["results"]["models"]["classifier"], "rb") as fp:
+        classifier = pickle.load(fp)
 
     # Make predictions on train dataset
     df_train[proba_pred] = classifier.predict_proba(X_train)[:, 1]

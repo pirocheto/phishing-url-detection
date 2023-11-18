@@ -1,10 +1,9 @@
+import pickle
 import shutil
 from pathlib import Path
 
-import joblib
 import pandas as pd
 import sklearn
-import skops
 import yaml
 from skops import card, hub_utils
 
@@ -15,8 +14,9 @@ try:
 except FileNotFoundError:
     pass
 
-# Load the pre-trained model
-model = joblib.load("models/model.pkl")
+
+with open("models/model.pkl", "rb") as fp:
+    model = pickle.load(fp)
 
 
 df_test = pd.read_csv("data/selected/test.csv", index_col="url")
