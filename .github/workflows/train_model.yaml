@@ -34,7 +34,7 @@ jobs:
 
         run: |
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
-          cp -r hf_model_hub $HF_MODEL
+          cp -r hf_model_hub/* $HF_MODEL/
           cd $HF_MODEL
 
           git config --local user.email "action@github.com"
