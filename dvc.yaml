@@ -24,27 +24,6 @@ stages:
       - ${path.data.all}:
           cache: False
 
-  # Stage 1: Analyze Data
-  # - Analyze data with feature correlations and statistics plots
-  analyze_data:
-    cmd:
-      - python src/analyze_data.py
-    params:
-      - column_mapping
-      - path.data.all
-      - path.results.plots.correlation_matrix
-      - path.results.plots.feature_statistics
-      - plt_style
-      - feature_dtypes
-    deps:
-      - ${path.data.all}
-      - src/analyze_data.py
-    plots:
-      - ${path.results.plots.correlation_matrix}:
-          cache: False
-      - ${path.results.plots.feature_statistics}:
-          cache: False
-
   # Stage 2: Split Data
   # - Splits the downloaded data into training and testing sets.
   # - Generates a plot to visualize the proportion of data in each split.
@@ -67,26 +46,6 @@ stages:
       - ${path.data.raw.dir}:
           cache: False
 
-  # Stage 3: Feature Selection
-  # - Removes the least important features to accelerate training and improve model interpretability.
-  feature_selection:
-    cmd: python src/feature_selection.py
-    params:
-      - column_mapping
-      - feature_selection
-      - path.data.raw
-      - path.data.selected
-      - path.results.selected_features
-      - plt_style
-    deps:
-      - ${path.data.raw.dir}
-      - src/feature_selection.py
-    outs:
-      - ${path.data.selected.dir}:
-          cache: False
-      - ${path.results.selected_features}:
-          cache: False
-
   # Stage 4: Preprocessing
   # - Applies preprocessing steps to the training and testing data.
   # - Includes tasks like label encoding, feature normalization, and/or standardization.
@@ -94,18 +53,19 @@ stages:
     cmd: python src/preprocessing.py
     params:
       - preprocessing
-      - path.data.selected
+      - path.data.raw
       - path.data.transformed
       - column_mapping
       - path.results.models.preprocessor
     deps:
       - src/preprocessing.py
-      - ${path.data.selected.dir}
+      - ${path.data.raw.dir}
     outs:
       - ${path.data.transformed.dir}:
           cache: False
       - ${path.results.models.preprocessor}:
           cache: False
+
 
   # Stage 5: Train Model
   # - Trains a machine learning model using the selected features from the previous stage.
@@ -171,25 +131,6 @@ stages:
 
     metrics:
       - ${path.results.metrics}:
-          cache: False
-
-  # Stage 7: Model Interpretation
-  # - Provides interpretation of the trained model by creating plots such as feature importances.
-  model_interpretation:
-    cmd:
-      - python src/model_interpretation.py
-    params:
-      - path.data.transformed
-      - column_mapping
-      - path.results.models.classifier
-      - path.results.plots.feature_importances
-      - plt_style
-    deps:
-      - src/model_interpretation.py
-      - ${path.data.transformed.dir}
-      - ${path.results.models.classifier}
-    plots:
-      - ${path.results.plots.feature_importances}:
           cache: False
 
   finalize_model:
