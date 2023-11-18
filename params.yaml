@@ -93,16 +93,10 @@ calibration:
   _target_: sklearn.calibration.CalibratedClassifierCV
   method: isotonic
 classifier:
-  estimator:
-    _target_: sklearn.ensemble.RandomForestClassifier
-  cv: 5
-  _target_: sklearn.calibration.CalibratedClassifierCV
-  method: isotonic
+  _target_: sklearn.ensemble.RandomForestClassifier
 preprocessing:
   target:
     _target_: sklearn.preprocessing.LabelEncoder
-  feature:
-    _target_: sklearn.preprocessing.StandardScaler
 feature_selection:
   _target_: sklearn.feature_selection.SelectKBest
   score_func:

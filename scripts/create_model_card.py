@@ -19,8 +19,6 @@ except FileNotFoundError:
 model = joblib.load("models/model.pkl")
 
 
-model = joblib.load("models/model.pkl")
-
 df_test = pd.read_csv("data/selected/test.csv", index_col="url")
 
 hub_utils.init(
@@ -42,17 +40,14 @@ hub_utils.add_files(
 
 hub_utils.add_files("models/model.onnx", dst=dst)
 
-metadata = {
-    "license": "mit",
-    "tags": ["classification", "phishing"],
-    "library_name": "sklearn",
-    "pipeline_tag": "tabular-classification",
-}
-
 # Create a model card object
-card = Card(model, metadata=metadata)
+card = Card(model)
 
 # Set metadata for the model card
+card.metadata.license = "mit"
+card.metadata.tags = ["classification", "phishing"]
+card.metadata.library_name = "sklearn"
+card.metadata.pipeline_tag = "tabular-classification"
 
 
 # Add plots to the model card

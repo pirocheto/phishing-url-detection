@@ -527,16 +527,12 @@ stages:
       size: 3661166
     - path: src/finalize_model.py
       hash: md5
-      md5: 69f2cb34b8cbb6d987420e01dc9a0ab5
-      size: 2212
+      md5: d23319e2fef1d5cb1a8b30cb2988e174
+      size: 2148
     params:
       params.yaml:
         classifier:
-          estimator:
-            _target_: sklearn.ensemble.RandomForestClassifier
-          cv: 5
-          _target_: sklearn.calibration.CalibratedClassifierCV
-          method: isotonic
+          _target_: sklearn.ensemble.RandomForestClassifier
         column_mapping:
           id: url
           target: status
@@ -560,11 +556,9 @@ stages:
         preprocessing:
           target:
             _target_: sklearn.preprocessing.LabelEncoder
-          feature:
-            _target_: sklearn.preprocessing.StandardScaler
     outs:
     - path: models
       hash: md5
-      md5: c44e33ce04dd10101afbd09c97b0c287.dir
-      size: 68032937
+      md5: 98662b0db68114852b3f41486c6897e4.dir
+      size: 16541307
       nfiles: 2
