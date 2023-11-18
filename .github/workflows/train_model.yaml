@@ -22,6 +22,9 @@ jobs:
         run: |
           source .venv/bin/activate
           dvc repro finalize_model
+      - name: Create model card
+        run: |
+          python scripts/create_model_card.py
       - name: Push model on Hugging Face
         env: 
           HF_USERNAME: ${{ env.HF_USERNAME }}
