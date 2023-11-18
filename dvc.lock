@@ -532,7 +532,11 @@ stages:
     params:
       params.yaml:
         classifier:
-          _target_: sklearn.ensemble.RandomForestClassifier
+          estimator:
+            _target_: sklearn.ensemble.RandomForestClassifier
+          cv: 5
+          _target_: sklearn.calibration.CalibratedClassifierCV
+          method: isotonic
         column_mapping:
           id: url
           target: status
@@ -559,6 +563,6 @@ stages:
     outs:
     - path: models
       hash: md5
-      md5: 98662b0db68114852b3f41486c6897e4.dir
-      size: 16541307
+      md5: 01e01fa9c56998b2c944f988f9d5ba7b.dir
+      size: 68474796
       nfiles: 2
