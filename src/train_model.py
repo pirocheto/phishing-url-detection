@@ -1,7 +1,7 @@
+import pickle
 import warnings
 
 import dvc.api
-import joblib
 import pandas as pd
 from hydra.utils import instantiate
 from sklearn.exceptions import ConvergenceWarning
@@ -29,4 +29,5 @@ if __name__ == "__main__":
     classifier = instantiate(params["classifier"])
     classifier.fit(X_train, y_train)
 
-    joblib.dump(classifier, params["path"]["results"]["models"]["classifier"])
+    with open(params["path"]["results"]["models"]["classifier"], "wb") as fp:
+        pickle.dump(classifier, fp)
