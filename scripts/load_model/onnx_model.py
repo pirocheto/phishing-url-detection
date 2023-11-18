@@ -41,7 +41,7 @@ for url, proba in zip(data, probas):
     print(f"Likelihood of being a phishing site: {proba[1] * 100:.2f}%")
     print("----")
 
-# Output:
+# Expected output:
 # URL: https://www.rga.com/about/workplace
 # Likelihood of being a phishing site: 0.89%
 # ----
