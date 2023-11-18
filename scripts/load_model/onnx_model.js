@@ -1,6 +1,6 @@
 const ort = require('onnxruntime-node');
 
-const urls = [
+const data = [
     {
         "url": "http://rapidpaws.com/wp-content/we_transfer/index2.php?email=/",
         "nb_hyperlinks": 1,
@@ -18,13 +18,12 @@ const urls = [
 
 async function main() {
     try {
-
         // Creating an ONNX inference session with the specified model
         const model_path = "./models/model.onnx";
         const session = await ort.InferenceSession.create(model_path);
         
         // Get values from data and remove url links
-        const inputs = urls.map(url => Object.values(url).slice(1));
+        const inputs = data.map(url => Object.values(url).slice(1));
         
         // Flattening the 2D array to get a 1D array
         const flattenInputs = inputs.flat();
@@ -39,7 +38,7 @@ async function main() {
         const probas = results['probabilities'].data;
         
         // Displaying results for each URL
-        urls.forEach((url, index) => {
+        data.forEach((url, index) => {
             // The index * 2 + 1 is used to access the probability associated with the phishing class
             const proba = probas[index * 2 + 1];
             const percent = (proba * 100).toFixed(2);
