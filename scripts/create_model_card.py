@@ -45,18 +45,14 @@ model_card = card.Card(model, metadata=card.metadata_from_config(dst))
 
 # Set metadata for the model card
 model_card.metadata.license = "mit"
-# model_card.metadata.tags = ["classification", "phishing"]
-# model_card.metadata.library_name = "sklearn"
-# model_card.metadata.pipeline_tag = "tabular-classification"
+model_card.metadata.tags = [
+    "tabular-classification",
+    "sklearn",
+    "phishing",
+]
 
+model_card.metadata.pipeline_tag = "tabular-classification"
 
-# Add plots to the model card
-model_card.add_plot(
-    **{
-        "Model description/Test Report": "plots/classification_report.png",
-        "Model description/Model Interpretation/Feature Importances": "plots/feature_importances.png",
-    }
-)
 
 # Read code snippets from files for model deployment
 with open("scripts/load_model/onnx_model.py") as fp:
