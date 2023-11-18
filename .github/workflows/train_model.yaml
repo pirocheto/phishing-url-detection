@@ -28,7 +28,7 @@ jobs:
           python scripts/create_model_card.py
       - name: Push model on Hugging Face
         env: 
-          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+          HF_USERNAME: ${{ vars.HF_USERNAME }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_MODEL: phishing-url-detection
 
