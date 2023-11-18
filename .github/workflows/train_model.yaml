@@ -36,9 +36,13 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          cp -r hf_model_hub temp
-          cd temp
+          git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
+          cp -r hf_model_hub $HF_MODEL
+
           git add --all
           git commit -m "update model"
-          git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL main
+          git push
+          
+
+
 
