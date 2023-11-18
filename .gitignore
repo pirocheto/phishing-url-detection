@@ -1,1 +1,3 @@
-/dvc_plots
+dvc_plots/
+__pycache__/
+hf_model_hub/

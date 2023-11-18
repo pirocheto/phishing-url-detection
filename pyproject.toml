@@ -15,13 +15,13 @@ seaborn = "^0.13.0"
 catboost = "^1.2.2"
 lightgbm = "^4.1.0"
 xgboost = "^2.0.1"
-dill = "^0.3.7"
 skl2onnx = "^1.15.0"
+skops = "^0.9.0"
 
 
 [tool.poetry.group.jupyter.dependencies]
 ipykernel = "^6.26.0"
 
-# [build-system]
-# requires = ["poetry-core"]
-# build-backend = "poetry.core.masonry.api"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
