@@ -13,4 +13,4 @@ calibration:
   cv: 5
 
 # Pipeline configuration
-classifier: ${estimator} # Include calibration step as the first step in the pipeline
+classifier: ${calibration} # Include calibration step as the first step in the pipeline
