@@ -42,13 +42,18 @@ hub_utils.add_files(
 
 hub_utils.add_files("models/model.onnx", dst=dst)
 
+metadata = {
+    "license": "mit",
+    "tags": ["classification", "phishing"],
+    "library_name": "sklearn",
+    "pipeline_tag": "tabular-classification",
+}
+
 # Create a model card object
-card = Card(model)
+card = Card(model, metadata=metadata)
 
 # Set metadata for the model card
-card.metadata.license = "mit"
-card.metadata.tags = ["classification", "phishing"]
-card.metadata.library_name = "sklearn"
+
 
 # Add plots to the model card
 card.add_plot(
