@@ -1,6 +1,9 @@
 name: Train Model
 run-name: Train model
-on: [push]
+on:
+  push:
+    branches:
+      - master
 jobs:
   train_model:
     runs-on: ubuntu-latest
