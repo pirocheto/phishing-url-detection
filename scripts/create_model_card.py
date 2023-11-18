@@ -1,7 +1,7 @@
-import pickle
 import shutil
 from pathlib import Path
 
+import joblib
 import pandas as pd
 import sklearn
 import yaml
@@ -15,28 +15,21 @@ except FileNotFoundError:
     pass
 
 
-with open("models/model.pkl", "rb") as fp:
-    model = pickle.load(fp)
-
+model = joblib.load("models/model.pkl")
 
 df_test = pd.read_csv("data/selected/test.csv", index_col="url")
 
 hub_utils.init(
     model="models/model.pkl",
     task="tabular-classification",
-    requirements=[f"scikit-learn={sklearn.__version__}"],
+    requirements=[
+        f"scikit-learn={sklearn.__version__}",
+        f"joblib={joblib.__version__}",
+    ],
     dst=dst,
-    data=df_test[:5],
+    data=df_test.head(5),
 )
 
-plots_dir = dst / "plots"
-plots_dir.mkdir(exist_ok=True)
-
-hub_utils.add_files(
-    "./results/classification_report.png",
-    "./results/plots/feature_importances.png",
-    dst=plots_dir,
-)
 
 hub_utils.add_files("models/model.onnx", dst=dst)
 
@@ -45,24 +38,25 @@ model_card = card.Card(model, metadata=card.metadata_from_config(dst))
 
 # Set metadata for the model card
 model_card.metadata.license = "mit"
+model_card.metadata.inference = False
+model_card.metadata.pipeline_tag = "tabular-classification"
 model_card.metadata.tags = [
     "tabular-classification",
     "sklearn",
     "phishing",
+    "onnx",
 ]
-
-model_card.metadata.pipeline_tag = "tabular-classification"
 
 
 # Read code snippets from files for model deployment
 with open("scripts/load_model/onnx_model.py") as fp:
     onnx_py_code = fp.read()
 
-with open("scripts/load_model/onnx_model.js") as fp:
-    onnx_js_code = fp.read()
+# with open("scripts/load_model/onnx_model.js") as fp:
+#     onnx_js_code = fp.read()
 
-with open("scripts/load_model/joblib_model.py") as fp:
-    joblib_code = fp.read()
+# with open("scripts/load_model/joblib_model.py") as fp:
+#     joblib_code = fp.read()
 
 # Add code snippets to the model card
 model_card.add(
@@ -70,9 +64,9 @@ model_card.add(
         "Model description": "",
         "Model description/Training Procedure": "",
         "How to Get Started with the Model": "Below are some code snippets to load the model.",
-        "How to Get Started with the Model/With joblib (not recommended)": f"```python  \n{joblib_code}  \n```",
+        # "How to Get Started with the Model/With joblib (not recommended)": f"```python  \n{joblib_code}  \n```",
         "How to Get Started with the Model/With ONNX (recommended)/Python": f"```python  \n{onnx_py_code}  \n```",
-        "How to Get Started with the Model/With ONNX (recommended)/JavaScript": f"```javascript  \n{onnx_js_code}  \n```",
+        # "How to Get Started with the Model/With ONNX (recommended)/JavaScript": f"```javascript  \n{onnx_js_code}  \n```",
     },
 )
 
