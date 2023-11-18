@@ -40,7 +40,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add --all
-          git diff-index --quiet HEAD || git commit -m "update model"
+          git diff-index --quiet HEAD || git commit -m "commit from github"
           git push
           
 
