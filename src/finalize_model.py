@@ -1,8 +1,8 @@
 import os
 import warnings
 
-import dill
 import dvc.api
+import joblib
 import numpy as np
 import pandas as pd
 from hydra.utils import instantiate
@@ -55,8 +55,7 @@ if __name__ == "__main__":
     # 3. Save the model
     # Save model in pickle format
     os.makedirs(params["path"]["final_models"]["dir"], exist_ok=True)
-    with open(params["path"]["final_models"]["pkl_model"], "wb") as fp:
-        dill.dump(model, fp)
+    joblib.dump(model, params["path"]["final_models"]["pkl_model"])
 
     # Save model in onnx format
     onx = to_onnx(model, X_train[:1].astype(np.float32), options={"zipmap": False})

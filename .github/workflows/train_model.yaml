@@ -22,3 +22,17 @@ jobs:
         run: |
           source .venv/bin/activate
           dvc repro finalize_model
+      - name: Push model on Hugging Face
+        env: 
+          HF_USERNAME: ${{ env.HF_USERNAME }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_MODEL: phishing-url-detection
+
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add hf_model_hub
+          git commit -m "update model"
+          git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/models/$HF_USERNAME/$HF_MODEL main
+
