@@ -18,12 +18,6 @@ path:
       train: ${path.data.transformed.dir}/train.csv
       test: ${path.data.transformed.dir}/test.csv
 
-    # Path to selected data
-    selected:
-      dir: ${path.data.dir}/selected
-      train: ${path.data.selected.dir}/train.csv
-      test: ${path.data.selected.dir}/test.csv
-
     # Path to predicted data
     predicted:
       dir: ${path.data.dir}/predicted
@@ -43,9 +37,6 @@ path:
     # Path to the metrics file
     metrics: ${path.results.dir}/metrics.yaml
 
-    # Path to the selected features file
-    selected_features: ${path.results.dir}/selected_features.yaml
-
     # Path classification report file
     classification_report: ${path.results.dir}/classification_report.png
 
@@ -57,17 +48,8 @@ path:
       # Path to data proportion plot
       data_proportion: ${path.results.plots.dir}/data_proportion.png
 
-      # Path to correlation matrix plot
-      correlation_matrix: ${path.results.plots.dir}/correlation_matrix.png
-
-      # Path to feature statistics plot
-      feature_statistics: ${path.results.plots.dir}/feature_statistics.pdf
-
       # Path to metrics table plot
       metrics_table: ${path.results.plots.dir}/metrics_table.png
-
-      # Path to feature importances plot
-      feature_importances: ${path.results.plots.dir}/feature_importances.png
 
       # Path to confusion matrix plot
       confusion_matrix: ${path.results.plots.dir}/confusion_matrix.png

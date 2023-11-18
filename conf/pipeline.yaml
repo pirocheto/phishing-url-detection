@@ -2,10 +2,9 @@
 defaults:
   - _self_
   - preprocessing/target: LabelEncoder
-  - preprocessing/feature: null
-  - feature_selection: SelectKBestMutualInfo # Default feature selection method
-  - estimator: RandomForest # Default classifier for the pipeline
-  - calibration: Isotonic # Default calibration method
+  - preprocessing/feature: TfidfVectorizer
+  - estimator: LinearSVC
+  - calibration: Isotonic
 
 # Calibration configuration
 calibration:

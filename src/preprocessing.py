@@ -8,19 +8,19 @@ from sklearn.preprocessing import FunctionTransformer
 
 # Get the dvc params
 params = dvc.api.params_show(stages="preprocessing")
-path_data_selected = params["path"]["data"]["selected"]
+path_data_raw = params["path"]["data"]["raw"]
 path_data_transformed = params["path"]["data"]["transformed"]
 target = params["column_mapping"]["target"]
 
 if __name__ == "__main__":
     # Load the test dataset
     df_test = pd.read_csv(
-        path_data_selected["test"],
+        path_data_raw["test"],
         index_col=params["column_mapping"]["id"],
     )
     # Load the training dataset
     df_train = pd.read_csv(
-        path_data_selected["train"],
+        path_data_raw["train"],
         index_col=params["column_mapping"]["id"],
     )
 
@@ -41,17 +41,14 @@ if __name__ == "__main__":
     y_test = target_preprocessor.transform(y_test)
 
     # 2. Process features
-    if params["preprocessing"].get("feature", None):
-        feature_preprocessor = instantiate(params["preprocessing"]["feature"])
+    feature_preprocessor = instantiate(params["preprocessing"]["feature"])
 
-        # Fit the feature preprocessor
-        feature_preprocessor.fit(X_train)
+    # Fit the feature preprocessor
+    feature_preprocessor.fit(X_train)
 
-        # Transform the features
-        X_train = feature_preprocessor.transform(X_train)
-        X_test = feature_preprocessor.transform(X_test)
-    else:
-        feature_preprocessor = FunctionTransformer()
+    # Transform the features
+    X_train = feature_preprocessor.transform(X_train)
+    X_test = feature_preprocessor.transform(X_test)
 
     path_preprocessor = params["path"]["results"]["models"]["preprocessor"]
     with open(path_preprocessor, "wb") as fp:
