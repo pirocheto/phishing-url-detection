@@ -93,7 +93,11 @@ calibration:
   _target_: sklearn.calibration.CalibratedClassifierCV
   method: isotonic
 classifier:
-  _target_: sklearn.ensemble.RandomForestClassifier
+  estimator:
+    _target_: sklearn.ensemble.RandomForestClassifier
+  cv: 5
+  _target_: sklearn.calibration.CalibratedClassifierCV
+  method: isotonic
 preprocessing:
   target:
     _target_: sklearn.preprocessing.LabelEncoder
