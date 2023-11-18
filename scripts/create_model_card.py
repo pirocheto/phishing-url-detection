@@ -4,9 +4,9 @@ from pathlib import Path
 import joblib
 import pandas as pd
 import sklearn
+import skops
 import yaml
-from skops import hub_utils
-from skops.card import Card
+from skops import card, hub_utils
 
 dst = Path("hf_model_hub")
 
@@ -41,17 +41,17 @@ hub_utils.add_files(
 hub_utils.add_files("models/model.onnx", dst=dst)
 
 # Create a model card object
-card = Card(model)
+model_card = card.Card(model, metadata=card.metadata_from_config(dst))
 
 # Set metadata for the model card
-card.metadata.license = "mit"
-card.metadata.tags = ["classification", "phishing"]
-card.metadata.library_name = "sklearn"
-card.metadata.pipeline_tag = "tabular-classification"
+model_card.metadata.license = "mit"
+# model_card.metadata.tags = ["classification", "phishing"]
+# model_card.metadata.library_name = "sklearn"
+# model_card.metadata.pipeline_tag = "tabular-classification"
 
 
 # Add plots to the model card
-card.add_plot(
+model_card.add_plot(
     **{
         "Model description/Test Report": "plots/classification_report.png",
         "Model description/Model Interpretation/Feature Importances": "plots/feature_importances.png",
@@ -69,7 +69,7 @@ with open("scripts/load_model/joblib_model.py") as fp:
     joblib_code = fp.read()
 
 # Add code snippets to the model card
-card.add(
+model_card.add(
     **{
         "Model description": "",
         "Model description/Training Procedure": "",
@@ -81,7 +81,7 @@ card.add(
 )
 
 # Add a plot describing the model architecture
-card.add_model_plot(
+model_card.add_model_plot(
     description="This is the architecture of the model loaded by joblib."
 )
 
@@ -90,13 +90,13 @@ with open("results/metrics.yaml", "r") as fp:
     metrics = yaml.safe_load(fp)
 
 # Add metrics to the model card
-card.add_metrics(**metrics["test"])
+model_card.add_metrics(**metrics["test"])
 
 # Delete unnecessary sections from the model card
-card.delete("Model description/Intended uses & limitations")
-card.delete("Model Card Authors")
-card.delete("Model Card Contact")
-card.delete("Citation")
+model_card.delete("Model description/Intended uses & limitations")
+model_card.delete("Model Card Authors")
+model_card.delete("Model Card Contact")
+model_card.delete("Citation")
 
 # Save the model card
-card.save(Path(dst) / "README.md")
+model_card.save(Path(dst) / "README.md")
