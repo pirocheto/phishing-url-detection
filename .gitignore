@@ -1,3 +1,6 @@
 dvc_plots/
 __pycache__/
 hf_model_hub/
+node_modules/
+package-lock.json
+package.json
