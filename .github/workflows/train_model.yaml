@@ -24,7 +24,7 @@ jobs:
       - name: Train model
         run: |
           source .venv/bin/activate
-          python python scripts/train_model.py -d data/data.csv -m dvclive/model.pkl -o models
+          python scripts/train_model.py -d data/data.csv -m dvclive/model.pkl -o models
       - name: Push model on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
