@@ -55,12 +55,12 @@ stages:
       size: 3661166
     - path: src/split_data.py
       hash: md5
-      md5: 10645cd25751589fb76bfdd97ff29f12
-      size: 2532
+      md5: 3e7c9daeaf22fc2653f705b0ed0a30ab
+      size: 2549
     params:
       params.yaml:
         column_mapping:
-          id: url
+          feature: url
           target: status
           pos_label: phishing
           prediction_label: prediction_label
@@ -79,69 +79,80 @@ stages:
     outs:
     - path: data/raw
       hash: md5
-      md5: 9fec2c93dc03b4ebb1fe4306dc1eecbb.dir
-      size: 3648308
+      md5: 000b75bf48947366c86809a20fe811e5.dir
+      size: 824540
       nfiles: 2
     - path: results/plots/data_proportion.png
       hash: md5
-      md5: 53ce6fd6879b55da43fabad0dbd3b5a5
+      md5: dbddd8db4d07822963af055209836a3b
       size: 20127
   train_model:
     cmd: python src/train_model.py
     deps:
-    - path: data/transformed
+    - path: data/raw
       hash: md5
-      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
-      size: 1466073
+      md5: 000b75bf48947366c86809a20fe811e5.dir
+      size: 824540
       nfiles: 2
+    - path: results/models/preprocessor.pkl
+      hash: md5
+      md5: 8d8536634de2db4ecd5ff15db78e7e9b
+      size: 5798649
     - path: src/train_model.py
       hash: md5
-      md5: 8621ab47c5a872380d2e1f19e1f8e0f2
-      size: 1143
+      md5: a0f87fef79455118adb2e4edf3e44ee4
+      size: 1430
     params:
       params.yaml:
         classifier:
           estimator:
-            _target_: sklearn.ensemble.RandomForestClassifier
+            _target_: sklearn.svm.LinearSVC
+            dual: auto
+            C: 50
           cv: 5
           _target_: sklearn.calibration.CalibratedClassifierCV
           method: isotonic
         column_mapping:
-          id: url
+          feature: url
           target: status
           pos_label: phishing
           prediction_label: prediction_label
           prediction_proba: prediction_proba
-        path.data.transformed:
-          dir: data/transformed
-          train: data/transformed/train.csv
-          test: data/transformed/test.csv
-        path.results.models.classifier: results/models/classifier.pkl
+        path.data.raw:
+          dir: data/raw
+          train: data/raw/train.csv
+          test: data/raw/test.csv
+        path.results.models:
+          dir: results/models
+          label_encoder: results/models/label_encoder.pkl
+          preprocessor: results/models/preprocessor.pkl
+          classifier: results/models/classifier.pkl
     outs:
     - path: results/models/classifier.pkl
       hash: md5
-      md5: 304e6dcf867e41755067ad488aae46bd
-      size: 32833776
+      md5: 43f86bf775c9ff758f527920e3858028
+      size: 7991239
   test_model:
     cmd: python src/test_model.py
     deps:
-    - path: data/transformed
+    - path: data/raw
       hash: md5
-      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
-      size: 1466073
+      md5: 000b75bf48947366c86809a20fe811e5.dir
+      size: 824540
       nfiles: 2
-    - path: results/models/classifier.pkl
+    - path: results/models
       hash: md5
-      md5: 304e6dcf867e41755067ad488aae46bd
-      size: 32833776
+      md5: 4e97e91f93d33dcc5e08c4c91dac9cca.dir
+      size: 13790154
+      nfiles: 3
     - path: src/test_model.py
       hash: md5
-      md5: 3462397b28f7cbff6b7c8c1222927541
-      size: 15970
+      md5: dfad96c92fd4860362342ec63785d00b
+      size: 16450
     params:
       params.yaml:
         column_mapping:
-          id: url
+          feature: url
           target: status
           pos_label: phishing
           prediction_label: prediction_label
@@ -150,13 +161,17 @@ stages:
           dir: data/predicted
           train: data/predicted/train.csv
           test: data/predicted/test.csv
-        path.data.transformed:
-          dir: data/transformed
-          train: data/transformed/train.csv
-          test: data/transformed/test.csv
+        path.data.raw:
+          dir: data/raw
+          train: data/raw/train.csv
+          test: data/raw/test.csv
         path.results.classification_report: results/classification_report.png
         path.results.metrics: results/metrics.yaml
-        path.results.models.classifier: results/models/classifier.pkl
+        path.results.models:
+          dir: results/models
+          label_encoder: results/models/label_encoder.pkl
+          preprocessor: results/models/preprocessor.pkl
+          classifier: results/models/classifier.pkl
         path.results.plots.calibration_curve: results/plots/calibration_curve.png
         path.results.plots.confusion_matrix: results/plots/confusion_matrix.png
         path.results.plots.cumulative_distribution: results/plots/cumulative_distribution.png
@@ -168,45 +183,45 @@ stages:
     outs:
     - path: data/predicted
       hash: md5
-      md5: 00eeab9258eec25a7e244a179bda7d02.dir
-      size: 1716514
+      md5: 3f1d15b446b994447d9d21756f0812be.dir
+      size: 999952
       nfiles: 2
     - path: results/classification_report.png
       hash: md5
-      md5: ae3bcf4b2fc91c881a7e4329ac5d6f3c
-      size: 111089
+      md5: 73aae7451c2b0ebb57ac53a67d18127f
+      size: 109757
     - path: results/metrics.yaml
       hash: md5
-      md5: aaccd82173b11f70dc197dd445ff5625
-      size: 258
+      md5: 8a0496ae2eac355880205bd3cccfd901
+      size: 199
     - path: results/plots/calibration_curve.png
       hash: md5
-      md5: 3d53b701f9e73c3e54c611229cfe9e0e
-      size: 28733
+      md5: 3c6f3f497ff9f05f8038706acdb0edc5
+      size: 29338
     - path: results/plots/confusion_matrix.png
       hash: md5
-      md5: 69eeca1d2840e8b0f3d5e2d428f500fb
-      size: 12522
+      md5: b9ca4430022c7cb46464b067accc3cfe
+      size: 12389
     - path: results/plots/cumulative_distribution.png
       hash: md5
-      md5: 9139aac797cb518dd15f750738983ee7
-      size: 34212
+      md5: 9aad915b6830dce484f594dc64486ec9
+      size: 32386
     - path: results/plots/metrics_table.png
       hash: md5
-      md5: b5b2da60c39ec5ad5c2a62163c1ca765
-      size: 14222
+      md5: 61599ae90e8fbb6baa7c9ec567e8da21
+      size: 13733
     - path: results/plots/precision_recall_curve.png
       hash: md5
-      md5: 12436cbcf5f8353d9fe656f565ecf583
-      size: 22320
+      md5: 449db47eb9ea0e8bc9ad7400217e9e42
+      size: 22119
     - path: results/plots/roc_curve.png
       hash: md5
-      md5: 67f5fe94f71bef17e163f9b5f2143fea
-      size: 35239
+      md5: 3ef3c299b626025e09e2b27e7a73f3a9
+      size: 34865
     - path: results/plots/score_distribution.png
       hash: md5
-      md5: c36cea5a95f781c8321bddd139c6b2e7
-      size: 18458
+      md5: 6f1aa70f2f05249d36bd7aef11a1ecff
+      size: 19288
   dag:
     cmd: dvc dag --md > dag.md
   create_model_card:
@@ -415,45 +430,56 @@ stages:
   preprocessing:
     cmd: python src/preprocessing.py
     deps:
-    - path: data/selected
+    - path: data/raw
       hash: md5
-      md5: 6e0905ea6b999eac12432d9e93c3417d.dir
-      size: 1557513
+      md5: 000b75bf48947366c86809a20fe811e5.dir
+      size: 824540
       nfiles: 2
     - path: src/preprocessing.py
       hash: md5
-      md5: 322288efbcb6d86d05480b07f8c24545
-      size: 2471
+      md5: 63ca53acaf19146fdba4439a80141bea
+      size: 1727
     params:
       params.yaml:
         column_mapping:
-          id: url
+          feature: url
           target: status
           pos_label: phishing
           prediction_label: prediction_label
           prediction_proba: prediction_proba
-        path.data.selected:
-          dir: data/selected
-          train: data/selected/train.csv
-          test: data/selected/test.csv
-        path.data.transformed:
-          dir: data/transformed
-          train: data/transformed/train.csv
-          test: data/transformed/test.csv
-        path.results.models.preprocessor: results/models/preprocessor.pkl
+        path.data.raw:
+          dir: data/raw
+          train: data/raw/train.csv
+          test: data/raw/test.csv
+        path.results.models:
+          dir: results/models
+          label_encoder: results/models/label_encoder.pkl
+          preprocessor: results/models/preprocessor.pkl
+          classifier: results/models/classifier.pkl
         preprocessing:
           target:
             _target_: sklearn.preprocessing.LabelEncoder
+          feature:
+            _target_: sklearn.pipeline.make_union
+            _args_:
+            - _target_: sklearn.feature_extraction.text.TfidfVectorizer
+              ngram_range:
+                _target_: builtins.tuple
+                _args_:
+                - - 1
+                  - 2
+            - _target_: sklearn.feature_extraction.text.TfidfVectorizer
+              analyzer: char
+              ngram_range:
+                _target_: builtins.tuple
+                _args_:
+                - - 1
+                  - 4
     outs:
-    - path: data/transformed
-      hash: md5
-      md5: d2d39cebe43b73eba4d1b815520f3f1b.dir
-      size: 1466073
-      nfiles: 2
     - path: results/models/preprocessor.pkl
       hash: md5
-      md5: 1b516670557c88fe8e03df4315e99c92
-      size: 234
+      md5: 8d8536634de2db4ecd5ff15db78e7e9b
+      size: 5798649
   analyze_data:
     cmd:
     - python src/analyze_data.py
@@ -527,31 +553,22 @@ stages:
       size: 3661166
     - path: src/finalize_model.py
       hash: md5
-      md5: d23319e2fef1d5cb1a8b30cb2988e174
-      size: 2148
+      md5: 2af5704a1462d5664c148db5f757b39d
+      size: 1723
     params:
       params.yaml:
         classifier:
           estimator:
-            _target_: sklearn.ensemble.RandomForestClassifier
+            _target_: sklearn.svm.LinearSVC
           cv: 5
           _target_: sklearn.calibration.CalibratedClassifierCV
           method: isotonic
         column_mapping:
-          id: url
+          feature: url
           target: status
           pos_label: phishing
           prediction_label: prediction_label
           prediction_proba: prediction_proba
-        feature_selection:
-          _target_: sklearn.feature_selection.SelectKBest
-          score_func:
-            _target_: builtins.getattr
-            _args_:
-            - _target_: importlib.import_module
-              name: sklearn.feature_selection
-            - mutual_info_classif
-          k: 10
         path.data.all: data/all.csv
         path.final_models:
           dir: models
@@ -560,9 +577,18 @@ stages:
         preprocessing:
           target:
             _target_: sklearn.preprocessing.LabelEncoder
+          feature:
+            _target_: sklearn.pipeline.make_union
+            _args_:
+            - _target_: sklearn.feature_extraction.text.TfidfVectorizer
+              ngram_range:
+                _target_: builtins.tuple
+                _args_:
+                - - 2
+                  - 2
     outs:
     - path: models
       hash: md5
-      md5: 01e01fa9c56998b2c944f988f9d5ba7b.dir
-      size: 68474796
+      md5: f62deca132c6d7cc764923a138d4f831.dir
+      size: 6977121
       nfiles: 2

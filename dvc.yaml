@@ -54,15 +54,12 @@ stages:
     params:
       - preprocessing
       - path.data.raw
-      - path.data.transformed
       - column_mapping
-      - path.results.models.preprocessor
+      - path.results.models
     deps:
       - src/preprocessing.py
       - ${path.data.raw.dir}
     outs:
-      - ${path.data.transformed.dir}:
-          cache: False
       - ${path.results.models.preprocessor}:
           cache: False
 
@@ -75,11 +72,12 @@ stages:
     params:
       - column_mapping
       - classifier
-      - path.data.transformed
-      - path.results.models.classifier
+      - path.data.raw
+      - path.results.models
     deps:
+      - ${path.results.models.preprocessor}
       - src/train_model.py
-      - ${path.data.transformed.dir}
+      - ${path.data.raw.dir}
     outs:
       - ${path.results.models.classifier}:
           cache: False
@@ -92,9 +90,9 @@ stages:
     params:
       - column_mapping
       - plt_style
-      - path.data.transformed
+      - path.data.raw
       - path.data.predicted
-      - path.results.models.classifier
+      - path.results.models
       - path.results.metrics
       - path.results.classification_report
       - path.results.plots.confusion_matrix
@@ -106,8 +104,8 @@ stages:
       - path.results.plots.metrics_table
     deps:
       - src/test_model.py
-      - ${path.data.transformed.dir}
-      - ${path.results.models.classifier}
+      - ${path.data.raw.dir}
+      - ${path.results.models.dir}
     plots:
       - ${path.results.plots.confusion_matrix}:
           cache: False
@@ -138,7 +136,6 @@ stages:
       - python src/finalize_model.py
     params:
       - path.data.all
-      - feature_selection
       - column_mapping
       - preprocessing
       - classifier

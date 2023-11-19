@@ -12,12 +12,6 @@ path:
       train: ${path.data.raw.dir}/train.csv
       test: ${path.data.raw.dir}/test.csv
 
-    # Path to transformed data
-    transformed:
-      dir: ${path.data.dir}/transformed
-      train: ${path.data.transformed.dir}/train.csv
-      test: ${path.data.transformed.dir}/test.csv
-
     # Path to predicted data
     predicted:
       dir: ${path.data.dir}/predicted
@@ -31,6 +25,7 @@ path:
     # Path to the trained model binary
     models:
       dir: ${path.results.dir}/models
+      label_encoder: ${path.results.models.dir}/label_encoder.pkl
       preprocessor: ${path.results.models.dir}/preprocessor.pkl
       classifier: ${path.results.models.dir}/classifier.pkl
 
