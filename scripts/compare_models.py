@@ -36,33 +36,35 @@ REMOVE_EXISTING = True
 
 # List of classifiers with their codes
 classifiers = [
-    ("nb", "GaussianNB"),
-    ("svm", "LinearSVC"),
-    ("lr", "LogisticRegression"),
-    ("rf", "RandomForest"),
-    ("dt", "TreeDecisionClassifier"),
-    ("pct", "Perceptron"),
-    ("xgboost", "XGBClassifier"),
-    ("gbc", "GradientBoostingClassifier"),
-    ("ada", "AdaBoostClassifier"),
-    ("et", "ExtraTreesClassifier"),
+    ("nb", None, "GaussianNB"),
+    ("svm", "StandardScaler", "LinearSVC"),
+    ("lr", "StandardScaler", "LogisticRegression"),
+    ("rf", None, "RandomForest"),
+    ("dt", None, "TreeDecisionClassifier"),
+    ("pct", None, "Perceptron"),
+    ("xgboost", None, "XGBClassifier"),
+    ("gbc", None, "GradientBoostingClassifier"),
+    ("ada", None, "AdaBoostClassifier"),
+    ("et", None, "ExtraTreesClassifier"),
     ("knn", "Normalizer", "KNeighborsClassifier"),
-    ("ridge", "RidgeClassifier"),
-    ("lda", "LinearDiscriminantAnalysis"),
-    ("qda", "QuadraticDiscriminantAnalysis"),
-    ("lightgdm", "LGBMClassifier"),
-    ("catboost", "CatBoostClassifier"),
+    ("ridge", None, "RidgeClassifier"),
+    ("lda", None, "LinearDiscriminantAnalysis"),
+    ("qda", None, "QuadraticDiscriminantAnalysis"),
+    ("lightgdm", None, "LGBMClassifier"),
+    ("catboost", None, "CatBoostClassifier"),
 ]
 
 
 # Loop over the classifiers
-for exp_name, classifier in classifiers:
+for exp_name, preprocessor, classifier in classifiers:
     # Remove existing DVC experiment if specified
     if REMOVE_EXISTING:
         subprocess.run(f"dvc exp remove {exp_name} -q", shell=True)
 
     # Build the DVC experiment run command
-    cmd = f"dvc exp run {STAGE} -n {exp_name} --queue -S estimator={classifier}"
+    cmd = f"dvc exp run {STAGE} -n {exp_name} --queue -S classifier={classifier}"
+    if preprocessor:
+        cmd += f" -S preprocessing/feature={preprocessor}"
 
     try:
         # Execute the DVC experiment run command
