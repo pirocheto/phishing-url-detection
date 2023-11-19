@@ -3,7 +3,7 @@ run-name: Train model
 on:
   push:
     branches:
-      - master
+      - dvclive
 jobs:
   train_model:
     runs-on: ubuntu-latest
@@ -24,17 +24,12 @@ jobs:
       - name: Train model
         run: |
           source .venv/bin/activate
-          dvc repro finalize_model
-      - name: Create model card
-        run: |
-          source .venv/bin/activate
-          python scripts/create_model_card.py
+          python python scripts/train_model.py -d data/data.csv -m dvclive/model.pkl -o models
       - name: Push model on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_MODEL: phishing-url-detection
-
         run: |
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cp -r hf_model_hub/* $HF_MODEL/
@@ -43,7 +38,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add --all
-          git diff-index --quiet HEAD || git commit -m "commit from github"
+          git diff-index --quiet HEAD || git commit -m "push model from github actions"
           git push
           
 

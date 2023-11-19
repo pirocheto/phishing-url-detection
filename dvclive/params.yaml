@@ -1,8 +1,4 @@
-tfidf__1__ngram_range:
-- 0
-- 1
-tfidf__2__ngram_range:
-- 0
-- 5
-svm__C: 4.799958978385303e-05
-svm__loss: squared_hinge
+max_ngram_1: 1
+max_ngram_2: 5
+C: 4.799958978385303e-05
+loss: squared_hinge
