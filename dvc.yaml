@@ -1,8 +1,2 @@
-stages:
-  train:
-    cmd: python scripts/optimize.py
-    deps:
-      - scripts/optimize.py
-      - data
-    outs:
-      - dvclive
+params:
+- dvclive/params.yaml

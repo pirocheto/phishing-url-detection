@@ -1,0 +1,20 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python scripts/optimize.py
+    deps:
+    - path: data
+      hash: md5
+      md5: 747dd6b2fd4654368e411de3079a0354.dir
+      size: 8503243
+      nfiles: 9
+    - path: scripts/optimize.py
+      hash: md5
+      md5: 8918f774df62762dbe20b0e7ee0c5c76
+      size: 2897
+    outs:
+    - path: dvclive
+      hash: md5
+      md5: 378212cc9bd3b095310b6c4ff67e59a2.dir
+      size: 233
+      nfiles: 7
