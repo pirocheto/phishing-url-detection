@@ -1,9 +1,8 @@
-metrics:
-- dvclive-optuna/metrics.json
-- dvclive/metrics.json
-params:
-- dvclive-optuna/params.yaml
-- dvclive/params.yaml
-plots:
-- dvclive/plots/metrics:
-    x: step
+stages:
+  train:
+    cmd: python scripts/optimize.py
+    deps:
+      - scripts/optimize.py
+      - data
+    outs:
+      - dvclive
