@@ -1,0 +1,8 @@
+tfidf__1__ngram_range:
+- 0
+- 1
+tfidf__2__ngram_range:
+- 0
+- 5
+svm__C: 4.799958978385303e-05
+svm__loss: squared_hinge
