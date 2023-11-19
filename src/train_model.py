@@ -15,18 +15,25 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 params = dvc.api.params_show(stages="train_model")
 
 if __name__ == "__main__":
+    with open(params["path"]["results"]["models"]["preprocessor"], "rb") as fp:
+        preprocessor = pickle.load(fp)
+
+    with open(params["path"]["results"]["models"]["label_encoder"], "rb") as fp:
+        label_encoder = pickle.load(fp)
+
     # Get the training dataset with only best features
-    df_train = pd.read_csv(
-        params["path"]["data"]["transformed"]["train"],
-        index_col=params["column_mapping"]["id"],
-    )
+    df_train = pd.read_csv(params["path"]["data"]["raw"]["train"])
 
     # Seperate data into features (X_train) and target (y_train) to be compliant with sklean API
+    X_train = df_train[params["column_mapping"]["feature"]]
     y_train = df_train[params["column_mapping"]["target"]]
-    X_train = df_train.drop(params["column_mapping"]["target"], axis=1)
 
     # Load and fit the model on the training dataset, then save it.
+    X_train = preprocessor.transform(X_train)
+    y_train = label_encoder.transform(y_train)
+
     classifier = instantiate(params["classifier"])
+
     classifier.fit(X_train, y_train)
 
     with open(params["path"]["results"]["models"]["classifier"], "wb") as fp:

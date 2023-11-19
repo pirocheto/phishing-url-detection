@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 # Get the dvc params
 params = dvc.api.params_show(stages="split_data")
 path_data_raw = params["path"]["data"]["raw"]
+target = params["column_mapping"]["target"]
 
 # Use a matplotlib style to make more beautiful graphics
 plt.style.use(params["plt_style"])
@@ -61,10 +62,9 @@ def plot_data_proportion(data, labels, ax=None):
 
 if __name__ == "__main__":
     # 1. Split the data
-    df = pd.read_csv(
-        params["path"]["data"]["all"],
-        index_col=params["column_mapping"]["id"],
-    )
+    df = pd.read_csv(params["path"]["data"]["all"])
+
+    df = df[[params["column_mapping"]["feature"], target]]
 
     X_train, X_test = train_test_split(df, **params["train_test_split"])
 
@@ -72,11 +72,10 @@ if __name__ == "__main__":
     # Create directory for raw data
     os.makedirs(path_data_raw["dir"], exist_ok=True)
 
-    X_train.to_csv(path_data_raw["train"])
-    X_test.to_csv(path_data_raw["test"])
+    X_train.to_csv(path_data_raw["train"], index=False)
+    X_test.to_csv(path_data_raw["test"], index=False)
 
     # 2. Make the plot showing the data proportion
-    target = params["column_mapping"]["target"]
     labels = X_train[target].value_counts().index
     data_proportion = np.transpose(
         [

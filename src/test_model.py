@@ -441,28 +441,35 @@ def plot_metrics_table(metrics, ax=None):
 if __name__ == "__main__":
     # 1. Make predictions on test dataset
     # Read the train dataset
-    df_train = pd.read_csv(
-        params["path"]["data"]["transformed"]["train"],
-        index_col=params["column_mapping"]["id"],
-    )
-    X_train = df_train.drop(target, axis=1)
+    df_train = pd.read_csv(params["path"]["data"]["raw"]["train"])
+    X_train = df_train[params["column_mapping"]["feature"]]
+    y_train = df_train[params["column_mapping"]["target"]]
 
     # Read the test dataset
-    df_test = pd.read_csv(
-        params["path"]["data"]["transformed"]["test"],
-        index_col=params["column_mapping"]["id"],
-    )
-    X_test = df_test.drop(target, axis=1)
+    df_test = pd.read_csv(params["path"]["data"]["raw"]["test"])
+    X_test = df_test[params["column_mapping"]["feature"]]
+    y_test = df_test[params["column_mapping"]["target"]]
 
     # Load the trained model
+    with open(params["path"]["results"]["models"]["preprocessor"], "rb") as fp:
+        preprocessor = pickle.load(fp)
+
+    with open(params["path"]["results"]["models"]["label_encoder"], "rb") as fp:
+        label_encoder = pickle.load(fp)
+
     with open(params["path"]["results"]["models"]["classifier"], "rb") as fp:
         classifier = pickle.load(fp)
 
+    X_train = preprocessor.transform(X_train)
+    X_test = preprocessor.transform(X_test)
+
     # Make predictions on train dataset
+    df_train[target] = label_encoder.transform(y_train)
     df_train[proba_pred] = classifier.predict_proba(X_train)[:, 1]
     df_train[label_pred] = classifier.predict(X_train)
 
     # Make predictions on test dataset
+    df_test[target] = label_encoder.transform(y_test)
     df_test[proba_pred] = classifier.predict_proba(X_test)[:, 1]
     df_test[label_pred] = classifier.predict(X_test)
 
