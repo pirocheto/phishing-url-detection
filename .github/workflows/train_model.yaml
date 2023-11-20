@@ -34,6 +34,7 @@ jobs:
           HF_USERNAME: ${{ vars.HF_USERNAME }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_MODEL: phishing-url-detection
+          BRANCH: ${{ github.head_ref }}
         run: |
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cp -r models/* $HF_MODEL/
@@ -43,4 +44,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
-          git push
+          git push origin $BRANCH
