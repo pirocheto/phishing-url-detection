@@ -43,10 +43,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          if [ -z "$(git show-ref refs/heads/$CURRENT_BRANCH)" ]; then
-            git checkout $CURRENT_BRANCH
+          if [ -z "$(git show-ref refs/heads/$BRANCH)" ]; then
+            git checkout $BRANCH
           else
-            git checkout -b $CURRENT_BRANCH
+            git checkout -b $BRANCH
           fi
 
           git add --all
