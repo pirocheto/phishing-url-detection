@@ -34,7 +34,7 @@ jobs:
           HF_USERNAME: ${{ vars.HF_USERNAME }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_MODEL: phishing-url-detection
-          BRANCH: ${{ github.head_ref }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cp -r models/* $HF_MODEL/
