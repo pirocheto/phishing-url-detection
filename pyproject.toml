@@ -9,19 +9,25 @@ readme = "README.md"
 python = "^3.10"
 scipy = "^1.7.2"
 scikit-learn = "^1.3.2"
+joblib = "^1.3.2"
+typer = "^0.9.0"
+numpy = "^1.26.2"
+
+[tool.poetry.group.dev.dependencies]
 dvc = "^3.27.0"
 matplotlib = "^3.8.0"
 seaborn = "^0.13.0"
 catboost = "^1.2.2"
 lightgbm = "^4.1.0"
 xgboost = "^2.0.1"
-skl2onnx = "^1.15.0"
-skops = "^0.9.0"
-joblib = "^1.3.2"
-onnxruntime = "^1.16.2"
-typer = "^0.9.0"
-datasets = "^2.15.0"
+numpy = "^1.26.2"
 
+[tool.poetry.group.train.dependencies]
+skl2onnx = "^1.15.0"
+
+[tool.poetry.group.test.dependencies]
+onnxruntime = "^1.16.2"
+datasets = "^2.15.0"
 
 [tool.poetry.group.jupyter.dependencies]
 ipykernel = "^6.26.0"
