@@ -33,6 +33,7 @@ def save_model(model, dir="models"):
     onx = to_onnx(
         model,
         initial_types=[("inputs", StringTensorType((None,)))],
+        options={"zipmap": False},
     )
 
     with open(models_dir / "model.onnx", "wb") as fp:
