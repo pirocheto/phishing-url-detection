@@ -42,6 +42,13 @@ jobs:
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+          if git rev-parse --verify $CURRENT_BRANCH > /dev/null 2>&1; then
+            git checkout $CURRENT_BRANCH
+          else
+            git checkout -b $CURRENT_BRANCH
+          fi
+
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
           git push origin $BRANCH
