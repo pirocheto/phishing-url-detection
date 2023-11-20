@@ -3,7 +3,8 @@ run-name: Train model
 on:
   push:
     branches:
-      - dvclive
+      - train
+      - dev
 jobs:
   train_model:
     runs-on: ubuntu-latest

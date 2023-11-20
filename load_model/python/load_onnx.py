@@ -1,16 +1,10 @@
-from pathlib import Path
-
 import numpy as np
 import onnxruntime
 from huggingface_hub import hf_hub_download
 
-# REPO_ID = "pirocheto/phishing-url-detection"
-# FILENAME = "model.onnx"
-# model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
-
-model_path = Path(__file__).parents[2] / "models/model.onnx"
-
-# model_path = "../models/model.onnx"
+REPO_ID = "pirocheto/phishing-url-detection"
+FILENAME = "model.onnx"
+model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
 
 # Initializing the ONNX Runtime session with the pre-trained model
 sess = onnxruntime.InferenceSession(
@@ -20,10 +14,9 @@ sess = onnxruntime.InferenceSession(
 
 # Defining a list of URLs with characteristics
 urls = [
-    "https://www.rga.com/about/workplace",
-    "http://www.iracing.com/tracks/gateway-motorsports-park/",
+    "https://en.wikipedia.org/wiki/Phishing",
+    "http//weird-website.com",
 ]
-
 
 inputs = np.array(urls, dtype="str")
 
