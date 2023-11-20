@@ -1,4 +1,6 @@
 
+
+
 load_data:
 	mkdir -p data && \
 	curl -X GET https://huggingface.co/datasets/pirocheto/phishing-url/raw/main/data.csv -o "data/data.csv"
