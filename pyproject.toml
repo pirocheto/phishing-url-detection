@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "phishing-detection"
+name = "phishing-url-detection"
 version = "0.1.0"
 description = ""
 authors = ["pirocheto"]
@@ -22,6 +22,7 @@ catboost = "^1.2.2"
 lightgbm = "^4.1.0"
 xgboost = "^2.0.1"
 numpy = "^1.26.2"
+huggingface-hub = { extras = ["cli"], version = "^0.19.4" }
 
 [tool.poetry.group.train.dependencies]
 skl2onnx = "^1.15.0"
