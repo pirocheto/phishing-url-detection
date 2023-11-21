@@ -39,6 +39,7 @@ jobs:
           REPO: ${{ github.workspace }}
           HP_MODEL_REPO: /home/runner/work/$HF_MODEL
         run: |
+          echo $HP_MODEL_REPO
           mkdir -p $HP_MODEL_REPO && cd $HP_MODEL_REPO
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cd $HF_MODEL
