@@ -52,6 +52,7 @@ jobs:
             git checkout -b $BRANCH
           fi
 
+          git pull
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
           git push origin $BRANCH
