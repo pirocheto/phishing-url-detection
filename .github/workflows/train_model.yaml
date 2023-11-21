@@ -3,7 +3,7 @@ run-name: Train model
 on:
   push:
     branches:
-      - train
+      - main
       - dev
 jobs:
   train_model:
