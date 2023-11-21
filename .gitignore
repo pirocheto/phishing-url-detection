@@ -9,6 +9,7 @@ package.json
 
 # Ignore files or directories with names starting with "model"
 model*
+!modelcard.md.j2
 
 # Ignore the "data" directory.
 data/
