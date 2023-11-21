@@ -14,6 +14,8 @@ from dvclive import Live
 SEED = 796856567
 DATA_PATH = "data/data.csv"
 
+# TODO: remake this script
+
 df = pd.read_csv("data/all.csv")
 
 X = df["url"]

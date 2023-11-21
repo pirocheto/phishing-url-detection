@@ -1,4 +1,4 @@
-max_ngram_1: 2
-max_ngram_2: 1
-C: 0.7046340502676094
+max_ngram_1: 3
+max_ngram_2: 3
+C: 2.999268618347932
 loss: hinge

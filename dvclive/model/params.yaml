@@ -1,8 +1,8 @@
-cls__estimator__C: 0.7046340502676094
+cls__estimator__C: 2.999268618347932
 cls__estimator__loss: hinge
 tfidf__1__ngram_range: !!python/tuple
 - 1
-- 2
+- 3
 tfidf__2__ngram_range: !!python/tuple
 - 1
-- 1
+- 3
