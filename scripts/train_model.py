@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 import typer
+import yaml
+from model import create_model
 from skl2onnx import to_onnx
 from skl2onnx.common.data_types import StringTensorType
 from sklearn.preprocessing import LabelEncoder
@@ -18,16 +20,19 @@ def load_data(path):
     return X_train, y_train
 
 
-def load_model(path="dvclive/model.pkl"):
-    with open(path, "rb") as fp:
-        model = pickle.load(fp)
+def get_params(path="dvclive/model/params.yaml"):
+    with open(path, "r") as fp:
+        params = yaml.load(fp, Loader=yaml.Loader)
 
-    return model
+    return params
 
 
 def save_model(model, dir="models"):
     models_dir = Path(dir)
     models_dir.mkdir(exist_ok=True)
+
+    onnx_path = models_dir / "model.onnx"
+    pkl_path = models_dir / "model.pkl"
 
     onx = to_onnx(
         model,
@@ -35,25 +40,31 @@ def save_model(model, dir="models"):
         options={"zipmap": False},
     )
 
-    with open(models_dir / "model.onnx", "wb") as fp:
-        fp.write(onx.SerializeToString())
-
-    with open(models_dir / "model.pkl", "wb") as fp:
-        pickle.dump(model, fp)
+    onnx_path.write_bytes(onx.SerializeToString())
+    pkl_path.write_bytes(pickle.dumps(model))
 
 
 def main(
     data: Annotated[
-        str, typer.Option("-d", help="Path to the CSV file containing training data.")
-    ] = "data/data.csv",
-    model: Annotated[
         str,
         typer.Option(
-            "-m", help="Path to the pickle file containing the trained model."
+            "-d",
+            help="Path to the CSV file containing training data.",
         ),
-    ] = "dvclive/model.pkl",
+    ] = "data/data.csv",
+    params: Annotated[
+        str,
+        typer.Option(
+            "-m",
+            help="Path to the yaml file containing the params.",
+        ),
+    ] = "dvclive/model/params.yaml",
     output: Annotated[
-        str, typer.Option("-o", help="Directory to save the trained model files.")
+        str,
+        typer.Option(
+            "-o",
+            help="Directory to save the trained model files.",
+        ),
     ] = "models",
 ):
     """
@@ -61,10 +72,11 @@ def main(
     """
 
     X_train, y_train = load_data(data)
-    model = load_model(model)
-    model.fit(X_train, y_train)
-    save_model(model, output)
 
+    model = create_model(get_params(params))
+    model.fit(X_train, y_train)
+
+    save_model(model, output)
     print("Training done.")
 
 

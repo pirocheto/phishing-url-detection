@@ -7,5 +7,5 @@ plots:
     x: step
 artifacts:
   model:
-    path: dvclive/model.pkl
+    path: dvclive/model/model.pkl
     type: model

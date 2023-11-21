@@ -11,12 +11,15 @@ from sklearn.svm import LinearSVC
 
 from dvclive import Live
 
+SEED = 796856567
+DATA_PATH = "data/data.csv"
+
 df = pd.read_csv("data/all.csv")
 
 X = df["url"]
-y = df["status"]  # Labels correspondants à chaque exemple de texte
+y = df["status"]
 
-# Diviser les données en ensembles d'entraînement et de test
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
@@ -31,19 +34,16 @@ classifiers = [
 
 for code_name, classifier in classifiers:
     with Live(exp_name=code_name) as live:
-        # Créer le pipeline avec l'union des deux TfidfVectorizer et le classifieur LinearSVC
         pipeline = make_pipeline(
             make_union(
-                TfidfVectorizer(max_features=1000),
-                TfidfVectorizer(max_features=1000),
+                TfidfVectorizer(max_features=500),
+                TfidfVectorizer(analyzer="char", max_features=500),
             ),
             classifier,
         )
 
-        # Entraîner le modèle sur les données d'entraînement
         pipeline.fit(X_train, y_train)
 
-        # Faire des prédictions sur les données de test
         predictions = pipeline.predict(X_test)
 
         metrics = classification_report(y_test, predictions, output_dict=True)

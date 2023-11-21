@@ -6,4 +6,5 @@ train:
 	python scripts/train_model.py -d data/data.csv -m dvclive/model.pkl -o models
 
 create_modelcard:
-	python scripts/create_modelcard.py -o modelcard.md
+	mkdir -p models
+	python scripts/create_modelcard.py -o models/modelcard.md

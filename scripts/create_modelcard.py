@@ -16,7 +16,7 @@ def get_metrics(path="dvclive/metrics.json"):
     return metrics
 
 
-def get_model_type(path="dvclive/model.pkl"):
+def get_model_type(path="dvclive/model/model.pkl"):
     model = joblib.load(path)
     model_type = model[-1].estimator.__class__.__name__
     return model_type
@@ -44,9 +44,7 @@ def main(
 ):
     """Create the model card based on the project."""
 
-    with open("templates/modelcard.md.j2", "r") as file:
-        template_str = file.read()
-
+    template_str = Path("templates/modelcard.md.j2").read_text()
     template = Template(template_str)
 
     model_type = get_model_type()
@@ -58,8 +56,8 @@ def main(
         "metrics": metrics,
         "code": code,
     }
-    model_card_str = template.render(params)
-    Path(output).write_text(model_card_str)
+    modelcard_str = template.render(params)
+    Path(output).write_text(modelcard_str)
 
 
 if __name__ == "__main__":

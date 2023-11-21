@@ -7,9 +7,9 @@ node_modules/
 package-lock.json
 package.json
 
-# Ignore files or directories with names starting with "model"
-model*
-!modelcard.md.j2
+# Ignore model files
+model.pkl
+model.onnx
 
 # Ignore the "data" directory.
 data/
