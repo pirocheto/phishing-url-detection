@@ -29,7 +29,7 @@ jobs:
         run: |
           source .venv/bin/activate
           make train
-          make model_card
+          make create_model_card
       - name: Push model on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
