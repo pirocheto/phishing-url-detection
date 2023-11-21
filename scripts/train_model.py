@@ -18,9 +18,8 @@ def load_data(path):
     return X_train, y_train
 
 
-def load_model(path):
-    model_path = "dvclive/model.pkl"
-    with open(model_path, "rb") as fp:
+def load_model(path="dvclive/model.pkl"):
+    with open(path, "rb") as fp:
         model = pickle.load(fp)
 
     return model

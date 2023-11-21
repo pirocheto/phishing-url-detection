@@ -12,18 +12,15 @@ sess = onnxruntime.InferenceSession(
     providers=["CPUExecutionProvider"],
 )
 
-# Defining a list of URLs with characteristics
 urls = [
     "https://en.wikipedia.org/wiki/Phishing",
     "http//weird-website.com",
 ]
-
 inputs = np.array(urls, dtype="str")
 
 # Using the ONNX model to make predictions on the input data
 results = sess.run(None, {"inputs": inputs})[1]
 
-# Displaying the results
 for url, proba in zip(urls, results):
     print(f"URL: {url}")
     print(f"Likelihood of being a phishing site: {proba[1] * 100:.2f} %")

@@ -1,8 +1,15 @@
+# Ignore directories related to version control and cached files.
 dvc_plots/
 __pycache__/
-hf_model_hub/
+
+# Ignore directories and files related to JavaScript/node.js dependencies.
 node_modules/
 package-lock.json
 package.json
+
+# Ignore files or directories with names starting with "model"
 model*
+
+# Ignore the "data" directory.
 data/
+
