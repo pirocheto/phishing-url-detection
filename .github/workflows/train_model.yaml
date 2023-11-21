@@ -37,6 +37,7 @@ jobs:
           HF_MODEL: phishing-url-detection
           BRANCH: ${{ github.ref_name }}
         run: |
+          cd ..
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cd $HF_MODEL
 
@@ -49,8 +50,8 @@ jobs:
             git checkout -b $BRANCH
           fi
 
-          cp -r models/* $HF_MODEL/
-          cp modelcard.md $HF_MODEL/
+          cp -r ../models/* $HF_MODEL/
+          cp ../modelcard.md $HF_MODEL/
 
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
