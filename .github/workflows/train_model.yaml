@@ -21,7 +21,7 @@ jobs:
           virtualenvs-in-project: true
       - name: Install dependencies
         run: |
-          poetry install --no-root --no-interaction --only main,train
+          poetry install --no-root --no-interaction --only main
       - name: Download data
         run: |
           make load_data
@@ -29,6 +29,7 @@ jobs:
         run: |
           source .venv/bin/activate
           make train
+          make model_card
       - name: Push model on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
@@ -38,6 +39,8 @@ jobs:
         run: |
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cp -r models/* $HF_MODEL/
+          cp modelcard.md $HF_MODEL/
+
           cd $HF_MODEL
 
           git config --local user.email "action@github.com"
