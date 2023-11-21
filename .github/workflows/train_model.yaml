@@ -36,10 +36,12 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_MODEL: phishing-url-detection
           BRANCH: ${{ github.ref_name }}
+          REPO: ${{ github.workspace }}
+          HP_MODEL_REPO: /home/runner/work/$HF_MODEL
         run: |
-          cd ..
-          git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL hf_model_hub
-          cd hf_model_hub
+          mkdir -p $HP_MODEL_REPO && cd $HP_MODEL_REPO
+          git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
+          cd $HF_MODEL
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -50,8 +52,8 @@ jobs:
             git checkout -b $BRANCH
           fi
 
-          cp -r ../phishing-url-detection/models/* $HF_MODEL/
-          cp ../phishing-url-detection/modelcard.md $HF_MODEL/
+          cp -r $REPO/models/* .
+          cp $REPO/modelcard.md .
 
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
