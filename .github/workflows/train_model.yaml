@@ -33,10 +33,10 @@ jobs:
       - name: Push model on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_MODEL: phishing-url-detection
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           BRANCH: ${{ github.ref_name }}
-          REPO: ${{ github.workspace }}
+          CURRENT_REPO: ${{ github.workspace }}
           HP_MODEL_REPO: /home/runner/work/hf_model_hub
         run: |
           mkdir -p $HP_MODEL_REPO && cd $HP_MODEL_REPO
@@ -54,8 +54,8 @@ jobs:
 
           git pull origin $BRANCH
 
-          cp -r $REPO/models/* .
-          cp $REPO/modelcard.md README.md
+          cp -r $CURRENT_REPO/models/* .
+          cp $CURRENT_REPO/modelcard.md README.md
 
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
