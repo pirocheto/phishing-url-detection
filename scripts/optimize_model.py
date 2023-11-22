@@ -1,22 +1,35 @@
 import logging
 import pickle
 import sys
+import warnings
 from pathlib import Path
 from pprint import pprint
 from typing import Any
 
 import matplotlib.pyplot as plt
+import numpy as np
 import optuna
 import pandas as pd
 import yaml
 from model import create_model
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
+from rich.logging import RichHandler
+from rich.pretty import pprint
+from sklearn.exceptions import ConvergenceWarning
+from sklearn.model_selection import cross_validate, train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 from dvclive import Live
 
+# Ignore this warnings to don't flood the terminal
+# Doesn't work for n_jobs > 1
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
+
 # Initialize the logger
-logging.getLogger("optuna").addHandler(logging.StreamHandler(sys.stdout))
+logger = logging.getLogger("optuna")
+# logger.addHandler(logging.StreamHandler(sys.stdout))
+optuna.logging.disable_default_handler()
+logger.addHandler(RichHandler())
+
 
 # Create a folder to store Optuna logs
 optunalog_path = Path("optunalog")
@@ -32,7 +45,7 @@ SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 1
+N_TRIALS = 3
 
 
 # Function to load data
@@ -72,10 +85,16 @@ def plot_study(study):
         plot_param_importances,
     )
 
-    for name, plot in [
-        ("param_importances", plot_param_importances),
+    plots = [
         ("optimization_history", plot_optimization_history),
-    ]:
+    ]
+
+    if len(study.trials) > 1:
+        plots.append(
+            ("param_importances", plot_param_importances),
+        )
+
+    for name, plot in plots:
         plt.Figure()
         plot(study)
         plt.savefig(optunalog_path / f"{name}.png")
@@ -87,10 +106,11 @@ class Objective:
     def __init__(self, X_train, X_test, y_train, y_test) -> None:
         self.X_train = X_train
         self.X_test = X_test
-        self.y_train = y_train
-        self.y_test = y_test
 
-    # Method called for each Optuna trial
+        label_encoder = LabelEncoder()
+        self.y_train = label_encoder.fit_transform(y_train)
+        self.y_test = label_encoder.transform(y_test)
+
     def __call__(self, trial) -> Any:
         # Unique name for each experiment based on the trial number
         exp_name = f"svm-opt-{trial.number}"
@@ -122,30 +142,42 @@ class Objective:
             # Log the model as an artifact using dvclive
             live.log_artifact(model_path, type="model", cache=False)
 
-            # Predictions on the test data
-            y_preds = model.predict(self.X_test)
+            scores = cross_validate(
+                model,
+                self.X_train,
+                self.y_train,
+                cv=5,
+                n_jobs=1,
+                scoring=[
+                    "recall",
+                    "precision",
+                    "f1",
+                    "accuracy",
+                    "roc_auc",
+                ],
+            )
 
-            # Calculate classification metrics
-            metrics = classification_report(self.y_test, y_preds, output_dict=True)
+            for name, values in scores.items():
+                if name.startswith("test_"):
+                    value = np.mean(values)
+                    live.log_metric(name, value)
+                    trial.set_user_attr(name, value)
 
-            # Log accuracy in the live experiment
-            live.log_metric("accuracy", metrics["accuracy"])
-
-            # Log metrics specific to the "phishing" class
-            for name, value in metrics["phishing"].items():
-                live.log_metric(name, value)
-
-        # The returned value is the F1-score metric
-        return metrics["phishing"]["f1-score"]
+        # The returned value for optimization
+        score = scores["test_roc_auc"]
+        return min(np.mean(score), np.median(score))
 
 
 # Function to print the best trial results
 def print_best_trial(study):
     best_trial = study.best_trial
-    print(f"Best trial: {best_trial.number}")
-    print(f"Score: {best_trial.value}")
-    print("Params:")
-    pprint(best_trial.params)
+    infos = {
+        "Best trial": best_trial.number,
+        "Score": best_trial.value,
+        "Params": best_trial.params,
+        "Attrs": best_trial.user_attrs,
+    }
+    pprint(infos, expand_all=True)
 
 
 def main():

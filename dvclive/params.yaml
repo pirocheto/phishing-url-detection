@@ -1,4 +1,4 @@
-max_ngram_1: 3
-max_ngram_2: 3
-C: 2.999268618347932
-loss: hinge
+max_ngram_1: 2
+max_ngram_2: 2
+C: 8.215973551635575
+loss: squared_hinge
