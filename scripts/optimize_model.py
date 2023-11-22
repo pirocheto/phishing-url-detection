@@ -37,7 +37,7 @@ SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 3
+N_TRIALS = 10
 
 
 # Function to load data
@@ -53,7 +53,7 @@ def load_data(path):
 # Function to get parameters for a trial
 def get_params(trial):
     # max_ngram_word = trial.suggest_int("max_ngram_word", 1, 5)
-    max_ngram = trial.suggest_int("max_ngram", 1, 15)
+    max_ngram = trial.suggest_int("max_ngram", 1, 10)
     analyzer = trial.suggest_categorical("analyzer", ["word", "char"])
     use_idf = trial.suggest_categorical("use_idf", [True, False])
 
