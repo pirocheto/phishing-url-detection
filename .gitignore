@@ -11,6 +11,7 @@ package.json
 model.pkl
 model.onnx
 modelcard.md
+!dvclive/model/model.pkl
 
 # Ignore the "data" directory.
 data/
