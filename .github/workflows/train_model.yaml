@@ -48,14 +48,12 @@ jobs:
 
           if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
             git checkout $BRANCH
+            git pull origin $BRANCH
           else
             git checkout -b $BRANCH
           fi
 
-          git pull origin $BRANCH
-
           cp -r $CURRENT_REPO/models/* .
-          cp $CURRENT_REPO/modelcard.md README.md
 
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
