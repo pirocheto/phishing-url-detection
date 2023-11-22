@@ -55,7 +55,7 @@ def main(
     params: Annotated[
         str,
         typer.Option(
-            "-m",
+            "-p",
             help="Path to the yaml file containing the params.",
         ),
     ] = "dvclive/model/params.yaml",

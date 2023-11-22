@@ -2,7 +2,6 @@ import logging
 import pickle
 import warnings
 from pathlib import Path
-from pprint import pprint
 from typing import Any
 
 import dvc.api
@@ -12,7 +11,6 @@ import optuna
 import pandas as pd
 import yaml
 from model import create_model
-from optuna.pruners import BasePruner
 from rich.logging import RichHandler
 from rich.pretty import pprint
 from sklearn.exceptions import ConvergenceWarning
@@ -42,7 +40,7 @@ SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 30
+N_TRIALS = 3
 
 
 # Function to load data
@@ -145,7 +143,7 @@ class Objective:
                 self.X_train,
                 self.y_train,
                 cv=5,
-                n_jobs=5
+                n_jobs=5,
                 scoring=[
                     "recall",
                     "precision",
@@ -167,12 +165,13 @@ class Objective:
 
 
 # Function to print the best trial results
-def print_best_trials(study, n=10):
+def print_best_exps(n=10):
+    pd.set_option("display.max_columns", None)
+
     df = pd.DataFrame(
         dvc.api.exp_show(),
         columns=[
             "Experiment",
-            "Created",
             "f1",
             "precision",
             "recall",
@@ -187,8 +186,9 @@ def print_best_trials(study, n=10):
     )
     df = df.dropna(subset=["Experiment"])
     df = df.set_index("Experiment")
+    df = df.sort_values("f1", ascending=False)
     df = df.head(n)
-    pprint(df)
+    logger.info(df)
 
 
 def main():
@@ -211,7 +211,7 @@ def main():
     study.optimize(objective, n_trials=N_TRIALS)
 
     # Display the results of the best trial and plot visualizations
-    print_best_trials(study)
+    print_best_exps()
     plot_study(study)
 
 
