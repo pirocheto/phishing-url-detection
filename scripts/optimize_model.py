@@ -55,6 +55,7 @@ def get_params(trial):
     # max_ngram_word = trial.suggest_int("max_ngram_word", 1, 5)
     max_ngram = trial.suggest_int("max_ngram", 1, 15)
     analyzer = trial.suggest_categorical("analyzer", ["word", "char"])
+    use_idf = trial.suggest_categorical("use_idf", [True, False])
 
     C = trial.suggest_float("C", 1e-7, 10.0, log=True)
     loss = trial.suggest_categorical("loss", ["hinge", "squared_hinge"])
@@ -65,6 +66,7 @@ def get_params(trial):
         "tfidf__ngram_range": (1, max_ngram),
         "tfidf__lowercase": lowercase,
         "tfidf__analyzer": analyzer,
+        "tfidf__idf": use_idf,
         "cls__estimator__C": C,
         "cls__estimator__loss": loss,
         "cls__estimator__tol": tol,
@@ -157,6 +159,7 @@ def print_best_exps(n=10):
             "tol",
             "lowercase",
             "max_ngram",
+            "use_idf",
         ],
     )
     df = df.dropna(subset=["Experiment"])

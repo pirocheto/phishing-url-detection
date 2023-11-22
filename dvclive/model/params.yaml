@@ -1,7 +1,7 @@
 cls__estimator__C: 0.7039789709961639
 cls__estimator__loss: hinge
 cls__estimator__tol: 0.0009055025577876073
-tfidf__analyzer: char
+tfidf__analyzer: word
 tfidf__lowercase: true
 tfidf__ngram_range: !!python/tuple
 - 1
