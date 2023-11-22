@@ -1,6 +1,6 @@
-cls__estimator__C: 2.7236811831586523
+cls__estimator__C: 0.4411806033966349
 cls__estimator__loss: squared_hinge
-cls__estimator__tol: 4.5832237296506525e-05
+cls__estimator__tol: 1.2051031329627806e-05
 tfidf__char__lowercase: true
 tfidf__char__ngram_range: !!python/tuple
 - 1
