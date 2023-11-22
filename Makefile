@@ -9,7 +9,7 @@ create_modelcard:
 	mkdir -p models
 	python scripts/create_modelcard.py -o models/modelcard.md
 
-exp_purge:
+purge_exp:
 	dvc exp remove -A && rm optunalog/optuna.db
 
 optuna-dashboard:

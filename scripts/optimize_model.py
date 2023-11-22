@@ -14,7 +14,7 @@ from model import create_model
 from rich.logging import RichHandler
 from rich.pretty import pprint
 from sklearn.exceptions import ConvergenceWarning
-from sklearn.model_selection import cross_validate, train_test_split
+from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import LabelEncoder
 
 from dvclive import Live
@@ -25,15 +25,12 @@ warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 # Initialize the logger
 logger = logging.getLogger("optuna")
-# logger.addHandler(logging.StreamHandler(sys.stdout))
-optuna.logging.disable_default_handler()
 logger.addHandler(RichHandler())
-
+optuna.logging.disable_default_handler()
 
 # Create a folder to store Optuna logs
 optunalog_path = Path("optunalog")
 optunalog_path.mkdir(exist_ok=True)
-
 
 # Set the random seed
 SEED = 796856567
@@ -71,29 +68,6 @@ def get_params(trial):
     }
 
 
-# Function to plot various visualizations of the Optuna study
-def plot_study(study):
-    from optuna.visualization.matplotlib import (
-        plot_optimization_history,
-        plot_param_importances,
-    )
-
-    plots = [
-        ("optimization_history", plot_optimization_history),
-    ]
-
-    if len(study.trials) > 1:
-        plots.append(
-            ("param_importances", plot_param_importances),
-        )
-
-    for name, plot in plots:
-        plt.Figure()
-        plot(study)
-        plt.savefig(optunalog_path / f"{name}.png")
-        plt.close()
-
-
 # Class to define the objective of the Optuna study
 class Objective:
     def __init__(self, X_train, y_train) -> None:
@@ -120,6 +94,7 @@ class Objective:
 
             # Create the model using the current parameters
             model = create_model(params)
+
             # Train the model on the training data
             model.fit(self.X_train, self.y_train)
 
@@ -188,14 +163,10 @@ def print_best_exps(n=10):
     df = df.set_index("Experiment")
     df = df.sort_values("f1", ascending=False)
     df = df.head(n)
-    logger.info(df)
+    pprint(df)
 
 
 def main():
-    # Configure storage for Optuna trials
-    # storage = optuna.storages.JournalStorage(
-    #     optuna.storages.JournalFileStorage(f"{str(optunalog_path)}/journal.log"),
-    # )
     storage = "sqlite:///optunalog/optuna.db"
 
     study = optuna.create_study(
@@ -212,7 +183,6 @@ def main():
 
     # Display the results of the best trial and plot visualizations
     print_best_exps()
-    plot_study(study)
 
 
 if __name__ == "__main__":
