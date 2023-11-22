@@ -37,7 +37,7 @@ SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 20
+N_TRIALS = 3
 
 
 # Function to load data
