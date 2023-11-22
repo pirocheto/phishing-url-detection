@@ -48,10 +48,13 @@ jobs:
 
           if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
             git checkout $BRANCH
-            git pull origin $BRANCH
+            echo "$BRANCH already exists"
           else
             git checkout -b $BRANCH
+            echo "create $BRANCH"
           fi
+
+          git pull origin $BRANCH
 
           cp -r $CURRENT_REPO/models/* .
 
