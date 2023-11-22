@@ -54,7 +54,6 @@ def load_data(path):
 def get_params(trial):
     max_ngram_word = trial.suggest_int("max_ngram_word", 1, 3)
     max_ngram_char = trial.suggest_int("max_ngram_char", 1, 5)
-    analyzer = trial.suggest_categorical("analyzer", ["word", "char"])
     use_idf = trial.suggest_categorical("use_idf", [True, False])
 
     C = trial.suggest_float("C", 1e-7, 10.0, log=True)
@@ -63,11 +62,12 @@ def get_params(trial):
     lowercase = trial.suggest_categorical("lowercase", [True, False])
 
     return {
-        "tfidf__ngram_range__word": (1, max_ngram_word),
-        "tfidf__ngram_range__char": (1, max_ngram_char),
-        "tfidf__lowercase": lowercase,
-        "tfidf__analyzer": analyzer,
-        "tfidf__use_idf": use_idf,
+        "tfidf__word__ngram_range": (1, max_ngram_word),
+        "tfidf__char__ngram_range": (1, max_ngram_char),
+        "tfidf__word__lowercase": lowercase,
+        "tfidf__char__lowercase": lowercase,
+        "tfidf__word__use_idf": use_idf,
+        "tfidf__char__use_idf": use_idf,
         "cls__estimator__C": C,
         "cls__estimator__loss": loss,
         "cls__estimator__tol": tol,
