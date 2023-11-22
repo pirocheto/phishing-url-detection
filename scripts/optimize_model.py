@@ -108,15 +108,15 @@ class Objective:
             model_path = model_dir / "model.pkl"
             model_path.write_bytes(pickle.dumps(model))
 
+            # Log the model as an artifact using dvclive
+            live.log_artifact(model_path, type="model", cache=False)
+
             # Save parameters to a YAML file
             params_path = model_dir / "params.yaml"
             with open(params_path, "w") as fp:
                 yaml.dump(params, fp)
 
             live.log_artifact(params_path, cache=False)
-
-            # Log the model as an artifact using dvclive
-            live.log_artifact(model_path, type="model", cache=False)
 
             scores = cross_validate(
                 model,

@@ -1,6 +1,10 @@
+import pickle
+from pathlib import Path
+
 import dvc.api
 import numpy as np
 import pandas as pd
+import yaml
 from rich.pretty import pprint
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -16,6 +20,13 @@ SEED = 796856567
 
 DATA_PATH = "data/data.csv"
 
+classifiers = [
+    ("svm", LinearSVC(dual="auto")),
+    ("lr", LogisticRegression()),
+    ("knn", KNeighborsClassifier()),
+    ("nb", MultinomialNB()),
+]
+
 
 # Function to load data
 def load_data(path):
@@ -25,14 +36,6 @@ def load_data(path):
     y_train = df_train["status"].values
 
     return X_train, y_train
-
-
-classifiers = [
-    ("svm", LinearSVC(dual="auto")),
-    ("lr", LogisticRegression()),
-    ("knn", KNeighborsClassifier()),
-    ("nb", MultinomialNB()),
-]
 
 
 # Function to print the best trial results
@@ -60,6 +63,8 @@ def main():
     for exp_name, classifier in classifiers:
         print(f"Experiment '{exp_name}' in progress...")
         with Live(exp_name=exp_name) as live:
+            live.log_param("cls", classifier.__class__.__name__)
+
             tfidf = FeatureUnion(
                 [
                     ("word", TfidfVectorizer()),
@@ -85,6 +90,24 @@ def main():
                     "roc_auc",
                 ],
             )
+
+            # Create a directory to save the model
+            model_dir = Path(live.dir) / "model"
+            model_dir.mkdir(exist_ok=True)
+
+            # Save the model to a pickle file
+            model_path = model_dir / "model.pkl"
+            model_path.write_bytes(pickle.dumps(model))
+
+            # Log the model as an artifact using dvclive
+            live.log_artifact(model_path, type="model", cache=False)
+
+            # Save parameters to a YAML file
+            params_path = model_dir / "params.yaml"
+            with open(params_path, "w") as fp:
+                yaml.dump({}, fp)
+
+            live.log_artifact(params_path, cache=False)
 
             for name, values in scores.items():
                 if name.startswith("test_"):
