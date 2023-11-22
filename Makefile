@@ -7,7 +7,7 @@ train:
 
 create_modelcard:
 	mkdir -p models
-	python scripts/create_modelcard.py -o models/modelcard.md
+	python scripts/create_modelcard.py -o models/README.md
 
 purge_exp:
 	dvc exp remove -A && rm optunalog/optuna.db

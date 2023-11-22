@@ -51,7 +51,6 @@ jobs:
               git pull origin $BRANCH
           else
               git checkout -b $BRANCH
-              
           fi
 
           cp -r $CURRENT_REPO/models/* .
