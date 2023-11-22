@@ -1,7 +1,0 @@
-max_ngram_word: 2
-max_ngram_char: 3
-use_idf: false
-C: 0.4411806033966349
-loss: squared_hinge
-tol: 1.2051031329627806e-05
-lowercase: true

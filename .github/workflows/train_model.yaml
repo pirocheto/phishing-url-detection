@@ -48,7 +48,6 @@ jobs:
 
           if git ls-remote --heads origin $BRANCH | grep -q $BRANCH; then
               git checkout $BRANCH
-              git pull origin $BRANCH
           else
               git checkout -b $BRANCH
           fi

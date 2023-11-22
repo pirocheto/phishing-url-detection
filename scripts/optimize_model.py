@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 
 import dvc.api
-import matplotlib.pyplot as plt
 import numpy as np
 import optuna
 import pandas as pd
@@ -15,7 +14,6 @@ from rich.logging import RichHandler
 from rich.pretty import pprint
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.model_selection import cross_validate
-from sklearn.preprocessing import LabelEncoder
 
 from dvclive import Live
 
@@ -43,9 +41,9 @@ N_TRIALS = 3
 # Function to load data
 def load_data(path):
     df_train = pd.read_csv(path)
+    df_train = df_train.replace({"status": {"legitimate": 0, "phishing": 1}})
     X_train = df_train["url"].values
     y_train = df_train["status"].values
-    y_train = LabelEncoder().fit_transform(y_train)
 
     return X_train, y_train
 
@@ -111,8 +109,11 @@ class Objective:
             model_path.write_bytes(pickle.dumps(model))
 
             # Save parameters to a YAML file
-            with open(model_dir / "params.yaml", "w") as fp:
+            params_path = model_dir / "params.yaml"
+            with open(params_path, "w") as fp:
                 yaml.dump(params, fp)
+
+            live.log_artifact(params_path, cache=False)
 
             # Log the model as an artifact using dvclive
             live.log_artifact(model_path, type="model", cache=False)
@@ -134,8 +135,9 @@ class Objective:
 
             for name, values in scores.items():
                 if name.startswith("test_"):
+                    name = name.replace("test_", "")
                     value = np.mean(values)
-                    live.log_metric(name.replace("test_", ""), value)
+                    live.log_metric(name, value)
                     trial.set_user_attr(name, value)
 
         # The returned value for optimization

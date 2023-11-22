@@ -1,12 +1,12 @@
-cls__estimator__C: 0.4411806033966349
+cls__estimator__C: 8.809631367836817e-05
 cls__estimator__loss: squared_hinge
-cls__estimator__tol: 1.2051031329627806e-05
-tfidf__char__lowercase: true
+cls__estimator__tol: 1.5261822420077893e-05
+tfidf__char__lowercase: false
 tfidf__char__ngram_range: !!python/tuple
 - 1
-- 3
+- 2
 tfidf__char__use_idf: false
-tfidf__word__lowercase: true
+tfidf__word__lowercase: false
 tfidf__word__ngram_range: !!python/tuple
 - 1
 - 2
