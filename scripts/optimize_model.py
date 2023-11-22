@@ -37,7 +37,7 @@ SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 10
+N_TRIALS = 3
 
 
 # Function to load data
@@ -52,8 +52,8 @@ def load_data(path):
 
 # Function to get parameters for a trial
 def get_params(trial):
-    # max_ngram_word = trial.suggest_int("max_ngram_word", 1, 5)
-    max_ngram = trial.suggest_int("max_ngram", 1, 10)
+    max_ngram_word = trial.suggest_int("max_ngram_word", 1, 3)
+    max_ngram_char = trial.suggest_int("max_ngram_char", 1, 5)
     analyzer = trial.suggest_categorical("analyzer", ["word", "char"])
     use_idf = trial.suggest_categorical("use_idf", [True, False])
 
@@ -63,10 +63,11 @@ def get_params(trial):
     lowercase = trial.suggest_categorical("lowercase", [True, False])
 
     return {
-        "tfidf__ngram_range": (1, max_ngram),
+        "tfidf__ngram_range__word": (1, max_ngram_word),
+        "tfidf__ngram_range__char": (1, max_ngram_char),
         "tfidf__lowercase": lowercase,
         "tfidf__analyzer": analyzer,
-        "tfidf__idf": use_idf,
+        "tfidf__use_idf": use_idf,
         "cls__estimator__C": C,
         "cls__estimator__loss": loss,
         "cls__estimator__tol": tol,
@@ -158,7 +159,8 @@ def print_best_exps(n=10):
             "loss",
             "tol",
             "lowercase",
-            "max_ngram",
+            "max_ngram_word",
+            "max_ngram_char",
             "use_idf",
         ],
     )

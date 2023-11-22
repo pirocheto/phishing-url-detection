@@ -1,6 +1,8 @@
-max_ngram: 11
+max_ngram_word: 2
+max_ngram_char: 5
 analyzer: char
-C: 0.7039789709961639
+use_idf: true
+C: 1.936645670602117
 loss: hinge
-tol: 0.0009055025577876073
+tol: 0.0003117494361061026
 lowercase: true

@@ -1,11 +1,16 @@
-from skl2onnx.sklapi import TraceableTfidfVectorizer
 from sklearn.calibration import CalibratedClassifierCV
-from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.svm import LinearSVC
 
 
 def create_model(params=None):
-    tfidf = TraceableTfidfVectorizer(analyzer="char")
+    tfidf = FeatureUnion(
+        [
+            ("w", TfidfVectorizer()),
+            ("c", TfidfVectorizer(analyzer="char")),
+        ]
+    )
 
     classifier = CalibratedClassifierCV(
         LinearSVC(dual="auto"),
