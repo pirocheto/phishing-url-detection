@@ -5,14 +5,15 @@ import pandas as pd
 import typer
 import yaml
 from model import create_model
-from skl2onnx import to_onnx
+from skl2onnx import convert_sklearn, to_onnx
 from skl2onnx.common.data_types import StringTensorType
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 from typing_extensions import Annotated
 
 
 def load_data(path):
-    df_train = pd.read_csv(path)
+    df_train = pd.read_csv(path)[:20]
     X_train = df_train["url"].values
     y_train = df_train["status"].values
     y_train = LabelEncoder().fit_transform(y_train)
@@ -34,10 +35,15 @@ def save_model(model, dir="models"):
     onnx_path = models_dir / "model.onnx"
     pkl_path = models_dir / "model.pkl"
 
-    onx = to_onnx(
+    options = {
+        "zipmap": False,
+        # "tokenexp": {TfidfVectorizer: r"\s+"},
+    }
+
+    onx = convert_sklearn(
         model,
         initial_types=[("inputs", StringTensorType((None,)))],
-        options={"zipmap": False},
+        options=options,
     )
 
     onnx_path.write_bytes(onx.SerializeToString())

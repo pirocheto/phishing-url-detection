@@ -37,20 +37,24 @@ SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 3
+N_TRIALS = 20
 
 
 # Function to load data
 def load_data(path):
-    df = pd.read_csv(path)
-    df = df.sample(frac=1, random_state=SEED)
-    return df["url"], df["status"]
+    df_train = pd.read_csv(path)
+    X_train = df_train["url"].values
+    y_train = df_train["status"].values
+    y_train = LabelEncoder().fit_transform(y_train)
+
+    return X_train, y_train
 
 
 # Function to get parameters for a trial
 def get_params(trial):
-    max_ngram_word = trial.suggest_int("max_ngram_word", 1, 5)
-    max_ngram_char = trial.suggest_int("max_ngram_char", 1, 5)
+    # max_ngram_word = trial.suggest_int("max_ngram_word", 1, 5)
+    max_ngram = trial.suggest_int("max_ngram", 1, 15)
+    analyzer = trial.suggest_categorical("analyzer", ["word", "char"])
 
     C = trial.suggest_float("C", 1e-7, 10.0, log=True)
     loss = trial.suggest_categorical("loss", ["hinge", "squared_hinge"])
@@ -58,10 +62,9 @@ def get_params(trial):
     lowercase = trial.suggest_categorical("lowercase", [True, False])
 
     return {
-        "tfidf__w__ngram_range": (1, max_ngram_word),
-        "tfidf__c__ngram_range": (1, max_ngram_char),
-        "tfidf__w__lowercase": lowercase,
-        "tfidf__c__lowercase": lowercase,
+        "tfidf__ngram_range": (1, max_ngram),
+        "tfidf__lowercase": lowercase,
+        "tfidf__analyzer": analyzer,
         "cls__estimator__C": C,
         "cls__estimator__loss": loss,
         "cls__estimator__tol": tol,
@@ -71,10 +74,8 @@ def get_params(trial):
 # Class to define the objective of the Optuna study
 class Objective:
     def __init__(self, X_train, y_train) -> None:
-        label_encoder = LabelEncoder()
-
         self.X_train = X_train
-        self.y_train = label_encoder.fit_transform(y_train)
+        self.y_train = y_train
 
     def __call__(self, trial) -> Any:
         # Unique name for each experiment based on the trial number
@@ -155,8 +156,7 @@ def print_best_exps(n=10):
             "loss",
             "tol",
             "lowercase",
-            "max_ngram_word",
-            "max_ngram_char",
+            "max_ngram",
         ],
     )
     df = df.dropna(subset=["Experiment"])

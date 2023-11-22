@@ -8,7 +8,7 @@ from tabulate import tabulate
 from typing_extensions import Annotated
 
 METRICS_FILE_PATH = "dvclive/metrics.json"
-MODEL_FILE_PATH = "dvclive/model/model.pkl"
+MODEL_FILE_PATH = "models/model.pkl"
 OUTPUT_DEFAULT_PATH = "modelcard.md"
 CODE_PATHS = {
     "py": {

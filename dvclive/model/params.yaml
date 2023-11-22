@@ -1,11 +1,8 @@
-cls__estimator__C: 9.508101251081476
+cls__estimator__C: 0.7039789709961639
 cls__estimator__loss: hinge
-cls__estimator__tol: 0.0001467686819669336
-tfidf__c__lowercase: false
-tfidf__c__ngram_range: !!python/tuple
+cls__estimator__tol: 0.0009055025577876073
+tfidf__analyzer: char
+tfidf__lowercase: true
+tfidf__ngram_range: !!python/tuple
 - 1
-- 3
-tfidf__w__lowercase: false
-tfidf__w__ngram_range: !!python/tuple
-- 1
-- 5
+- 11
