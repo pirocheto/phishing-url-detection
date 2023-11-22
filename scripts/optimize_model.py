@@ -1,17 +1,18 @@
 import logging
 import pickle
-import sys
 import warnings
 from pathlib import Path
 from pprint import pprint
 from typing import Any
 
+import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import optuna
 import pandas as pd
 import yaml
 from model import create_model
+from optuna.pruners import BasePruner
 from rich.logging import RichHandler
 from rich.pretty import pprint
 from sklearn.exceptions import ConvergenceWarning
@@ -35,46 +36,40 @@ logger.addHandler(RichHandler())
 optunalog_path = Path("optunalog")
 optunalog_path.mkdir(exist_ok=True)
 
-# Configure storage for Optuna trials
-storage = optuna.storages.JournalStorage(
-    optuna.storages.JournalFileStorage(f"{str(optunalog_path)}/journal.log"),
-)
 
 # Set the random seed
 SEED = 796856567
 # Path to the data file
 DATA_PATH = "data/data.csv"
 # Number of trials to perform
-N_TRIALS = 3
+N_TRIALS = 30
 
 
 # Function to load data
 def load_data(path):
     df = pd.read_csv(path)
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        df["url"],
-        df["status"],
-        test_size=0.2,
-        random_state=SEED,
-        stratify=df["status"],
-    )
-    return X_train, X_test, y_train, y_test
+    df = df.sample(frac=1, random_state=SEED)
+    return df["url"], df["status"]
 
 
 # Function to get parameters for a trial
 def get_params(trial):
-    max_ngram_1 = trial.suggest_int("max_ngram_1", 1, 5)
-    max_ngram_2 = trial.suggest_int("max_ngram_2", 1, 5)
+    max_ngram_word = trial.suggest_int("max_ngram_word", 1, 5)
+    max_ngram_char = trial.suggest_int("max_ngram_char", 1, 5)
 
     C = trial.suggest_float("C", 1e-7, 10.0, log=True)
     loss = trial.suggest_categorical("loss", ["hinge", "squared_hinge"])
+    tol = trial.suggest_float("tol", 1e-5, 1e-1, log=True)
+    lowercase = trial.suggest_categorical("lowercase", [True, False])
 
     return {
-        "tfidf__1__ngram_range": (1, max_ngram_1),
-        "tfidf__2__ngram_range": (1, max_ngram_2),
+        "tfidf__w__ngram_range": (1, max_ngram_word),
+        "tfidf__c__ngram_range": (1, max_ngram_char),
+        "tfidf__w__lowercase": lowercase,
+        "tfidf__c__lowercase": lowercase,
         "cls__estimator__C": C,
         "cls__estimator__loss": loss,
+        "cls__estimator__tol": tol,
     }
 
 
@@ -103,13 +98,11 @@ def plot_study(study):
 
 # Class to define the objective of the Optuna study
 class Objective:
-    def __init__(self, X_train, X_test, y_train, y_test) -> None:
-        self.X_train = X_train
-        self.X_test = X_test
-
+    def __init__(self, X_train, y_train) -> None:
         label_encoder = LabelEncoder()
+
+        self.X_train = X_train
         self.y_train = label_encoder.fit_transform(y_train)
-        self.y_test = label_encoder.transform(y_test)
 
     def __call__(self, trial) -> Any:
         # Unique name for each experiment based on the trial number
@@ -117,10 +110,15 @@ class Objective:
 
         # Use dvclive for live experiment tracking
         with Live(exp_name=exp_name) as live:
+            trial.set_user_attr("exp_name", live._exp_name)
+
             # Get parameters to test for this trial
             params = get_params(trial)
             # Log parameters
             live.log_params(trial.params)
+
+            if trial.should_prune():
+                raise optuna.TrialPruned()
 
             # Create the model using the current parameters
             model = create_model(params)
@@ -147,7 +145,7 @@ class Objective:
                 self.X_train,
                 self.y_train,
                 cv=5,
-                n_jobs=1,
+                n_jobs=5
                 scoring=[
                     "recall",
                     "precision",
@@ -160,28 +158,46 @@ class Objective:
             for name, values in scores.items():
                 if name.startswith("test_"):
                     value = np.mean(values)
-                    live.log_metric(name, value)
+                    live.log_metric(name.replace("test_", ""), value)
                     trial.set_user_attr(name, value)
 
         # The returned value for optimization
-        score = scores["test_roc_auc"]
+        score = scores["test_f1"]
         return min(np.mean(score), np.median(score))
 
 
 # Function to print the best trial results
-def print_best_trial(study):
-    best_trial = study.best_trial
-    infos = {
-        "Best trial": best_trial.number,
-        "Score": best_trial.value,
-        "Params": best_trial.params,
-        "Attrs": best_trial.user_attrs,
-    }
-    pprint(infos, expand_all=True)
+def print_best_trials(study, n=10):
+    df = pd.DataFrame(
+        dvc.api.exp_show(),
+        columns=[
+            "Experiment",
+            "Created",
+            "f1",
+            "precision",
+            "recall",
+            "roc_auc",
+            "C",
+            "loss",
+            "tol",
+            "lowercase",
+            "max_ngram_word",
+            "max_ngram_char",
+        ],
+    )
+    df = df.dropna(subset=["Experiment"])
+    df = df.set_index("Experiment")
+    df = df.head(n)
+    pprint(df)
 
 
 def main():
-    # Create the Optuna study object
+    # Configure storage for Optuna trials
+    # storage = optuna.storages.JournalStorage(
+    #     optuna.storages.JournalFileStorage(f"{str(optunalog_path)}/journal.log"),
+    # )
+    storage = "sqlite:///optunalog/optuna.db"
+
     study = optuna.create_study(
         direction="maximize",
         sampler=optuna.samplers.TPESampler(seed=SEED),
@@ -195,7 +211,7 @@ def main():
     study.optimize(objective, n_trials=N_TRIALS)
 
     # Display the results of the best trial and plot visualizations
-    print_best_trial(study)
+    print_best_trials(study)
     plot_study(study)
 
 

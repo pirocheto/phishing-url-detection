@@ -1,4 +1,6 @@
-max_ngram_1: 2
-max_ngram_2: 2
-C: 8.215973551635575
+max_ngram_word: 1
+max_ngram_char: 5
+C: 4.799958978385303e-05
 loss: squared_hinge
+tol: 1.304703318580338e-05
+lowercase: true

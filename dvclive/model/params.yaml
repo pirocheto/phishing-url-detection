@@ -1,8 +1,11 @@
-cls__estimator__C: 8.215973551635575
+cls__estimator__C: 4.799958978385303e-05
 cls__estimator__loss: squared_hinge
-tfidf__1__ngram_range: !!python/tuple
+cls__estimator__tol: 1.304703318580338e-05
+tfidf__c__lowercase: true
+tfidf__c__ngram_range: !!python/tuple
 - 1
-- 2
-tfidf__2__ngram_range: !!python/tuple
+- 5
+tfidf__w__lowercase: true
+tfidf__w__ngram_range: !!python/tuple
 - 1
-- 2
+- 1

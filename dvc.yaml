@@ -1,11 +1,11 @@
 params:
 - dvclive/params.yaml
-artifacts:
-  model:
-    path: dvclive/model/model.pkl
-    type: model
 metrics:
 - dvclive/metrics.json
 plots:
 - dvclive/plots/metrics:
     x: step
+artifacts:
+  model:
+    path: dvclive/model/model.pkl
+    type: model

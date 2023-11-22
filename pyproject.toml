@@ -28,6 +28,7 @@ xgboost = "^2.0.1"
 numpy = "^1.26.2"
 huggingface-hub = { extras = ["cli"], version = "^0.19.4" }
 optuna = "^3.4.0"
+optuna-dashboard = "^0.13.0"
 
 [tool.poetry.group.test.dependencies]
 onnxruntime = "^1.16.2"

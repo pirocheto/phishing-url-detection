@@ -7,8 +7,8 @@ from sklearn.svm import LinearSVC
 def create_model(params=None):
     tfidf = FeatureUnion(
         [
-            ("1", TfidfVectorizer()),
-            ("2", TfidfVectorizer(analyzer="char")),
+            ("w", TfidfVectorizer()),
+            ("c", TfidfVectorizer(analyzer="char")),
         ]
     )
 

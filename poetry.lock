@@ -294,6 +294,17 @@ files = [
 ]
 
 [[package]]
+name = "bottle"
+version = "0.12.25"
+description = "Fast and simple WSGI-framework for small web-applications."
+optional = false
+python-versions = "*"
+files = [
+    {file = "bottle-0.12.25-py3-none-any.whl", hash = "sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea"},
+    {file = "bottle-0.12.25.tar.gz", hash = "sha256:e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021"},
+]
+
+[[package]]
 name = "catboost"
 version = "1.2.2"
 description = "CatBoost Python Package"
@@ -2651,6 +2662,29 @@ optional = ["boto3", "botorch", "cmaes (>=0.10.0)", "google-cloud-storage", "mat
 test = ["coverage", "fakeredis[lua]", "kaleido", "moto", "pytest", "scipy (>=1.9.2)"]
 
 [[package]]
+name = "optuna-dashboard"
+version = "0.13.0"
+description = "Real-time dashboard for Optuna"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "optuna-dashboard-0.13.0.tar.gz", hash = "sha256:68930e952cf154f38d34fcfe15567dc6d4b05275bfcf1a233c2c3d3fdbb88482"},
+    {file = "optuna_dashboard-0.13.0-py3-none-any.whl", hash = "sha256:f461779c5b8ee6c6b7c3894572d2af89d1b74bd857bb541c75413d8555c52593"},
+]
+
+[package.dependencies]
+bottle = "*"
+optuna = ">=2.4.0"
+packaging = "*"
+scikit-learn = "*"
+
+[package.extras]
+docs = ["boto3", "botorch", "sphinx", "sphinx-rtd-theme", "streamlit"]
+optional = ["boto3", "botorch (>=0.8.1)", "streamlit"]
+preferential = ["botorch (>=0.8.1)"]
+test = ["coverage", "moto[s3]", "plotly", "pytest"]
+
+[[package]]
 name = "orjson"
 version = "3.9.10"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -4472,4 +4506,4 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "bca7928130b53c445f89510f5cc256f0d909da7e5b42d76842e1b32524e57f4a"
+content-hash = "8bed6310a26e3d42e63034a044e1a9b1336f3c75efdff69123edec3b79b0d6e4"
