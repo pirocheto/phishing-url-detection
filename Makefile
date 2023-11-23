@@ -11,7 +11,7 @@ modelcard:
 	python scripts/create_modelcard.py -o models/README.md
 
 exp.save:
-	dvc exp save -n svp-opt -f
+	dvc exp save -n svm-opt -f
 
 exp.purge:
 	dvc exp remove -A; \
