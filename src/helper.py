@@ -74,35 +74,33 @@ def save_model(model: any, dir: str) -> str:
     return str(model_path)
 
 
-def exp_show(number: int = 10) -> None:
-    import dvc.api
+def print_trials(study, number: int = 10):
     import pandas as pd
     from rich.pretty import pprint
 
     pd.set_option("display.max_columns", None)
 
+    df: pd.DataFrame = study.trials_dataframe()
+    df = df[df["state"] == "COMPLETE"]
+    df_scores = pd.DataFrame.from_records(df.user_attrs_scores.values)
+    df = pd.concat([df, df_scores], axis=1)
     columns = [
-        "Experiment",
         "test_f1",
         "test_precision",
         "test_recall",
         "test_roc_auc",
-        "classifier",
-        "C",
-        "max_ngram_word",
-        "max_ngram_char",
-        "use_idf",
-        "loss",
-        "tol",
-        "lowercase",
+        "params_C",
+        "params_max_ngram_word",
+        "params_max_ngram_char",
+        "params_use_idf",
+        "params_loss",
+        "params_tol",
+        "params_lowercase",
     ]
-
-    df = pd.DataFrame(dvc.api.exp_show(), columns=columns)
-    df = df.dropna(subset=["Experiment"])
-    df = df.set_index("Experiment")
+    df = df.set_index("number")
+    df = df[columns]
     df = df.sort_values("test_f1", ascending=False)
     df = df.head(number)
-    df.columns = [col.replace("test_", "") for col in df.columns]
     pprint(df)
 
 

@@ -1,11 +1,20 @@
-params:
-- dvclive/params.yaml
-metrics:
-- dvclive/metrics.json
 plots:
 - dvclive/plots/metrics:
     x: step
+stages:
+
+  optimize:
+    cmd: python src/optimize.py
+    deps:
+    - data
+    outs:
+    - dvclive
+
+metrics:
+- dvclive/metrics.json
 artifacts:
   model:
-    path: dvclive/model.pkl
+    path: dvclive/model/model.pkl
     type: model
+params:
+- dvclive/params.yaml

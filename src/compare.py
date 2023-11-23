@@ -38,8 +38,6 @@ def compare():
             for name, values in scores.items():
                 live.log_metric(name, values.mean())
 
-    exp_show()
-
 
 if __name__ == "__main__":
     compare()

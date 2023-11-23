@@ -15,7 +15,7 @@ exp.save:
 
 exp.purge:
 	dvc exp remove -A; \
-    [ -e "optunalog/optuna.db" ] && rm "optunalog/optuna.db"
+    [ -e "dvclive/optunalog" ] && rm -r "dvclive/optunalog"
 
 optuna_dashboard:
-	optuna-dashboard optunalog/optuna.db
+	optuna-dashboard dvclive/optunalog/journal.log

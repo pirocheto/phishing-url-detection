@@ -20,3 +20,9 @@ stages:
       nfiles: 7
   optimize:
     cmd: python src/optimize.py
+    deps:
+    - path: data
+      hash: md5
+      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
+      size: 3661494
+      nfiles: 3

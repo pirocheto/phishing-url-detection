@@ -1,0 +1,19 @@
+n_trials: 1
+hyperparams:
+  max_ngram_word:
+    low: 1
+    high: 3
+  max_ngram_char:
+    low: 1
+    high: 5
+  use_idf: [True, False]
+  C:
+    low: 1e-7
+    high: 10
+    log: True
+  loss: ["hinge", "squared_hinge"]
+  tol: 
+    low: 1e-5
+    high: 1e-1
+    log: True
+  lowercase: [True, False]
