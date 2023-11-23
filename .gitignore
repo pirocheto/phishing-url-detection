@@ -11,8 +11,3 @@ package.json
 model.pkl
 model.onnx
 modelcard.md
-
-# Ignore the "data" directory.
-data/
-
-optunalog/

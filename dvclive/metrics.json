@@ -1,7 +1,14 @@
 {
-    "recall": 0.8932633420822397,
-    "precision": 0.9212514254077266,
-    "f1": 0.9069867577104903,
-    "accuracy": 0.9083989501312336,
-    "roc_auc": 0.9715701110414565
+    "fit_time": 6.593648624420166,
+    "score_time": 0.42186150550842283,
+    "test_recall": 0.9329833770778653,
+    "train_recall": 1.0,
+    "test_precision": 0.9503891974967524,
+    "train_precision": 1.0,
+    "test_f1": 0.941482420540846,
+    "train_f1": 1.0,
+    "test_accuracy": 0.941994750656168,
+    "train_accuracy": 1.0,
+    "test_roc_auc": 0.9851401011443999,
+    "train_roc_auc": 1.0
 }

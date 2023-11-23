@@ -1,19 +1,21 @@
 
 load_data:
 	mkdir -p data && \
-	curl -X GET https://huggingface.co/datasets/pirocheto/phishing-url/raw/main/data.csv -o "data/data.csv"
+	dvc import-url https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data.csv data/data.csv
 
 train:
 	python scripts/train_model.py -d data/data.csv -p dvclive/model/params.yaml -o models
 
-create_modelcard:
+modelcard:
 	mkdir -p models
 	python scripts/create_modelcard.py -o models/README.md
 
+exp.save:
+	dvc exp save -n svp-opt -f
 
-purge_exp:
+exp.purge:
 	dvc exp remove -A; \
-    [ -e "optunalog/optuna.db" ] && echo rm "optunalog/optuna.db"
+    [ -e "optunalog/optuna.db" ] && rm "optunalog/optuna.db"
 
-optuna-dashboard:
+optuna_dashboard:
 	optuna-dashboard optunalog/optuna.db

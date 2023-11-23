@@ -1,1 +1,7 @@
-cls: MultinomialNB
+max_ngram_word: 1
+max_ngram_char: 4
+use_idf: false
+C: 8.111884783237436
+loss: hinge
+tol: 0.0026199650080770886
+lowercase: false

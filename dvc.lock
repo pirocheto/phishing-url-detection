@@ -18,3 +18,5 @@ stages:
       md5: 378212cc9bd3b095310b6c4ff67e59a2.dir
       size: 233
       nfiles: 7
+  optimize:
+    cmd: python src/optimize.py

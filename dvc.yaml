@@ -1,11 +1,9 @@
 params:
+- dvclive-optuna/params.yaml
 - dvclive/params.yaml
 metrics:
+- dvclive-optuna/metrics.json
 - dvclive/metrics.json
 plots:
 - dvclive/plots/metrics:
     x: step
-artifacts:
-  model:
-    path: dvclive/model/model.pkl
-    type: model
