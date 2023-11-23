@@ -1,0 +1,5 @@
+outs:
+- md5: 2bba447988b5e921c921fa1c8540483f
+  size: 51924
+  hash: md5
+  path: journal.log

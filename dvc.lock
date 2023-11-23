@@ -1,28 +1,78 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python scripts/optimize.py
-    deps:
-    - path: data
-      hash: md5
-      md5: 747dd6b2fd4654368e411de3079a0354.dir
-      size: 8503243
-      nfiles: 9
-    - path: scripts/optimize.py
-      hash: md5
-      md5: 8918f774df62762dbe20b0e7ee0c5c76
-      size: 2897
-    outs:
-    - path: dvclive
-      hash: md5
-      md5: 378212cc9bd3b095310b6c4ff67e59a2.dir
-      size: 233
-      nfiles: 7
-  optimize:
-    cmd: python src/optimize.py
+    cmd: python src/train.py
     deps:
     - path: data
       hash: md5
       md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
       size: 3661494
       nfiles: 3
+    - path: src/train.py
+      hash: md5
+      md5: 0a558ce106e1bbf962ce7a238bc83ac5
+      size: 307
+    params:
+      params.yaml:
+        data: data/data.csv
+      dvclive/params.yaml:
+        C: 9.842111125550355
+        classifier: MultinomialNB
+        loss: hinge
+        lowercase: true
+        max_ngram_char: 4
+        max_ngram_word: 2
+        tol: 5.5998422850706375e-05
+        use_idf: false
+    outs:
+    - path: model/model.pkl
+      hash: md5
+      md5: 511d13b8ddb71c2e37f80cc4117b666f
+      size: 13656065
+  optimize:
+    cmd: python src/train.py
+    deps:
+    - path: data
+      hash: md5
+      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
+      size: 3661494
+      nfiles: 3
+    outs:
+    - path: dvclive
+      hash: md5
+      md5: bc4ae7ed265f80f958f312890a2f330d.dir
+      size: 7792
+      nfiles: 16
+  modelcard:
+    cmd: python src/evaluate.py
+    deps:
+    - path: dvclive/model
+      hash: md5
+      md5: 240a635bfd78ab58b84561d9fc099089.dir
+      size: 1010
+      nfiles: 1
+    outs:
+    - path: modelcard.md
+      hash: md5
+      md5: a06ee5f8f64e45ee79fa294a8b376de5
+      size: 6353
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data
+      hash: md5
+      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
+      size: 3661494
+      nfiles: 3
+    - path: src/evaluate.py
+      hash: md5
+      md5: e6b021d00fabff2932ddafbe004fb44c
+      size: 836
+    params:
+      params.yaml:
+        data: data/data.csv
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: f5f6b9f88dfb534b4a9d0b7489e93d25
+      size: 99

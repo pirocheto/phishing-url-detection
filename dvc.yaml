@@ -1,20 +1,31 @@
+stages:
+  train:
+    cmd: python src/train.py
+    deps:
+    - data
+    - src/train.py
+    params:
+    - dvclive/params.yaml:
+    - data
+    outs:
+    - model/model.pkl
+
+  evaluate:
+    cmd: python src/evaluate.py
+    params:
+    - data
+    deps:
+    - src/evaluate.py
+    - data
+    metrics:
+    - metrics.json:
+        cache: false
+
+params:
+- params.yaml
+- dvclive/params.yaml
+metrics:
+- dvclive/metrics.json
 plots:
 - dvclive/plots/metrics:
     x: step
-stages:
-
-  optimize:
-    cmd: python src/optimize.py
-    deps:
-    - data
-    outs:
-    - dvclive
-
-metrics:
-- dvclive/metrics.json
-artifacts:
-  model:
-    path: dvclive/model/model.pkl
-    type: model
-params:
-- dvclive/params.yaml

@@ -5,7 +5,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 
 from dvclive import Live
-from helper import create_model, exp_show, load_data, save_model, score_model
+from helper import create_model, load_data, save_model, score_model
 
 
 def compare():
@@ -24,13 +24,9 @@ def compare():
         with Live(exp_name=exp_name, save_dvc_exp=True) as live:
             live.log_param("classifier", classifier.__class__.__name__)
 
-            model: Pipeline = create_model({"cls__estimator": classifier})
+            model: Pipeline = create_model({"classifier": classifier})
             claasifier_name = model[-1].estimator.__class__.__name__
             live.log_param("classifier", claasifier_name)
-
-            # Log the model as an artifact using dvclive
-            model_path = save_model(model, f"{live.dir}/model")
-            live.log_artifact(model_path, type="model", cache=False)
 
             # Test the model
             scores = score_model(model, X_train, y_train)

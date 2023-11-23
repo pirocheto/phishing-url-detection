@@ -19,8 +19,25 @@ def create_model(params: dict | None = None) -> any:
 
     pipeline = Pipeline([("tfidf", tfidf), ("cls", classifier)])
 
+    if params and params.get("classifier", None):
+        pipeline_params = {"cls__estimator": params["classifier"]}
+        pipeline.set_params(**pipeline_params)
+        return pipeline
+
     if params:
-        pipeline.set_params(**params)
+        pipeline_params = {
+            "tfidf__word__ngram_range": (1, params["max_ngram_word"]),
+            "tfidf__char__ngram_range": (1, params["max_ngram_char"]),
+            "tfidf__word__lowercase": params["lowercase"],
+            "tfidf__char__lowercase": params["lowercase"],
+            "tfidf__word__use_idf": params["use_idf"],
+            "tfidf__char__use_idf": params["use_idf"],
+            "cls__estimator__C": params["C"],
+            "cls__estimator__loss": params["loss"],
+            "cls__estimator__tol": params["tol"],
+        }
+        pipeline.set_params(**pipeline_params)
+        return pipeline
 
     return pipeline
 
@@ -74,34 +91,15 @@ def save_model(model: any, dir: str) -> str:
     return str(model_path)
 
 
-def print_trials(study, number: int = 10):
-    import pandas as pd
-    from rich.pretty import pprint
+def load_model(dir: str):
+    import pickle
+    from pathlib import Path
 
-    pd.set_option("display.max_columns", None)
+    model_dir = Path(dir)
+    model_path = model_dir / "model.pkl"
 
-    df: pd.DataFrame = study.trials_dataframe()
-    df = df[df["state"] == "COMPLETE"]
-    df_scores = pd.DataFrame.from_records(df.user_attrs_scores.values)
-    df = pd.concat([df, df_scores], axis=1)
-    columns = [
-        "test_f1",
-        "test_precision",
-        "test_recall",
-        "test_roc_auc",
-        "params_C",
-        "params_max_ngram_word",
-        "params_max_ngram_char",
-        "params_use_idf",
-        "params_loss",
-        "params_tol",
-        "params_lowercase",
-    ]
-    df = df.set_index("number")
-    df = df[columns]
-    df = df.sort_values("test_f1", ascending=False)
-    df = df.head(number)
-    pprint(df)
+    model = pickle.loads(model_path.read_bytes())
+    return model
 
 
 def pkl2onnx(model_path: str) -> str:

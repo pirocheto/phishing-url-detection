@@ -1,0 +1,14 @@
+{
+    "fit_time": 6.736138391494751,
+    "score_time": 0.4257594108581543,
+    "test_recall": 0.9340332458442694,
+    "train_recall": 1.0,
+    "test_precision": 0.9583197708367868,
+    "train_precision": 1.0,
+    "test_f1": 0.9458875553713708,
+    "train_f1": 1.0,
+    "test_accuracy": 0.9465441819772529,
+    "train_accuracy": 1.0,
+    "test_roc_auc": 0.9855766279433794,
+    "train_roc_auc": 1.0
+}

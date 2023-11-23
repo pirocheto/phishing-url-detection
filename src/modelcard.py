@@ -8,7 +8,7 @@ from tabulate import tabulate
 
 def load_metrics(path: str) -> str:
     """Load metrics from a JSON file and format them as a table."""
-    mertrics = json.load(Path(path).read_text())
+    mertrics = json.loads(Path(path).read_text())
 
     return tabulate(
         mertrics.items(),
@@ -51,7 +51,7 @@ def render_model_card(model_type: str, metrics: str, code: dict) -> str:
 def create_modelcard(output: str = "modelcard.md") -> None:
     """Main function to generate and save the model card."""
     metrics = load_metrics("dvclive/metrics.json")
-    model_type = load_model_type("models/model.pkl")
+    model_type = load_model_type("dvclive/model/model.pkl")
     code = load_code()
 
     modelcard_str = render_model_card(model_type, metrics, code)
