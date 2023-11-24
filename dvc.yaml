@@ -1,32 +1,43 @@
 stages:
 
+  download_data:
+    cmd: 
+      - mkdir -p data
+      - >
+        wget https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet 
+        -O data/train.parquet 
+        -q --show-progress
+      - >
+        wget https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet 
+        -O data/test.parquet 
+        -q --show-progress
+    deps:
+      - https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
+      - https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
+    outs:
+      - data
+
   train:
     cmd: python src/train.py
     params:
-    - data.train
-    - hyperparams
+      - data.train
+      - hyperparams
     deps:
-    - src/train.py
-    - ${data.train}
+      - src/train.py
+      - ${data.train}
     outs:
-    - model/model.pkl
+      - model/model.pkl
 
   evaluate:
     cmd: python src/evaluate.py
     params:
-    - data.train
+      - data.train
     deps:
-    - model/model.pkl
-    - src/evaluate.py
-    - ${data.test}
+      - model/model.pkl
+      - src/evaluate.py
+      - ${data.test}
     metrics:
-    - metrics.json:
-        cache: false
+      - metrics.json:
+          cache: false
 
 
-  download_file:
-    cmd: aws s3 cp s3://mybucket/data.txt data.txt
-    deps:
-    - s3://mybucket/data.txt
-    outs:
-    - data.txt
