@@ -25,7 +25,7 @@ stages:
     outs:
     - path: model/model.pkl
       hash: md5
-      md5: 2897c101ae216fce3768125dbfd0c56d
+      md5: 12e008586964f0a90d3550fb8c021273
       size: 19005269
   optimize:
     cmd: python src/train.py
@@ -51,7 +51,7 @@ stages:
       nfiles: 6
     - path: metrics.json
       hash: md5
-      md5: 485c91cebfee2786810903fd5aca1d7e
+      md5: 0a815409e479473f0440861f53262742
       size: 179
     - path: src/modelcard.py
       hash: md5
@@ -75,7 +75,7 @@ stages:
       size: 430668
     - path: model/model.pkl
       hash: md5
-      md5: 2897c101ae216fce3768125dbfd0c56d
+      md5: 12e008586964f0a90d3550fb8c021273
       size: 19005269
     - path: src/evaluate.py
       hash: md5
@@ -87,7 +87,7 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: 485c91cebfee2786810903fd5aca1d7e
+      md5: 0a815409e479473f0440861f53262742
       size: 179
   download_data:
     cmd:
@@ -118,7 +118,7 @@ stages:
     deps:
     - path: model/model.pkl
       hash: md5
-      md5: 2897c101ae216fce3768125dbfd0c56d
+      md5: 12e008586964f0a90d3550fb8c021273
       size: 19005269
     - path: src/pkl2onnx.py
       hash: md5
@@ -127,5 +127,5 @@ stages:
     outs:
     - path: model/model.onnx
       hash: md5
-      md5: 1213115e64bb14e3da6086f46112b062
+      md5: d86dfcda8bfefad79367c96631a459d1
       size: 25986513
