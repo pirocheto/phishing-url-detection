@@ -17,13 +17,6 @@ def load_metrics(path: str) -> str:
     )
 
 
-def load_model_type(path: str) -> str:
-    """Load the type of the model from a saved model file."""
-    model = joblib.load(path)
-    model_type = model[-1].estimator.__class__.__name__
-    return model_type
-
-
 def load_code() -> dict:
     """Load code snippets from specified files."""
 
@@ -39,22 +32,21 @@ def load_code() -> dict:
     return code
 
 
-def render_model_card(model_type: str, metrics: str, code: dict) -> str:
+def render_model_card(metrics: str, code: dict) -> str:
     """Render the model card using a Jinja2 template."""
     template_str = Path("templates/modelcard.md.j2").read_text()
     template = Template(template_str)
 
-    params = {"model_type": model_type, "metrics": metrics, "code": code}
+    params = {"metrics": metrics, "code": code}
     return template.render(params)
 
 
 def create_modelcard(output: str = "model/README.md") -> None:
     """Main function to generate and save the model card."""
     metrics = load_metrics("metrics.json")
-    model_type = load_model_type("model/model.pkl")
     code = load_code()
 
-    modelcard_str = render_model_card(model_type, metrics, code)
+    modelcard_str = render_model_card(metrics, code)
     Path(output).write_text(modelcard_str)
 
 

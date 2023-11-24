@@ -40,4 +40,21 @@ stages:
       - metrics.json:
           cache: false
 
+  create_onnx:
+    cmd: python src/pkl2onnx.py
+    deps:
+      - model/model.pkl
+      - src/pkl2onnx.py
+    outs:
+      - model/model.onnx
 
+
+  modelcard:
+    cmd: python src/modelcard.py
+    deps:
+      - load_model
+      - templates/modelcard.md.j2
+      - metrics.json
+      - src/modelcard.py
+    outs:
+      - model/README.md
