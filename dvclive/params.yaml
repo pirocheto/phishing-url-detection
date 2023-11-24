@@ -1,8 +1,0 @@
-classifier: MultinomialNB
-max_ngram_word: 2
-max_ngram_char: 4
-use_idf: false
-lowercase: true
-C: 9.842111125550355
-loss: hinge
-tol: 5.5998422850706376e-05

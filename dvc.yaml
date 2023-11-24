@@ -1,31 +1,26 @@
 stages:
+
   train:
     cmd: python src/train.py
-    deps:
-    - data
-    - src/train.py
     params:
-    - dvclive/params.yaml:
-    - data
+    - data.train
+    - hyperparams
+    deps:
+    - src/train.py
+    - ${data.train}
     outs:
     - model/model.pkl
 
   evaluate:
     cmd: python src/evaluate.py
     params:
-    - data
+    - data.train
     deps:
+    - model/model.pkl
     - src/evaluate.py
-    - data
+    - ${data.test}
     metrics:
     - metrics.json:
         cache: false
 
-params:
-- params.yaml
-- dvclive/params.yaml
-metrics:
-- dvclive/metrics.json
-plots:
-- dvclive/plots/metrics:
-    x: step
+

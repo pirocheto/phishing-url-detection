@@ -17,21 +17,17 @@ def evaluate():
     params = dvc.api.params_show()
     model = load_model("model")
 
-    X_test, y_test = load_data(params["data"])
+    X_test, y_test = load_data(params["data"]["test"])
     y_pred = model.predict(X_test)
     y_score = model.predict_proba(X_test)
 
-    scores = {}
-    scores["roc_auc"] = roc_auc_score(y_test, y_score[:, 1])
-
-    for name, metric in [
-        ("accuracy", accuracy_score),
-        ("f1", f1_score),
-        ("precision", precision_score),
-        ("recall", recall_score),
-    ]:
-        scores[name] = metric(y_test, y_pred)
-
+    scores = {
+        "test_roc_auc": roc_auc_score(y_test, y_score[:, 1]),
+        "accuracy": accuracy_score(y_test, y_pred),
+        "f1": f1_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+        "recall": recall_score(y_test, y_pred),
+    }
     Path("metrics.json").write_text(json.dumps(scores, indent=4))
 
 

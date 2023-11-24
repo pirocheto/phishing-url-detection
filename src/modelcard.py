@@ -48,10 +48,10 @@ def render_model_card(model_type: str, metrics: str, code: dict) -> str:
     return template.render(params)
 
 
-def create_modelcard(output: str = "modelcard.md") -> None:
+def create_modelcard(output: str = "model/README.md") -> None:
     """Main function to generate and save the model card."""
-    metrics = load_metrics("dvclive/metrics.json")
-    model_type = load_model_type("dvclive/model/model.pkl")
+    metrics = load_metrics("metrics.json")
+    model_type = load_model_type("model/model.pkl")
     code = load_code()
 
     modelcard_str = render_model_card(model_type, metrics, code)

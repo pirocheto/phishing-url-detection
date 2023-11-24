@@ -3,32 +3,30 @@ stages:
   train:
     cmd: python src/train.py
     deps:
-    - path: data
+    - path: data/train.parquet
       hash: md5
-      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
-      size: 3661494
-      nfiles: 3
+      md5: 3c534049e2da8ae55ebb8c982f7bae31
+      size: 788989
     - path: src/train.py
       hash: md5
-      md5: 0a558ce106e1bbf962ce7a238bc83ac5
-      size: 307
+      md5: 87dc6175fe8965e68d2e2941ecb896d3
+      size: 947
     params:
       params.yaml:
-        data: data/data.csv
-      dvclive/params.yaml:
-        C: 9.842111125550355
-        classifier: MultinomialNB
-        loss: hinge
-        lowercase: true
-        max_ngram_char: 4
-        max_ngram_word: 2
-        tol: 5.5998422850706375e-05
-        use_idf: false
+        data.train: data/train.parquet
+        hyperparams:
+          C: 9.783081707940896
+          loss: hinge
+          lowercase: true
+          max_ngram_char: 5
+          max_ngram_word: 2
+          tol: 0.0003837000703754547
+          use_idf: false
     outs:
     - path: model/model.pkl
       hash: md5
-      md5: 511d13b8ddb71c2e37f80cc4117b666f
-      size: 13656065
+      md5: f15cacfe90a20348d7a6c672f1e2cf67
+      size: 19005269
   optimize:
     cmd: python src/train.py
     deps:
@@ -59,20 +57,23 @@ stages:
   evaluate:
     cmd: python src/evaluate.py
     deps:
-    - path: data
+    - path: data/test.parquet
       hash: md5
-      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
-      size: 3661494
-      nfiles: 3
+      md5: b589781569feb40bd244579d4e0e3e85
+      size: 430668
+    - path: model/model.pkl
+      hash: md5
+      md5: f15cacfe90a20348d7a6c672f1e2cf67
+      size: 19005269
     - path: src/evaluate.py
       hash: md5
-      md5: e6b021d00fabff2932ddafbe004fb44c
-      size: 836
+      md5: c602c4dc575896afeda37199b9189b8f
+      size: 825
     params:
       params.yaml:
-        data: data/data.csv
+        data.train: data/train.parquet
     outs:
     - path: metrics.json
       hash: md5
-      md5: f5f6b9f88dfb534b4a9d0b7489e93d25
-      size: 99
+      md5: 0a815409e479473f0440861f53262742
+      size: 179

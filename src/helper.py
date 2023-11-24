@@ -19,33 +19,14 @@ def create_model(params: dict | None = None) -> any:
 
     pipeline = Pipeline([("tfidf", tfidf), ("cls", classifier)])
 
-    if params and params.get("classifier", None):
-        pipeline_params = {"cls__estimator": params["classifier"]}
-        pipeline.set_params(**pipeline_params)
-        return pipeline
-
-    if params:
-        pipeline_params = {
-            "tfidf__word__ngram_range": (1, params["max_ngram_word"]),
-            "tfidf__char__ngram_range": (1, params["max_ngram_char"]),
-            "tfidf__word__lowercase": params["lowercase"],
-            "tfidf__char__lowercase": params["lowercase"],
-            "tfidf__word__use_idf": params["use_idf"],
-            "tfidf__char__use_idf": params["use_idf"],
-            "cls__estimator__C": params["C"],
-            "cls__estimator__loss": params["loss"],
-            "cls__estimator__tol": params["tol"],
-        }
-        pipeline.set_params(**pipeline_params)
-        return pipeline
-
+    pipeline.set_params(**params)
     return pipeline
 
 
 def load_data(path: str) -> ("np.array", "np.array"):
     import pandas as pd
 
-    df_train = pd.read_csv(path)
+    df_train = pd.read_parquet(path)
     df_train = df_train.replace({"status": {"legitimate": 0, "phishing": 1}})
     X_train = df_train["url"].values
     y_train = df_train["status"].values
@@ -53,7 +34,7 @@ def load_data(path: str) -> ("np.array", "np.array"):
     return X_train, y_train
 
 
-def score_model(model, X_train, y_train) -> dict:
+def score_model(model, X_train, y_train, train_score=False) -> dict:
     import warnings
 
     from sklearn.exceptions import ConvergenceWarning
@@ -69,8 +50,8 @@ def score_model(model, X_train, y_train) -> dict:
         X_train,
         y_train,
         cv=5,
-        n_jobs=5,
-        return_train_score=True,
+        n_jobs=1,
+        return_train_score=train_score,
         scoring=scoring,
     )
 
@@ -100,23 +81,3 @@ def load_model(dir: str):
 
     model = pickle.loads(model_path.read_bytes())
     return model
-
-
-def pkl2onnx(model_path: str) -> str:
-    from pathlib import Path
-
-    from skl2onnx import to_onnx
-    from skl2onnx.common.data_types import StringTensorType
-
-    model_path = Path(model_path)
-    model_dir = model_path.parent
-    onnx_path = model_dir / "model.onnx"
-
-    onx = to_onnx(
-        model_path,
-        initial_types=[("inputs", StringTensorType((None,)))],
-        options={"zipmap": False},
-    )
-
-    onnx_path.write_bytes(onx.SerializeToString())
-    return onnx_path
