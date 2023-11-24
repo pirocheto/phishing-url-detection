@@ -12,3 +12,4 @@ optuna.db
 
 # Model file
 model.onnx
+/data.txt

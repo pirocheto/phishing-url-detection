@@ -24,3 +24,9 @@ stages:
         cache: false
 
 
+  download_file:
+    cmd: aws s3 cp s3://mybucket/data.txt data.txt
+    deps:
+    - s3://mybucket/data.txt
+    outs:
+    - data.txt
