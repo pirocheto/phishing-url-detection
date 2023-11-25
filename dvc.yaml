@@ -52,8 +52,7 @@ stages:
   modelcard:
     cmd: python src/modelcard.py
     deps:
-      - load_model
-      - templates/modelcard.md.j2
+      - resources/modelcard
       - metrics.json
       - src/modelcard.py
     outs:
