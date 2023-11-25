@@ -46,8 +46,8 @@ stages:
     deps:
     - path: metrics.json
       hash: md5
-      md5: 485c91cebfee2786810903fd5aca1d7e
-      size: 179
+      md5: ee099ac42bca2cc87872ba1bd98f4fea
+      size: 174
     - path: resources/modelcard
       hash: md5
       md5: e78ed7e05655175d8a2c9047ecf75b6a.dir
@@ -60,8 +60,8 @@ stages:
     outs:
     - path: model/README.md
       hash: md5
-      md5: 968645c718cbded46a079c7b3c0f1efc
-      size: 6115
+      md5: 8527bbfb543ad5611b2aafbb4e5e8d24
+      size: 6094
   evaluate:
     cmd: python src/evaluate.py
     deps:
@@ -75,25 +75,25 @@ stages:
       size: 19005270
     - path: src/evaluate.py
       hash: md5
-      md5: c602c4dc575896afeda37199b9189b8f
-      size: 825
+      md5: 96163e7bb6ac6b95a1c5fbb9c7bd0e4f
+      size: 820
     params:
       params.yaml:
-        data.train: data/train.parquet
+        data.test: data/test.parquet
     outs:
     - path: metrics.json
       hash: md5
-      md5: 485c91cebfee2786810903fd5aca1d7e
-      size: 179
+      md5: ee099ac42bca2cc87872ba1bd98f4fea
+      size: 174
   download_data:
     cmd:
-    - echo 
-      https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
     - mkdir -p data
-    - "wget https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet\
-      \  -O data/train.parquet  -q --show-progress\n"
-    - "wget https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet\
-      \  -O data/test.parquet  -q --show-progress\n"
+    - wget 
+      https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
+      -O data/train.parquet -q --show-progress
+    - wget 
+      https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
+      -O data/test.parquet -q --show-progress
     deps:
     - path: 
         https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet

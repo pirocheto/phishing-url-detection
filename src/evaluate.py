@@ -22,7 +22,7 @@ def evaluate():
     y_score = model.predict_proba(X_test)
 
     scores = {
-        "test_roc_auc": roc_auc_score(y_test, y_score[:, 1]),
+        "roc_auc": roc_auc_score(y_test, y_score[:, 1]),
         "accuracy": accuracy_score(y_test, y_pred),
         "f1": f1_score(y_test, y_pred),
         "precision": precision_score(y_test, y_pred),
