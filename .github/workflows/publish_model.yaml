@@ -6,7 +6,7 @@ on:
       - train
       - dev
 jobs:
-  train_model:
+  publish_model:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -41,7 +41,7 @@ jobs:
               git checkout -b $BRANCH
           fi
 
-          cp -r $CURRENT_REPO/models/* .
+          cp -r $CURRENT_REPO/model/* .
 
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
