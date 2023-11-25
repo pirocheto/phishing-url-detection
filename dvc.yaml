@@ -1,19 +1,17 @@
-stages:
+vars:
+  - url:
+      train: https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
+      test: https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
 
+stages:
   download_data:
     cmd: 
       - mkdir -p data
-      - >
-        wget https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet 
-        -O data/train.parquet 
-        -q --show-progress
-      - >
-        wget https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet 
-        -O data/test.parquet 
-        -q --show-progress
+      - wget ${url.train} -O ${data.train} -q --show-progress
+      - wget ${url.test} -O ${data.test} -q --show-progress
     deps:
-      - https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
-      - https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
+      - ${url.train}
+      - ${url.test}
     outs:
       - data
 
@@ -31,7 +29,7 @@ stages:
   evaluate:
     cmd: python src/evaluate.py
     params:
-      - data.train
+      - data.test
     deps:
       - model/model.pkl
       - src/evaluate.py
@@ -48,12 +46,10 @@ stages:
     outs:
       - model/model.onnx
 
-
   modelcard:
     cmd: python src/modelcard.py
     deps:
-      - load_model
-      - templates/modelcard.md.j2
+      - resources/modelcard
       - metrics.json
       - src/modelcard.py
     outs:

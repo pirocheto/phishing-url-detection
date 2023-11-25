@@ -20,13 +20,15 @@ def load_metrics(path: str) -> str:
 def load_code() -> dict:
     """Load code snippets from specified files."""
 
+    path = Path("resources/modelcard/scripts")
+
     code = {
         "py": {
-            "onnx": Path("load_model/python/load_onnx.py").read_text(),
-            "pkl": Path("load_model/python/load_pickle.py").read_text(),
+            "onnx": (path / "python/load_onnx.py").read_text(),
+            "pkl": (path / "python/load_pickle.py").read_text(),
         },
-        "js": Path("load_model/javascript/index.html").read_text(),
-        "node": Path("load_model/nodejs/index.js").read_text(),
+        "js": (path / "javascript/index.html").read_text(),
+        "node": (path / "nodejs/index.js").read_text(),
     }
 
     return code
@@ -34,7 +36,7 @@ def load_code() -> dict:
 
 def render_model_card(metrics: str, code: dict) -> str:
     """Render the model card using a Jinja2 template."""
-    template_str = Path("templates/modelcard.md.j2").read_text()
+    template_str = Path("resources/modelcard/template.md.j2").read_text()
     template = Template(template_str)
 
     params = {"metrics": metrics, "code": code}
