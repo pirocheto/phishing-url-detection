@@ -20,11 +20,6 @@ from plots import (
     plot_score_distribution,
 )
 
-plt.style.use("Solarize_Light2")
-
-# plt.style.use("seaborn-v0_8-muted")
-# plt.style.use("ggplot")
-
 
 def evaluate():
     params = dvc.api.params_show()

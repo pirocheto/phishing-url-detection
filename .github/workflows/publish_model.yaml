@@ -6,7 +6,7 @@ on:
       - train
       - dev
     paths:
-      - "metrics.json"
+      - metrics.json
 jobs:
   publish_model:
     runs-on: ubuntu-latest

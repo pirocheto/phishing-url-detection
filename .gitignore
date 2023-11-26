@@ -10,9 +10,6 @@ package.json
 # Optuna db
 optuna.db
 
-# Model file
-model.onnx
-
 # Data
 /data
 
