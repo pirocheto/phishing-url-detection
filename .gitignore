@@ -14,5 +14,6 @@ optuna.db
 model.onnx
 
 # Data
-data/
 /data
+
+.DS_Store
