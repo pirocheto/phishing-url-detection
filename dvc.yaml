@@ -34,6 +34,9 @@ stages:
       - model/model.pkl
       - src/evaluate.py
       - ${data.test}
+    plots:
+      - images:
+          cache: false
     metrics:
       - metrics.json:
           cache: false
