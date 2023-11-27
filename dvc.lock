@@ -51,8 +51,8 @@ stages:
       size: 174
     - path: resources/modelcard
       hash: md5
-      md5: e78ed7e05655175d8a2c9047ecf75b6a.dir
-      size: 32364054
+      md5: fa128d342b42d64ec08365cd820c61e7.dir
+      size: 32364328
       nfiles: 7
     - path: src/modelcard.py
       hash: md5
@@ -61,8 +61,8 @@ stages:
     outs:
     - path: live/model/README.md
       hash: md5
-      md5: 5159d8e5b582a3183c35101fa0da5978
-      size: 6094
+      md5: 8ad175ef643bf021187cb8430e0af8ed
+      size: 6369
   evaluate:
     cmd: python src/evaluate.py
     deps:

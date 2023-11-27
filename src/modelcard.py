@@ -1,3 +1,7 @@
+"""
+Module for generating a model card by loading metrics and code snippets.
+"""
+
 import json
 from pathlib import Path
 
@@ -7,7 +11,8 @@ from tabulate import tabulate
 
 def load_metrics(path: str) -> str:
     """Load metrics from a JSON file and format them as a table."""
-    mertrics = json.loads(Path(path).read_text())
+
+    mertrics = json.loads(Path(path).read_text("utf8"))
 
     return tabulate(
         mertrics.items(),
@@ -35,7 +40,8 @@ def load_code() -> dict:
 
 def render_modelcard(metrics: str, code: dict) -> str:
     """Render the model card using a Jinja2 template."""
-    template_str = Path("resources/modelcard/template.md.j2").read_text()
+
+    template_str = Path("resources/modelcard/template.md.j2").read_text("utf8")
     template = Template(template_str)
 
     params = {"metrics": metrics, "code": code}
@@ -44,11 +50,12 @@ def render_modelcard(metrics: str, code: dict) -> str:
 
 def create_modelcard() -> None:  # pragma: no cover
     """Main function to generate and save the model card."""
+
     metrics = load_metrics("live/metrics.json")
     code = load_code()
 
     modelcard_str = render_modelcard(metrics, code)
-    Path("live/model/README.md").write_text(modelcard_str)
+    Path("live/model/README.md").write_text(modelcard_str, "utf8")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,16 @@
+"""
+Module for utiliy functions.
+"""
+
+# pylint: disable=import-outside-toplevel
+
+
 def create_model(params: dict | None = None) -> any:
+    """
+    Create a machine learning model pipeline,
+    using TfidfVectorizer as preprecessing and LinearSVM as classifier.
+    """
+
     from sklearn.calibration import CalibratedClassifierCV
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.pipeline import FeatureUnion, Pipeline
@@ -25,7 +37,8 @@ def create_model(params: dict | None = None) -> any:
     return pipeline
 
 
-def load_data(path: str) -> ("np.array", "np.array"):
+def load_data(path: str):
+    """Load data from a file."""
     import pandas as pd
 
     df_train = pd.read_parquet(path)
@@ -37,6 +50,7 @@ def load_data(path: str) -> ("np.array", "np.array"):
 
 
 def score_model(model, X_train, y_train, train_score=False) -> dict:
+    """Score a machine learning model using cross-validation."""
     import warnings
 
     from sklearn.exceptions import ConvergenceWarning
@@ -61,6 +75,7 @@ def score_model(model, X_train, y_train, train_score=False) -> dict:
 
 
 def save_model(model: any, path: str) -> str:
+    """Save a machine learning model to a file."""
     import pickle
     from pathlib import Path
 
@@ -73,17 +88,18 @@ def save_model(model: any, path: str) -> str:
     return str(model_path)
 
 
-def load_model(path: str, format="pickle"):
+def load_model(path: str, model_format="pickle"):
+    """Load a machine learning model from a file."""
     from pathlib import Path
 
     model_path = Path(path)
 
-    if format == "pickle":
+    if model_format == "pickle":
         import pickle
 
         model = pickle.loads(model_path.read_bytes())
 
-    if format == "onnx":
+    if model_format == "onnx":
         import onnxruntime
 
         model = onnxruntime.InferenceSession(

@@ -1,3 +1,10 @@
+"""
+Module to visualize various performance metrics for binary classification models.
+
+This module includes functions to plot the score distribution, confusion matrix,
+calibration curve, ROC curve, and precision-recall curve.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -14,7 +21,9 @@ from sklearn.metrics import (
 plt.style.use("Solarize_Light2")
 
 
-def plot_score_distribution(y_true, y_scores, labels=[0, 1], ax=None):
+def plot_score_distribution(y_true, y_scores, labels=(0, 1), ax=None):
+    """Plot score distribution."""
+
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()
@@ -55,7 +64,9 @@ def plot_score_distribution(y_true, y_scores, labels=[0, 1], ax=None):
     return ax
 
 
-def plot_confusion_matrix(y_true, y_pred, labels=[0, 1], ax=None):
+def plot_confusion_matrix(y_true, y_pred, labels=(0, 1), ax=None):
+    """Plot confusion matrix."""
+
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()
@@ -100,6 +111,8 @@ def plot_confusion_matrix(y_true, y_pred, labels=[0, 1], ax=None):
 
 
 def plot_calibration_curve(y_true, y_scores, pos_label=1, ax=None):
+    """Plot calibration curve."""
+
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()
@@ -136,6 +149,8 @@ def plot_calibration_curve(y_true, y_scores, pos_label=1, ax=None):
 
 
 def plot_roc_curve(y_true, y_scores, pos_label=1, ax=None):
+    """Plot roc curve."""
+
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()
@@ -209,6 +224,8 @@ def plot_roc_curve(y_true, y_scores, pos_label=1, ax=None):
 
 
 def plot_precision_recall_curve(y_true, y_scores, pos_label=1, ax=None):
+    """Plot precision-recall curve."""
+
     # If ax is not provided, create a new axis
     if ax is None:
         ax = plt.gca()

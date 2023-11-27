@@ -19,7 +19,7 @@ datasets:
 
 The model predicts the probability that a URL is a phishing site.  
 To understand what phishing is, refer to the Wikipedia page:  
-[https://en.wikipedia.org/wiki/Phishing](https://en.wikipedia.org/wiki/Phishing) 
+[https://en.wikipedia.org/wiki/Phishing](https://en.wikipedia.org/wiki/Phishing)
 -- this is not a phishing link 😜
 
 - **Model type:** LinearSVM
@@ -29,8 +29,8 @@ To understand what phishing is, refer to the Wikipedia page:
 
 ## Evaluation
 
-| Metric    |    Value |
-|-----------|----------|
+| Metric    | Value    |
+| --------- | -------- |
 | roc_auc   | 0.986002 |
 | accuracy  | 0.949364 |
 | f1        | 0.94867  |
@@ -49,7 +49,8 @@ In addition to being lighter and faster, it can be utilized by languages support
 Below are some examples to get you start. For others languages please refer to the ONNX documentation
 
 <details>
-  <summary><b>Python</b> - ONNX - [recommended 👍]</summary>
+  <summary><b>Python</b> - ONNX - [recommended 👍]
+  </summary>
 
 ```python
 import numpy as np
@@ -80,52 +81,54 @@ for url, proba in zip(urls, results):
     print(f"Likelihood of being a phishing site: {proba[1] * 100:.2f} %")
     print("----")
 
+
+
 ```
+
 </details>
 
 <details>
   <summary><b>NodeJS</b>- ONNX - [recommended 👍]</summary>
 
 ```javascript
-const ort = require('onnxruntime-node');
+const ort = require("onnxruntime-node");
 
 async function main() {
-    
-    try {
-        // Make sure you have downloaded the model.onnx
-        // Creating an ONNX inference session with the specified model
-        const model_path = "./model.onnx";
-        const session = await ort.InferenceSession.create(model_path);
+  try {
+    // Make sure you have downloaded the model.onnx
+    // Creating an ONNX inference session with the specified model
+    const model_path = "./model.onnx";
+    const session = await ort.InferenceSession.create(model_path);
 
-        const urls = [
-            "https://en.wikipedia.org/wiki/Phishing",
-            "http//weird-website.com",
-        ]
-        
-        // Creating an ONNX tensor from the input data
-        const tensor = new ort.Tensor('string', urls, [urls.length,]);
-        
-        // Executing the inference session with the input tensor
-        const results = await session.run({"inputs": tensor});
-        const probas = results['probabilities'].data;
-        
-        // Displaying results for each URL
-        urls.forEach((url, index) => {
-            const proba = probas[index * 2 + 1];
-            const percent = (proba * 100).toFixed(2);
-            
-            console.log(`URL: ${url}`);
-            console.log(`Likelihood of being a phishing site: ${percent}%`);
-            console.log("----");
-        });
+    const urls = [
+      "https://en.wikipedia.org/wiki/Phishing",
+      "http//weird-website.com",
+    ];
 
-    } catch (e) {
-        console.log(`failed to inference ONNX model: ${e}.`);
-    }
-};
+    // Creating an ONNX tensor from the input data
+    const tensor = new ort.Tensor("string", urls, [urls.length]);
+
+    // Executing the inference session with the input tensor
+    const results = await session.run({ inputs: tensor });
+    const probas = results["probabilities"].data;
+
+    // Displaying results for each URL
+    urls.forEach((url, index) => {
+      const proba = probas[index * 2 + 1];
+      const percent = (proba * 100).toFixed(2);
+
+      console.log(`URL: ${url}`);
+      console.log(`Likelihood of being a phishing site: ${percent}%`);
+      console.log("----");
+    });
+  } catch (e) {
+    console.log(`failed to inference ONNX model: ${e}.`);
+  }
+}
 
 main();
 ```
+
 </details>
 
 <details>
@@ -179,6 +182,7 @@ main();
   </body>
 </html>
 ```
+
 </details>
 
 <details>
@@ -211,4 +215,13 @@ for url, proba in zip(urls, probas):
     print("----")
 
 ```
+
 </details>
+
+# Plots
+
+![calibration curve](../images/calibration_curve.png)
+![confusion matrix](../images/confusion_matrix.png)
+![precision recall curve](../images/precision_recall_curve.png)
+![roc curve](../images/roc_curve.png)
+![score distribution](../images/score_distribution.png)

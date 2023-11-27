@@ -1,3 +1,21 @@
+"""
+Module to evaluate a machine learning model and generate evaluation metrics and plots.
+
+Metrics:
+- ROC AUC
+- Accuracy
+- F1 Score
+- Precision
+- Recall
+
+Plots:
+- Confusion Matrix
+- Calibration Curve
+- Precision-Recall Curve
+- ROC Curve
+- Score Distribution
+"""
+
 import json
 from pathlib import Path
 
@@ -22,6 +40,9 @@ from plots import (
 
 
 def evaluate():
+    """
+    Evaluate a machine learning model, generate evaluation metrics, and create plots.
+    """
     params = dvc.api.params_show()
     model = load_model(params["model"]["pickle"])
 
@@ -39,7 +60,7 @@ def evaluate():
 
     metrics_path = Path("live/metrics.json")
     metrics_path.parent.mkdir(exist_ok=True, parents=True)
-    metrics_path.write_text(json.dumps(scores, indent=4))
+    metrics_path.write_text(json.dumps(scores, indent=4), "utf8")
 
     images_path = Path("live/images")
     images_path.mkdir(exist_ok=True, parents=True)

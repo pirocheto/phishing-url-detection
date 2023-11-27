@@ -1,3 +1,7 @@
+"""
+Module to convert a pickled machine learning model to ONNX format.
+"""
+
 import pickle
 from pathlib import Path
 
@@ -7,6 +11,8 @@ from skl2onnx.common.data_types import StringTensorType
 
 
 def pkl2onnx(model):
+    """Convert a pickled machine learning model to ONNX format."""
+
     onx = to_onnx(
         model,
         initial_types=[("inputs", StringTensorType((None,)))],
@@ -16,6 +22,8 @@ def pkl2onnx(model):
 
 
 def create_onnx() -> str:  # pragma: no cover
+    """Create an ONNX file from a pickled machine learning model."""
+
     params = dvc.api.params_show()
     pkl_path = Path(params["model"]["pickle"])
     model = pickle.loads(pkl_path.read_bytes())

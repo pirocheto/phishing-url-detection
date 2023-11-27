@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 from sklearn.preprocessing import LabelEncoder
 
-from src.helper import create_model, load_data, load_model
+from src.helper import create_model, load_model
 
 
 @pytest.fixture
@@ -43,5 +43,5 @@ def pkl_model():
 @pytest.fixture
 def onnx_model():
     params = dvc.api.params_show()
-    model = load_model(params["model"]["onnx"], format="onnx")
+    model = load_model(params["model"]["onnx"], model_format="onnx")
     return model

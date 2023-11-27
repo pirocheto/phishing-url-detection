@@ -1,9 +1,15 @@
+"""
+Module for training a machine learning model with specified hyperparameters.
+"""
+
 import dvc.api
 
 from helper import create_model, load_data, save_model
 
 
 def format_hyperparams(params):
+    """Format hyperparameters for the machine learning model."""
+
     hyperparams = {
         "tfidf__word__ngram_range": (1, params["max_ngram_word"]),
         "tfidf__char__ngram_range": (1, params["max_ngram_char"]),
@@ -19,6 +25,12 @@ def format_hyperparams(params):
 
 
 def train():  # pragma: no cover
+    """
+    Train a machine learning model with specified hyperparameters and save the model.
+
+    Reads hyperparameters and data paths from DVC parameters, creates a model,
+    trains the model, and saves the trained model to a specified file.
+    """
     params = dvc.api.params_show()
     hyperparams = format_hyperparams(params["hyperparams"])
     model = create_model(hyperparams)
