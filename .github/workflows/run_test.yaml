@@ -1,5 +1,5 @@
-name: Publish Model
-run-name: Publish Model
+name: Run Test
+run-name: Run Test
 on:
   push:
     branches:
@@ -21,7 +21,7 @@ jobs:
           virtualenvs-in-project: true
       - name: Install dependencies
         run: |
-          poetry install --no-root --no-interaction --with test
+          poetry install --no-root --no-interaction --only test
       - name: Pull model
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
