@@ -67,23 +67,16 @@ def evaluate():
 
     plot_confusion_matrix(y_test, y_pred)
     plt.savefig(images_path / "confusion_matrix.png")
-    plt.close()
 
-    plot_calibration_curve(y_test, y_score)
-    plt.savefig(images_path / "calibration_curve.png")
-    plt.close()
-
-    plot_precision_recall_curve(y_test, y_score)
-    plt.savefig(images_path / "precision_recall_curve.png")
-    plt.close()
-
-    plot_roc_curve(y_test, y_score)
-    plt.savefig(images_path / "roc_curve.png")
-    plt.close()
-
-    plot_score_distribution(y_test, y_score)
-    plt.savefig(images_path / "score_distribution.png")
-    plt.close()
+    for path, plot_func in [
+        ("calibration_curve.png", plot_calibration_curve),
+        ("precision_recall_curve.png", plot_precision_recall_curve),
+        ("roc_curve.png", plot_roc_curve),
+        ("score_distribution.png", plot_score_distribution),
+    ]:
+        plt.figure()
+        plot_func(y_test, y_score)
+        plt.savefig(images_path / path)
 
 
 if __name__ == "__main__":
