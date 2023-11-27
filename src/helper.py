@@ -15,11 +15,13 @@ def create_model(params: dict | None = None) -> any:
         LinearSVC(dual="auto"),
         cv=5,
         method="isotonic",
+        ensemble=False,
     )
 
     pipeline = Pipeline([("tfidf", tfidf), ("cls", classifier)])
 
-    pipeline.set_params(**params)
+    if params:  # pragma: no cover
+        pipeline.set_params(**params)
     return pipeline
 
 
@@ -58,26 +60,34 @@ def score_model(model, X_train, y_train, train_score=False) -> dict:
     return scores
 
 
-def save_model(model: any, dir: str) -> str:
+def save_model(model: any, path: str) -> str:
     import pickle
     from pathlib import Path
 
     # Create a directory to save the model
-    model_dir = Path(dir)
-    model_dir.mkdir(exist_ok=True)
-    model_path = model_dir / "model.pkl"
+    model_path = Path(path)
+    model_path.parent.mkdir(exist_ok=True, parents=True)
 
     # Save the model to a pickle file
     model_path.write_bytes(pickle.dumps(model))
     return str(model_path)
 
 
-def load_model(dir: str):
-    import pickle
+def load_model(path: str, format="pickle"):
     from pathlib import Path
 
-    model_dir = Path(dir)
-    model_path = model_dir / "model.pkl"
+    model_path = Path(path)
 
-    model = pickle.loads(model_path.read_bytes())
+    if format == "pickle":
+        import pickle
+
+        model = pickle.loads(model_path.read_bytes())
+
+    if format == "onnx":
+        import onnxruntime
+
+        model = onnxruntime.InferenceSession(
+            model_path,
+            providers=["CPUExecutionProvider"],
+        )
     return model

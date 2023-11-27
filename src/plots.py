@@ -153,40 +153,22 @@ def plot_roc_curve(y_true, y_scores, pos_label=1, ax=None):
     best_threshold = thresholds[best_threshold_index]
 
     # Plot the ROC curve
-    ax.plot(
-        fpr,
-        tpr,
-        lw=2,
-        label=f"ROC Curve \n(AUC = {roc_auc:.3f})",
-    )
+    ax.plot(fpr, tpr, lw=2, label=f"ROC Curve \n(AUC = {roc_auc:.3f})")
 
     # Plot the diagonal line
-    ax.plot(
-        [0, 1],
-        [0, 1],
-        lw=2,
-        linestyle="dotted",
-        alpha=0.3,
-    )
+    ax.plot([0, 1], [0, 1], lw=2, linestyle="dotted", alpha=0.3)
 
     # Fill the area under the ROC curve
     ax.fill_between(fpr, tpr, alpha=0.2)
 
     # Mark the point on the ROC curve corresponding to the best threshold
     color = plt.rcParams["axes.prop_cycle"].by_key()["color"][0]
-    ax.scatter(
-        fpr[best_threshold_index],
-        tpr[best_threshold_index],
-        color=color,
-    )
+    ax.scatter(fpr[best_threshold_index], tpr[best_threshold_index], color=color)
 
     # Annotate the best threshold on the plot
     ax.annotate(
         "Best Threshold\n" + r"$\bf{" + f"{best_threshold:.3f}" + "}$",
-        xy=(
-            fpr[best_threshold_index],
-            tpr[best_threshold_index],
-        ),
+        xy=(fpr[best_threshold_index], tpr[best_threshold_index]),
         xytext=(0.5, -0.5),
         textcoords="offset fontsize",
         va="top",
@@ -272,18 +254,13 @@ def plot_precision_recall_curve(y_true, y_scores, pos_label=1, ax=None):
 
     # Mark the point on the curve corresponding to the best threshold
     ax.scatter(
-        recall[best_threshold_index],
-        precision[best_threshold_index],
-        color=color,
+        recall[best_threshold_index], precision[best_threshold_index], color=color
     )
 
     # Annotate the best threshold on the plot
     ax.annotate(
         "Best Threshold\n" + r"$\bf{" + f"{best_threshold:.3f}" + "}$",
-        xy=(
-            recall[best_threshold_index],
-            precision[best_threshold_index],
-        ),
+        xy=(recall[best_threshold_index], precision[best_threshold_index]),
         xytext=(-0.5, -0.5),
         textcoords="offset fontsize",
         va="top",

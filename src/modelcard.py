@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-import joblib
 from jinja2 import Template
 from tabulate import tabulate
 
@@ -34,7 +33,7 @@ def load_code() -> dict:
     return code
 
 
-def render_model_card(metrics: str, code: dict) -> str:
+def render_modelcard(metrics: str, code: dict) -> str:
     """Render the model card using a Jinja2 template."""
     template_str = Path("resources/modelcard/template.md.j2").read_text()
     template = Template(template_str)
@@ -43,13 +42,13 @@ def render_model_card(metrics: str, code: dict) -> str:
     return template.render(params)
 
 
-def create_modelcard(output: str = "model/README.md") -> None:
+def create_modelcard() -> None:  # pragma: no cover
     """Main function to generate and save the model card."""
-    metrics = load_metrics("metrics.json")
+    metrics = load_metrics("live/metrics.json")
     code = load_code()
 
-    modelcard_str = render_model_card(metrics, code)
-    Path(output).write_text(modelcard_str)
+    modelcard_str = render_modelcard(metrics, code)
+    Path("live/model/README.md").write_text(modelcard_str)
 
 
 if __name__ == "__main__":

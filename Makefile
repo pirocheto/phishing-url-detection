@@ -7,3 +7,8 @@ modelcard:
 
 optuna_dashboard:
 	optuna-dashboard notebooks/optunalog/optuna.db
+
+
+test:
+	coverage run --source=src -m pytest -s
+	coverage report -m

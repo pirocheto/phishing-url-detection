@@ -9,8 +9,8 @@ stages:
       size: 788989
     - path: src/train.py
       hash: md5
-      md5: 87dc6175fe8965e68d2e2941ecb896d3
-      size: 947
+      md5: b76655c2926a5e58b4acca0dac4d3650
+      size: 985
     params:
       params.yaml:
         data.train: data/train.parquet
@@ -22,11 +22,12 @@ stages:
           max_ngram_word: 2
           tol: 0.0003837000703754547
           use_idf: false
+        model.pickle: live/model/model.pkl
     outs:
-    - path: model/model.pkl
+    - path: live/model/model.pkl
       hash: md5
-      md5: d238f008d12d6355898f60aa95193b29
-      size: 19005268
+      md5: 3fe49d8848667815ac567373e8764962
+      size: 7537526
   optimize:
     cmd: python src/train.py
     deps:
@@ -44,9 +45,9 @@ stages:
   modelcard:
     cmd: python src/modelcard.py
     deps:
-    - path: metrics.json
+    - path: live/metrics.json
       hash: md5
-      md5: ee099ac42bca2cc87872ba1bd98f4fea
+      md5: ab110aa3c220726256bd8cd03d8cfbe3
       size: 174
     - path: resources/modelcard
       hash: md5
@@ -55,12 +56,12 @@ stages:
       nfiles: 7
     - path: src/modelcard.py
       hash: md5
-      md5: 511cbe0415df90cc7de5bba209e0a202
-      size: 1471
+      md5: a70cb96b99458d396da2daf8165a2c22
+      size: 1465
     outs:
-    - path: model/README.md
+    - path: live/model/README.md
       hash: md5
-      md5: 8527bbfb543ad5611b2aafbb4e5e8d24
+      md5: 5159d8e5b582a3183c35101fa0da5978
       size: 6094
   evaluate:
     cmd: python src/evaluate.py
@@ -69,26 +70,27 @@ stages:
       hash: md5
       md5: b589781569feb40bd244579d4e0e3e85
       size: 430668
-    - path: model/model.pkl
+    - path: live/model/model.pkl
       hash: md5
-      md5: d238f008d12d6355898f60aa95193b29
-      size: 19005268
+      md5: 3fe49d8848667815ac567373e8764962
+      size: 7537526
     - path: src/evaluate.py
       hash: md5
-      md5: b02d11f29b63185a105c914d6a6c5061
-      size: 1656
+      md5: 4eb5b5b9969364e6f3cb5818426fa6a0
+      size: 1789
     params:
       params.yaml:
         data.test: data/test.parquet
+        model.pickle: live/model/model.pkl
     outs:
-    - path: images
+    - path: live/images
       hash: md5
-      md5: 2af8fad2d8dbe7f1916cc551f8488966.dir
-      size: 122820
+      md5: f035d1ebb52034c3efe5d553b46303c4.dir
+      size: 121998
       nfiles: 5
-    - path: metrics.json
+    - path: live/metrics.json
       hash: md5
-      md5: ee099ac42bca2cc87872ba1bd98f4fea
+      md5: ab110aa3c220726256bd8cd03d8cfbe3
       size: 174
   download_data:
     cmd:
@@ -117,18 +119,18 @@ stages:
       size: 1219657
       nfiles: 2
   create_onnx:
-    cmd: python src/pkl2onnx.py
+    cmd: python src/create_onnx.py
     deps:
-    - path: model/model.pkl
+    - path: live/model/model.pkl
       hash: md5
-      md5: d238f008d12d6355898f60aa95193b29
-      size: 19005268
-    - path: src/pkl2onnx.py
+      md5: 3fe49d8848667815ac567373e8764962
+      size: 7537526
+    - path: src/create_onnx.py
       hash: md5
-      md5: 92c0750ad738d713d5294e694e41530f
-      size: 581
+      md5: 7ed290dce747a7076556620913d5cd55
+      size: 687
     outs:
-    - path: model/model.onnx
+    - path: live/model/model.onnx
       hash: md5
-      md5: 9eed2b46f8367ee5b6c30bd945ad6ccc
-      size: 25986513
+      md5: e09d2bffc58007ac579bf8145467cbf1
+      size: 11651872

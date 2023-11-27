@@ -23,7 +23,7 @@ from plots import (
 
 def evaluate():
     params = dvc.api.params_show()
-    model = load_model("model")
+    model = load_model(params["model"]["pickle"])
 
     X_test, y_test = load_data(params["data"]["test"])
     y_pred = model.predict(X_test)
@@ -37,10 +37,12 @@ def evaluate():
         "recall": recall_score(y_test, y_pred),
     }
 
-    Path("metrics.json").write_text(json.dumps(scores, indent=4))
+    metrics_path = Path("live/metrics.json")
+    metrics_path.parent.mkdir(exist_ok=True, parents=True)
+    metrics_path.write_text(json.dumps(scores, indent=4))
 
-    images_path = Path("images")
-    images_path.mkdir(exist_ok=True)
+    images_path = Path("live/images")
+    images_path.mkdir(exist_ok=True, parents=True)
 
     plot_confusion_matrix(y_test, y_pred)
     plt.savefig(images_path / "confusion_matrix.png")

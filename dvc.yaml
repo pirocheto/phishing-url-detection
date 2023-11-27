@@ -20,40 +20,43 @@ stages:
     params:
       - data.train
       - hyperparams
+      - model.pickle
     deps:
       - src/train.py
       - ${data.train}
     outs:
-      - model/model.pkl
+      - ${model.pickle}
 
   evaluate:
     cmd: python src/evaluate.py
     params:
       - data.test
+      - model.pickle
     deps:
-      - model/model.pkl
+      - ${model.pickle}
       - src/evaluate.py
       - ${data.test}
     plots:
-      - images:
+      - live/images:
           cache: false
     metrics:
-      - metrics.json:
+      - live/metrics.json:
           cache: false
 
   create_onnx:
-    cmd: python src/pkl2onnx.py
+    cmd: python src/create_onnx.py
     deps:
-      - model/model.pkl
-      - src/pkl2onnx.py
+      - ${model.pickle}
+      - src/create_onnx.py
     outs:
-      - model/model.onnx
+      - ${model.onnx}
 
   modelcard:
     cmd: python src/modelcard.py
     deps:
       - resources/modelcard
-      - metrics.json
+      - live/metrics.json
       - src/modelcard.py
     outs:
-      - model/README.md
+      - live/model/README.md:
+          cache: false

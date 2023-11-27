@@ -20,7 +20,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          dvc pull model/model.pkl model/model.onnx model/README.md
+          dvc pull live/model/*
       - name: Push on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
@@ -43,7 +43,7 @@ jobs:
               git checkout -b $BRANCH
           fi
 
-          cp -r $CURRENT_REPO/model/* .
+          cp -r $CURRENT_REPO/live/model/* .
 
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"

@@ -18,14 +18,14 @@ def format_hyperparams(params):
     return hyperparams
 
 
-def train():
+def train():  # pragma: no cover
     params = dvc.api.params_show()
     hyperparams = format_hyperparams(params["hyperparams"])
     model = create_model(hyperparams)
 
     X_train, y_train = load_data(params["data"]["train"])
     model.fit(X_train, y_train)
-    save_model(model, "model")
+    save_model(model, params["model"]["pickle"])
 
 
 if __name__ == "__main__":
