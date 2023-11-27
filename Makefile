@@ -1,6 +1,6 @@
 
 pull_model:
-	dvc pull model/model.pkl model/model.onnx model/README.md
+	dvc pull live/model/model.pkl live/model/model.onnx
 
 modelcard:
 	python src/modelcard.py
