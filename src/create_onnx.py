@@ -21,7 +21,7 @@ def pkl2onnx(model):
     return onx.SerializeToString()
 
 
-def create_onnx() -> str:  # pragma: no cover
+def create_onnx() -> str:
     """Create an ONNX file from a pickled machine learning model."""
 
     params = dvc.api.params_show()

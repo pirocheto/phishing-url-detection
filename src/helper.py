@@ -99,7 +99,7 @@ def load_pickle_model(path: str):
     return model
 
 
-def load_onnx_model(path: str):
+def load_onnx_session(path: str):
     """Load a machine learning model from a file."""
     from pathlib import Path
 
@@ -107,8 +107,8 @@ def load_onnx_model(path: str):
 
     model_path = Path(path)
 
-    model = onnxruntime.InferenceSession(
+    sess = onnxruntime.InferenceSession(
         model_path,
         providers=["CPUExecutionProvider"],
     )
-    return model
+    return sess

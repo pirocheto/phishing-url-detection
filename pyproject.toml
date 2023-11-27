@@ -44,3 +44,9 @@ exclude_also = ['if __name__ == "__main__":']
 
 [tool.pylint]
 good-names = ["X_train", "X_test"]
+
+[tool.pylint.MASTER]
+ignore-patterns = ["test_.*?py"]
+
+[tool.pylint.report]
+ignore = ["tests"]
