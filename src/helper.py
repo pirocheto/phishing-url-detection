@@ -88,22 +88,27 @@ def save_model(model: any, path: str) -> str:
     return str(model_path)
 
 
-def load_model(path: str, model_format="pickle"):
+def load_pickle_model(path: str):
     """Load a machine learning model from a file."""
+    import pickle
     from pathlib import Path
 
     model_path = Path(path)
 
-    if model_format == "pickle":
-        import pickle
+    model = pickle.loads(model_path.read_bytes())
+    return model
 
-        model = pickle.loads(model_path.read_bytes())
 
-    if model_format == "onnx":
-        import onnxruntime
+def load_onnx_model(path: str):
+    """Load a machine learning model from a file."""
+    from pathlib import Path
 
-        model = onnxruntime.InferenceSession(
-            model_path,
-            providers=["CPUExecutionProvider"],
-        )
+    import onnxruntime
+
+    model_path = Path(path)
+
+    model = onnxruntime.InferenceSession(
+        model_path,
+        providers=["CPUExecutionProvider"],
+    )
     return model

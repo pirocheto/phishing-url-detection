@@ -29,7 +29,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-from helper import load_data, load_model
+from helper import load_data, load_pickle_model
 from plots import (
     plot_calibration_curve,
     plot_confusion_matrix,
@@ -44,7 +44,7 @@ def evaluate():
     Evaluate a machine learning model, generate evaluation metrics, and create plots.
     """
     params = dvc.api.params_show()
-    model = load_model(params["model"]["pickle"])
+    model = load_pickle_model(params["model"]["pickle"])
 
     X_test, y_test = load_data(params["data"]["test"])
     y_pred = model.predict(X_test)
