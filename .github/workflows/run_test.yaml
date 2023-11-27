@@ -22,12 +22,13 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install --no-root --no-interaction --only test
-      - name: Pull model
+      - name: Pull data and model
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           source .venv/bin/activate
+          dvc repro download_data
           dvc pull live/model/model.pkl live/model/model.onnx
       - name: Run test
         run: |
