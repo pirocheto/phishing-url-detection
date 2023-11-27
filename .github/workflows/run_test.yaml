@@ -31,4 +31,5 @@ jobs:
           dvc pull live/model/model.pkl live/model/model.onnx
       - name: Run test
         run: |
+          source .venv/bin/activate
           pytest
