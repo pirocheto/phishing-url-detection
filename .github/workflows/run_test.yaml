@@ -6,7 +6,7 @@ on:
       - train
       - dev
 jobs:
-  publish_model:
+  run_test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
