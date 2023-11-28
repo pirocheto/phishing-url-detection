@@ -33,16 +33,16 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest
-      - name: Create report
+      - name: Set up CML
+        uses: iterative/setup-cml@v2
+      - name: Create CML report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
           poetry install --no-root --no-interaction --only report
           
           source .venv/bin/activate
           make report
-      - name: Set up CML
-        uses: iterative/setup-cml@v2
-      - name: Create Pull Request
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
           cml comment create report.md
+
+          
