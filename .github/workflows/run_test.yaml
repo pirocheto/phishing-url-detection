@@ -34,3 +34,9 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest
+      - name: Create Pull Request
+        run: |
+          poetry install --no-root --no-interaction --only report
+          source .venv/bin/activate
+          make report
+          cml comment create report.md

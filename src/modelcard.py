@@ -24,7 +24,7 @@ def load_metrics(path: str) -> str:
 def load_code() -> dict:
     """Load code snippets from specified files."""
 
-    path = Path("resources/modelcard/scripts")
+    path = Path("resources/snippets")
 
     code = {
         "py": {
@@ -41,7 +41,7 @@ def load_code() -> dict:
 def render_modelcard(metrics: str, code: dict) -> str:
     """Render the model card using a Jinja2 template."""
 
-    template_str = Path("resources/modelcard/template.md.j2").read_text("utf8")
+    template_str = Path("resources/templates/modelcard.md.j2").read_text("utf8")
     template = Template(template_str)
 
     params = {"metrics": metrics, "code": code}
