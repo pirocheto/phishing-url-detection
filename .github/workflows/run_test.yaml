@@ -34,7 +34,11 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest
+      - name: Set up CML
+        uses: iterative/setup-cml@v2
       - name: Create Pull Request
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           poetry install --no-root --no-interaction --only report
           source .venv/bin/activate
