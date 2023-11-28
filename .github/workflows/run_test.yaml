@@ -36,6 +36,7 @@ jobs:
       - name: Create report
         run:
           poetry install --no-root --no-interaction --only report
+          
           source .venv/bin/activate
           make report
       - name: Set up CML
