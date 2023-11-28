@@ -1,9 +1,7 @@
 name: Run Test
 run-name: Run Test
 on:
-  push:
-    branches:
-      - dev
+  push
 jobs:
   run_test:
     runs-on: ubuntu-latest
