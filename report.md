@@ -16,7 +16,7 @@
 | loss           | hinge                 |
 | lowercase      | True                  |
 | max_ngram_char | 5                     |
-| max_ngram_word | 2                     |
+| max_ngram_word | 1                     |
 | tol            | 0.0003837000703754547 |
 | use_idf        | False                 |
 
