@@ -1,7 +1,7 @@
 name: Run Test
 run-name: Run Test
 on:
-  push
+  [pull_request]
 jobs:
   run_test:
     runs-on: ubuntu-latest
