@@ -5,7 +5,7 @@ on:
   [pull_request]
 
 jobs:
-  run_test:
+  run-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

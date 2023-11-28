@@ -2,7 +2,6 @@
 Module for generating a model card by loading metrics and code snippets.
 """
 
-
 import json
 from pathlib import Path
 
