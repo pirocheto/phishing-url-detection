@@ -1,9 +1,15 @@
-load_data:
-	mkdir -p data && \
-	curl -X GET https://huggingface.co/datasets/pirocheto/phishing-url/raw/main/data.csv -o "data/data.csv"
+download_data:
+	dvc repro download_data
 
-train:
-	python scripts/train_model.py -d data/data.csv -m dvclive/model.pkl -o models
+pull_model:
+	dvc pull live/model/model.pkl live/model/model.onnx
 
-create_modelcard:
-	python scripts/create_modelcard.py -o modelcard.md
+modelcard:
+	python src/modelcard.py
+
+report:
+	python src/report.py
+
+optuna_dashboard:
+	optuna-dashboard notebooks/optunalog/optuna.db
+

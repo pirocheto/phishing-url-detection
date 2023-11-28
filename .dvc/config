@@ -1,2 +1,5 @@
-[plots]
-    auto_open = true
+[core]
+    remote = read-write
+    autostage = true
+['remote "read-write"']
+    url = s3://phishing-url-detection

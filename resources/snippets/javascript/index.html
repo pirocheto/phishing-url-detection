@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <header>
+    <title>Get Started with JavaScript</title>
+  </header>
+  <body>
+    <!-- import ONNXRuntime Web from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <script>
+      // use an async context to call onnxruntime functions.
+      async function main() {
+        try {
+          const model_path = "./model.onnx";
+          const session = await ort.InferenceSession.create(model_path);
+
+          const urls = [
+            "https://en.wikipedia.org/wiki/Phishing",
+            "http//weird-website.com",
+          ];
+
+          // Creating an ONNX tensor from the input data
+          const tensor = new ort.Tensor("string", urls, [urls.length]);
+
+          // Executing the inference session with the input tensor
+          const results = await session.run({ inputs: tensor });
+          const probas = results["probabilities"].data;
+
+          // Displaying results for each URL
+          urls.forEach((url, index) => {
+            const proba = probas[index * 2 + 1];
+            const percent = (proba * 100).toFixed(2);
+
+            document.write(`URL: ${url} <br>`);
+            document.write(
+              `Likelihood of being a phishing site: ${percent} % <br>`
+            );
+            document.write("---- <br>");
+          });
+        } catch (e) {
+          document.write(`failed to inference ONNX model: ${e}.`);
+        }
+      }
+      main();
+    </script>
+  </body>
+</html>

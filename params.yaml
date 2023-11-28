@@ -1,0 +1,16 @@
+data: 
+  train: data/train.parquet
+  test: data/test.parquet
+
+hyperparams:
+  C: 9.783081707940896
+  loss: hinge
+  lowercase: true
+  max_ngram_char: 5
+  max_ngram_word: 2
+  tol: 0.0003837000703754547
+  use_idf: false
+
+model:
+  pickle: live/model/model.pkl
+  onnx: live/model/model.onnx

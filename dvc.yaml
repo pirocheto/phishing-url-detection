@@ -1,11 +1,62 @@
-params:
-- dvclive/params.yaml
-metrics:
-- dvclive/metrics.json
-plots:
-- dvclive/plots/metrics:
-    x: step
-artifacts:
-  model:
-    path: dvclive/model.pkl
-    type: model
+vars:
+  - url:
+      train: https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
+      test: https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
+
+stages:
+  download_data:
+    cmd: 
+      - mkdir -p data
+      - wget ${url.train} -O ${data.train} -q --show-progress
+      - wget ${url.test} -O ${data.test} -q --show-progress
+    deps:
+      - ${url.train}
+      - ${url.test}
+    outs:
+      - data
+
+  train:
+    cmd: python src/train.py
+    params:
+      - data.train
+      - hyperparams
+      - model.pickle
+    deps:
+      - src/train.py
+      - ${data.train}
+    outs:
+      - ${model.pickle}
+
+  evaluate:
+    cmd: python src/evaluate.py
+    params:
+      - data.test
+      - model.pickle
+    deps:
+      - ${model.pickle}
+      - src/evaluate.py
+      - ${data.test}
+    plots:
+      - live/images:
+          cache: false
+    metrics:
+      - live/metrics.json:
+          cache: false
+
+  create_onnx:
+    cmd: python src/create_onnx.py
+    deps:
+      - ${model.pickle}
+      - src/create_onnx.py
+    outs:
+      - ${model.onnx}
+
+  modelcard:
+    cmd: python src/modelcard.py
+    deps:
+      - resources/modelcard
+      - live/metrics.json
+      - src/modelcard.py
+    outs:
+      - live/model/README.md:
+          cache: false

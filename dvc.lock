@@ -1,20 +1,136 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python scripts/optimize.py
+    cmd: python src/train.py
+    deps:
+    - path: data/train.parquet
+      hash: md5
+      md5: 3c534049e2da8ae55ebb8c982f7bae31
+      size: 788989
+    - path: src/train.py
+      hash: md5
+      md5: b76655c2926a5e58b4acca0dac4d3650
+      size: 985
+    params:
+      params.yaml:
+        data.train: data/train.parquet
+        hyperparams:
+          C: 9.783081707940896
+          loss: hinge
+          lowercase: true
+          max_ngram_char: 5
+          max_ngram_word: 2
+          tol: 0.0003837000703754547
+          use_idf: false
+        model.pickle: live/model/model.pkl
+    outs:
+    - path: live/model/model.pkl
+      hash: md5
+      md5: 3fe49d8848667815ac567373e8764962
+      size: 7537526
+  optimize:
+    cmd: python src/train.py
     deps:
     - path: data
       hash: md5
-      md5: 747dd6b2fd4654368e411de3079a0354.dir
-      size: 8503243
-      nfiles: 9
-    - path: scripts/optimize.py
-      hash: md5
-      md5: 8918f774df62762dbe20b0e7ee0c5c76
-      size: 2897
+      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
+      size: 3661494
+      nfiles: 3
     outs:
     - path: dvclive
       hash: md5
-      md5: 378212cc9bd3b095310b6c4ff67e59a2.dir
-      size: 233
+      md5: bc4ae7ed265f80f958f312890a2f330d.dir
+      size: 7792
+      nfiles: 16
+  modelcard:
+    cmd: python src/modelcard.py
+    deps:
+    - path: live/metrics.json
+      hash: md5
+      md5: ab110aa3c220726256bd8cd03d8cfbe3
+      size: 174
+    - path: resources/modelcard
+      hash: md5
+      md5: fa128d342b42d64ec08365cd820c61e7.dir
+      size: 32364328
       nfiles: 7
+    - path: src/modelcard.py
+      hash: md5
+      md5: a70cb96b99458d396da2daf8165a2c22
+      size: 1465
+    outs:
+    - path: live/model/README.md
+      hash: md5
+      md5: 8ad175ef643bf021187cb8430e0af8ed
+      size: 6369
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/test.parquet
+      hash: md5
+      md5: b589781569feb40bd244579d4e0e3e85
+      size: 430668
+    - path: live/model/model.pkl
+      hash: md5
+      md5: 3fe49d8848667815ac567373e8764962
+      size: 7537526
+    - path: src/evaluate.py
+      hash: md5
+      md5: 4eb5b5b9969364e6f3cb5818426fa6a0
+      size: 1789
+    params:
+      params.yaml:
+        data.test: data/test.parquet
+        model.pickle: live/model/model.pkl
+    outs:
+    - path: live/images
+      hash: md5
+      md5: f035d1ebb52034c3efe5d553b46303c4.dir
+      size: 121998
+      nfiles: 5
+    - path: live/metrics.json
+      hash: md5
+      md5: ab110aa3c220726256bd8cd03d8cfbe3
+      size: 174
+  download_data:
+    cmd:
+    - mkdir -p data
+    - wget 
+      https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
+      -O data/train.parquet -q --show-progress
+    - wget 
+      https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
+      -O data/test.parquet -q --show-progress
+    deps:
+    - path: 
+        https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/test.parquet
+      hash: md5
+      checksum: '"b589781569feb40bd244579d4e0e3e85"'
+      size: 430668
+    - path: 
+        https://huggingface.co/datasets/pirocheto/phishing-url/resolve/main/data/train.parquet
+      hash: md5
+      checksum: '"3c534049e2da8ae55ebb8c982f7bae31"'
+      size: 788989
+    outs:
+    - path: data
+      hash: md5
+      md5: b8e1fb3456824207aea9c408a79f6e0f.dir
+      size: 1219657
+      nfiles: 2
+  create_onnx:
+    cmd: python src/create_onnx.py
+    deps:
+    - path: live/model/model.pkl
+      hash: md5
+      md5: 3fe49d8848667815ac567373e8764962
+      size: 7537526
+    - path: src/create_onnx.py
+      hash: md5
+      md5: 7ed290dce747a7076556620913d5cd55
+      size: 687
+    outs:
+    - path: live/model/model.onnx
+      hash: md5
+      md5: e09d2bffc58007ac579bf8145467cbf1
+      size: 11651872
