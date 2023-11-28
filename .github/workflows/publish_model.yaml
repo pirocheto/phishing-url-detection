@@ -3,8 +3,7 @@ run-name: Publish Model
 on:
   push:
     branches:
-      - train
-      - dev
+      - main
     paths:
       - metrics.json
 jobs:
