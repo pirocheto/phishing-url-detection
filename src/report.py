@@ -71,21 +71,8 @@ def create_report() -> None:  # pragma: no cover
 
     metrics = get_metrics("live/metrics.json")
     hyperparams = get_hyperparams("params.yaml")
-    sizes = get_sizes(
-        [
-            "live/model/model.onnx",
-            "live/model/model.pkl",
-        ]
-    )
-    plots = get_plots(
-        [
-            "live/images/confusion_matrix.png",
-            "live/images/calibration_curve.png",
-            "live/images/precision_recall_curve.png",
-            "live/images/roc_curve.png",
-            "live/images/score_distribution.png",
-        ]
-    )
+    sizes = get_sizes(["live/model/model.onnx", "live/model/model.pkl"])
+    plots = get_plots(["live/images/confusion_matrix.png"])
 
     report_str = render_report(metrics, hyperparams, sizes, plots)
     Path("report.md").write_text(report_str, "utf8")

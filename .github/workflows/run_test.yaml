@@ -36,10 +36,10 @@ jobs:
       - name: Create CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:
+        run: |
           poetry install --no-root --no-interaction --only report
-          
           source .venv/bin/activate
+          
           make report
           cml comment create report.md
 
