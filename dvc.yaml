@@ -54,7 +54,8 @@ stages:
   modelcard:
     cmd: python src/modelcard.py
     deps:
-      - resources/modelcard
+      - resources/templates/modelcard.md.j2
+      - resources/snippets
       - live/metrics.json
       - src/modelcard.py
     outs:
