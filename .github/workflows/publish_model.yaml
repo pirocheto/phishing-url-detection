@@ -1,23 +1,32 @@
 name: Publish Model
 run-name: Publish Model
+
 on:
   push:
     branches:
       - main
+
 jobs:
   publish_model:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      # Set up DVC (Data Version Control)
       - name: Set up DVC
         uses: iterative/setup-dvc@v1
+
+      # Pull the model from AWS using DVC
       - name: Pull model
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           dvc pull live/model/model.pkl live/model/model.onnx
+
+      # Push the model on Hugging Face model hub
       - name: Push on Hugging Face
         env: 
           HF_USERNAME: ${{ vars.HF_USERNAME }}
@@ -27,21 +36,26 @@ jobs:
           CURRENT_REPO: ${{ github.workspace }}
           HP_MODEL_REPO: /home/runner/work/hf_model_hub
         run: |
+          # Clone the Hugging Face model repository
           mkdir -p $HP_MODEL_REPO && cd $HP_MODEL_REPO
           git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/$HF_USERNAME/$HF_MODEL
           cd $HF_MODEL
 
+          # Set up Git configurations for the action
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
+          # Check if the branch already exists, if not, create a new one
           if git ls-remote --heads origin $BRANCH | grep -q $BRANCH; then
               git checkout $BRANCH
           else
               git checkout -b $BRANCH
           fi
 
+          # Copy the latest model from the GitHub repository to the Hugging Face repository
           cp -r $CURRENT_REPO/live/model/* .
 
+          # Commit and push the changes
           git add --all
           git diff-index --quiet HEAD || git commit -m "push model from github actions"
           git push origin $BRANCH

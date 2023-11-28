@@ -1,24 +1,33 @@
 name: Run Test
 run-name: Run Test
+
 on:
   [pull_request]
+
 jobs:
   run_test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.10.13"
+      
+      # Install Poetry for Python dependency management
       - name: Install Poetry
         uses: snok/install-poetry@v1 
         with:
           virtualenvs-in-project: true
+      
+      # Install project dependencies using Poetry
       - name: Install dependencies
         run: |
           poetry install --no-root --no-interaction --only test
+      
+      # Pull data and model from AWS using DVC
       - name: Pull data and model
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -27,12 +36,18 @@ jobs:
           source .venv/bin/activate
           dvc repro download_data
           dvc pull live/model/model.pkl live/model/model.onnx
+      
+      # Run the test using Pytest
       - name: Run test
         run: |
           source .venv/bin/activate
           pytest
+      
+      # Set up CML (Continuous Machine Learning)
       - name: Set up CML
         uses: iterative/setup-cml@v2
+
+      # Create and comment on a CML report
       - name: Create CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +55,10 @@ jobs:
           poetry install --no-root --no-interaction --only report
           source .venv/bin/activate
           
+          # Generate the report with custom script
           make report
+
+          # Create a comment in the pull request with the CML
           cml comment create report.md
 
           
