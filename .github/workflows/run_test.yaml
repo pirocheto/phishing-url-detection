@@ -43,4 +43,4 @@ jobs:
           poetry install --no-root --no-interaction --only report
           source .venv/bin/activate
           make report
-          cml comment create report.md
+          # cml comment create report.md
