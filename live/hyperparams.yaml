@@ -1,0 +1,14 @@
+cls__estimator__C: 5.667597048471559
+cls__estimator__loss: hinge
+cls__estimator__tol: 0.004222369411280297
+cls__method: isotonic
+tfidf__char__lowercase: true
+tfidf__char__ngram_range: !!python/tuple
+- 1
+- 5
+tfidf__char__use_idf: false
+tfidf__word__lowercase: true
+tfidf__word__ngram_range: !!python/tuple
+- 1
+- 1
+tfidf__word__use_idf: false

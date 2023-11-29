@@ -26,13 +26,11 @@ def create_model(params: dict | None = None) -> any:
     classifier = CalibratedClassifierCV(
         LinearSVC(dual="auto"),
         cv=5,
-        method="isotonic",
-        ensemble=False,
     )
 
     pipeline = Pipeline([("tfidf", tfidf), ("cls", classifier)])
 
-    if params:  # pragma: no cover
+    if params:
         pipeline.set_params(**params)
     return pipeline
 

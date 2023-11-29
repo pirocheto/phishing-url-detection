@@ -15,15 +15,28 @@ stages:
     outs:
       - data
 
+  optimize:
+    cmd: python src/optimize.py
+    params:
+      - data.train
+      - train
+    deps:
+      - src/optimize.py
+      - ${data.train}
+    outs:
+      - live/hyperparams.yaml:
+          cache: False
+
   train:
     cmd: python src/train.py
     params:
       - data.train
-      - hyperparams
+      - train
       - model.pickle
     deps:
       - src/train.py
       - ${data.train}
+      - live/hyperparams.yaml
     outs:
       - ${model.pickle}
 

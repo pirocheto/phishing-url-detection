@@ -58,7 +58,7 @@ build-backend = "poetry.core.masonry.api"
 pythonpath = ["src"]
 
 [tool.pylint]
-good-names = ["X_train", "X_test"]
+good-names = ["X_train", "X_test", "C"]
 
 [tool.pylint.MASTER]
 ignore-patterns = ["test_.*?py"]

@@ -37,7 +37,8 @@ cd phishing-url-detection
 poetry install --no-root
 
 # 4. Run the pipeline
-dvc repro train_model
+dvc repro -s download_data
+dvc repro -s train
 ```
 
 For more details, see the pipeline in the [dvc.yaml](dvc.yaml) file.

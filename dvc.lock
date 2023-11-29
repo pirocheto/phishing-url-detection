@@ -7,49 +7,105 @@ stages:
       hash: md5
       md5: 3c534049e2da8ae55ebb8c982f7bae31
       size: 788989
+    - path: live/hyperparams.yaml
+      hash: md5
+      md5: 26c2755cbb7247d31834a7a88fac61a5
+      size: 341
     - path: src/train.py
       hash: md5
-      md5: dac27f210909c00d6e36eb0ab9df2030
-      size: 1416
+      md5: b4c749910f9244adbe37ce18fb691573
+      size: 1527
     params:
       params.yaml:
         data.train: data/train.parquet
-        hyperparams:
-          C: 9.783081707940896
-          loss: hinge
-          lowercase: true
-          max_ngram_char: 5
-          max_ngram_word: 2
-          tol: 0.0003837000703754547
-          use_idf: false
-          calibration: isotonic
         model.pickle: live/model/model.pkl
+        train:
+          n_trials: 50
+          n_jobs: -1
+          hyperparams:
+            max_ngram_word:
+              low: 1
+              high: 3
+            max_ngram_char:
+              low: 1
+              high: 5
+            lowercase:
+            - true
+            - false
+            use_idf:
+            - true
+            - false
+            C:
+              low: 1e-07
+              high: 10
+            tol:
+              low: 1e-05
+              high: 0.1
+            loss:
+            - hinge
+            - squared_hinge
+            calibration:
+            - isotonic
+            - sigmoid
     outs:
     - path: live/model/model.pkl
       hash: md5
-      md5: 1d53084b5058f22ca408eda287f9c2df
-      size: 7537526
+      md5: ae51ded166715dd4fd89668a7fa60f73
+      size: 17069817
   optimize:
-    cmd: python src/train.py
+    cmd: python src/optimize.py
     deps:
-    - path: data
+    - path: data/train.parquet
       hash: md5
-      md5: 7951f4f5dfd40734ffe6bd1350a7aa24.dir
-      size: 3661494
-      nfiles: 3
+      md5: 3c534049e2da8ae55ebb8c982f7bae31
+      size: 788989
+    - path: src/optimize.py
+      hash: md5
+      md5: 4118fd23cb9927d2687916e9705255f1
+      size: 3656
+    params:
+      params.yaml:
+        data.train: data/train.parquet
+        train:
+          n_trials: 50
+          n_jobs: -1
+          hyperparams:
+            max_ngram_word:
+              low: 1
+              high: 3
+            max_ngram_char:
+              low: 1
+              high: 5
+            lowercase:
+            - true
+            - false
+            use_idf:
+            - true
+            - false
+            C:
+              low: 1e-07
+              high: 10
+            tol:
+              low: 1e-05
+              high: 0.1
+            loss:
+            - hinge
+            - squared_hinge
+            calibration:
+            - isotonic
+            - sigmoid
     outs:
-    - path: dvclive
+    - path: live/hyperparams.yaml
       hash: md5
-      md5: bc4ae7ed265f80f958f312890a2f330d.dir
-      size: 7792
-      nfiles: 16
+      md5: 26c2755cbb7247d31834a7a88fac61a5
+      size: 341
   modelcard:
     cmd: python src/modelcard.py
     deps:
     - path: live/metrics.json
       hash: md5
-      md5: ab110aa3c220726256bd8cd03d8cfbe3
-      size: 174
+      md5: 3e722df0e7568a5d39117ef0b7daac34
+      size: 172
     - path: resources/snippets
       hash: md5
       md5: f836043f98b4420789579aa9feb05a7a.dir
@@ -66,7 +122,7 @@ stages:
     outs:
     - path: live/model/README.md
       hash: md5
-      md5: 0b32014104dce4cd1705788de45aedd4
+      md5: 2461af09d8494b5c59d323f3c6403bb0
       size: 6195
   evaluate:
     cmd: python src/evaluate.py
@@ -77,8 +133,8 @@ stages:
       size: 430668
     - path: live/model/model.pkl
       hash: md5
-      md5: 1d53084b5058f22ca408eda287f9c2df
-      size: 7537526
+      md5: ae51ded166715dd4fd89668a7fa60f73
+      size: 17069817
     - path: src/evaluate.py
       hash: md5
       md5: bb280fbd2bef14c3057217da2c78c577
@@ -90,13 +146,13 @@ stages:
     outs:
     - path: live/images
       hash: md5
-      md5: 4bd593b202c15b9c44d1dacc17f58fb8.dir
-      size: 122012
+      md5: 5c47497514e503b501f6d6475b331a81.dir
+      size: 122942
       nfiles: 5
     - path: live/metrics.json
       hash: md5
-      md5: ab110aa3c220726256bd8cd03d8cfbe3
-      size: 174
+      md5: 3e722df0e7568a5d39117ef0b7daac34
+      size: 172
   download_data:
     cmd:
     - mkdir -p data
@@ -128,8 +184,8 @@ stages:
     deps:
     - path: live/model/model.pkl
       hash: md5
-      md5: 1d53084b5058f22ca408eda287f9c2df
-      size: 7537526
+      md5: ae51ded166715dd4fd89668a7fa60f73
+      size: 17069817
     - path: src/create_onnx.py
       hash: md5
       md5: 76884a3a4f4a4c93a9183afe5c060220
@@ -137,5 +193,5 @@ stages:
     outs:
     - path: live/model/model.onnx
       hash: md5
-      md5: daab405a10ad61630744f449c22c0bb9
-      size: 11651872
+      md5: 6c470962442413d0a51b72f0ae163670
+      size: 23550904

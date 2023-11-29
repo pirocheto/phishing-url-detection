@@ -2,15 +2,42 @@ data:
   train: data/train.parquet
   test: data/test.parquet
 
-hyperparams:
-  C: 9.783081707940896
-  loss: hinge
-  lowercase: true
-  max_ngram_char: 5
-  max_ngram_word: 2
-  tol: 0.0003837000703754547
-  use_idf: false
-  calibration: isotonic
+train:
+  n_trials: 50
+  n_jobs: -1
+
+  hyperparams:
+    max_ngram_word: 
+      low: 1
+      high: 3
+
+    max_ngram_char: 
+      low: 1
+      high: 5
+      
+    lowercase: 
+      - True
+      - False
+
+    use_idf: 
+      - True
+      - False
+
+    C: 
+      low: 1e-7
+      high: 10
+
+    tol: 
+      low: 1e-5
+      high: 1e-1
+
+    loss: 
+      - hinge
+      - squared_hinge
+
+    calibration: 
+      - isotonic
+      - sigmoid
 
 model:
   pickle: live/model/model.pkl

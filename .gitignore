@@ -24,6 +24,7 @@ cover/
 
 # Optuna db
 optuna.db
+optuna-journal.log
 
 # Data
 /data

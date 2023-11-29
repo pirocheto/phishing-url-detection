@@ -2,7 +2,10 @@
 Module for training a machine learning model with specified hyperparameters.
 """
 
+from pathlib import Path
+
 import dvc.api
+import yaml
 
 from helper import create_model, load_data, save_model
 
@@ -33,11 +36,17 @@ def train():
     trains the model, and saves the trained model to a specified file.
     """
     params = dvc.api.params_show()
-    hyperparams = format_hyperparams(params["hyperparams"])
-    model = create_model(hyperparams)
+
+    best_hyperparams = yaml.load(
+        Path("live/hyperparams.yaml").read_text("utf8"),
+        Loader=yaml.Loader,
+    )
+
+    model = create_model(best_hyperparams)
 
     X_train, y_train = load_data(params["data"]["train"])
     model.fit(X_train, y_train)
+
     save_model(model, params["model"]["pickle"])
 
 
