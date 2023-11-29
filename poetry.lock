@@ -421,6 +421,17 @@ urllib3 = {version = ">=1.25.4,<2.1", markers = "python_version >= \"3.10\""}
 crt = ["awscrt (==0.16.26)"]
 
 [[package]]
+name = "bottle"
+version = "0.12.25"
+description = "Fast and simple WSGI-framework for small web-applications."
+optional = false
+python-versions = "*"
+files = [
+    {file = "bottle-0.12.25-py3-none-any.whl", hash = "sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea"},
+    {file = "bottle-0.12.25.tar.gz", hash = "sha256:e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021"},
+]
+
+[[package]]
 name = "celery"
 version = "5.3.6"
 description = "Distributed Task Queue."
@@ -2828,6 +2839,29 @@ optional = ["boto3", "botorch", "cmaes (>=0.10.0)", "google-cloud-storage", "mat
 test = ["coverage", "fakeredis[lua]", "kaleido", "moto", "pytest", "scipy (>=1.9.2)"]
 
 [[package]]
+name = "optuna-dashboard"
+version = "0.13.0"
+description = "Real-time dashboard for Optuna"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "optuna-dashboard-0.13.0.tar.gz", hash = "sha256:68930e952cf154f38d34fcfe15567dc6d4b05275bfcf1a233c2c3d3fdbb88482"},
+    {file = "optuna_dashboard-0.13.0-py3-none-any.whl", hash = "sha256:f461779c5b8ee6c6b7c3894572d2af89d1b74bd857bb541c75413d8555c52593"},
+]
+
+[package.dependencies]
+bottle = "*"
+optuna = ">=2.4.0"
+packaging = "*"
+scikit-learn = "*"
+
+[package.extras]
+docs = ["boto3", "botorch", "sphinx", "sphinx-rtd-theme", "streamlit"]
+optional = ["boto3", "botorch (>=0.8.1)", "streamlit"]
+preferential = ["botorch (>=0.8.1)"]
+test = ["coverage", "moto[s3]", "plotly", "pytest"]
+
+[[package]]
 name = "orjson"
 version = "3.9.10"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -4851,4 +4885,4 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "446465bef7e18be74ad24075003f1695d948eec75bdc7cab6488ea60d6599c31"
+content-hash = "6b7278ea591ca6eaf7e9ce2d035e92e88c44bf40680ebe91621196dfe61db0c5"

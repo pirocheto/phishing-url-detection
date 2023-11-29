@@ -45,6 +45,7 @@ ipykernel = "^6.27.1"
 optuna = {extras = ["plotly"], version = "^3.4.0"}
 plotly = "^5.18.0"
 nbformat = "^5.9.2"
+optuna-dashboard = "^0.13.0"
 
 [tool.poetry.group.dev]
 optional = true
