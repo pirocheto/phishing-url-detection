@@ -12,7 +12,7 @@ The dataset used and the latest model are hosted on Hugging Face:
 - Dataset: https://huggingface.co/datasets/pirocheto/phishing-url
 - Model: https://huggingface.co/pirocheto/phishing-url-detection
 
-## Model Architecture
+## Consideration regarding the model
 
 The model architecture consists of a TF-IDF (character n-grams + word n-grams) for vectorization and a linear SVM for classification.
 
@@ -21,6 +21,8 @@ The model architecture consists of a TF-IDF (character n-grams + word n-grams) f
 :white_check_mark: **Fast**: Your application will experience no additional latency due to model inferences.
 
 :white_check_mark: **Works Offline**: The use of URL tokens alone enables usage without an internet connection.
+
+On the other hand, it could be less efficient than more complex models or those using external characteristics.
 
 ## Reproduce The Model
 
@@ -42,13 +44,13 @@ For more details, see the pipeline in the [dvc.yaml](dvc.yaml) file.
 
 ## Project Structure
 
-- [`live`](live): Artifact created during pipeline execution
-- [`notebooks`](notebooks): Contains the code for the exploration phase
-- [`ressources`](dvc.yaml): Miscellaneous resources used by scripts
-- [`tests`](tests): Test files
-- [`src`](src): Python scripts
-- [`params.yaml`](params.yaml): Parameters for the DVC experiment
-- [`dvc.yaml`](dvc.yaml): Pipeline to run the experiment and reproduce executions
+- `live`: Artifacts created during pipeline execution
+- `notebooks`: Contains the code for the exploration phase
+- `ressources`: Miscellaneous resources used by scripts
+- `tests`: Test files
+- `src`: Python scripts
+- `params.yaml`: Parameters for the DVC experiment
+- `dvc.yaml`: Pipeline to run the experiment and reproduce executions
 
 ## Main Tools Used in This Project
 
