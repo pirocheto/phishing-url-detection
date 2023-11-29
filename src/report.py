@@ -11,6 +11,8 @@ from tabulate import tabulate
 
 
 def get_metrics(path: str) -> str:
+    """Load metrics from a JSON file and format them into a table."""
+
     metrics = json.loads(Path(path).read_text("utf8"))
 
     return tabulate(
@@ -21,6 +23,8 @@ def get_metrics(path: str) -> str:
 
 
 def get_hyperparams(path: str, key: str = "hyperparams") -> str:
+    """Load hyperparameters from a YAML file and format them into a table."""
+
     params = yaml.safe_load(Path(path).read_text("utf8"))
     hyperparams = params[key]
 
@@ -32,6 +36,8 @@ def get_hyperparams(path: str, key: str = "hyperparams") -> str:
 
 
 def get_sizes(paths: list[str]) -> str:
+    """Get file sizes for a list of paths and format them into a table."""
+
     sizes = {}
 
     for path in paths:
@@ -48,11 +54,15 @@ def get_sizes(paths: list[str]) -> str:
 
 
 def get_plots(paths: list[str]) -> str:
+    """Create Markdown code for displaying images in a report."""
+
     plots = "\n".join([f"![]({path})" for path in paths])
     return plots
 
 
 def render_report(metrics: str, hyperparams: str, sizes: str, plots: str) -> str:
+    """Render a report using a Jinja2 template."""
+
     template_str = Path("resources/templates/report.md.j2").read_text("utf8")
     template = Template(template_str)
 
@@ -66,7 +76,7 @@ def render_report(metrics: str, hyperparams: str, sizes: str, plots: str) -> str
 
 
 def create_report() -> None:  # pragma: no cover
-    """Main function to generate and save the model card."""
+    """Main function to generate and save the report."""
 
     metrics = get_metrics("live/metrics.json")
     hyperparams = get_hyperparams("params.yaml")
