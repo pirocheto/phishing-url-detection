@@ -24,7 +24,7 @@ def format_hyperparams(params):
     return hyperparams
 
 
-def train():  # pragma: no cover
+def train():
     """
     Train a machine learning model with specified hyperparameters and save the model.
 
