@@ -1,9 +1,9 @@
 <div align="center">
-<h1 align="center">
-Phishing URL Detection <br>
-<em style="font-size: 18px;color:grey">with</em>
-<em style="font-size: 22px;color:grey">Machine Learning</em>
-</h1>
+    <h1 align="center">
+        Phishing URL Detection<br>
+        <em style="font-size: 18px;color:grey">with</em>
+        <em style="font-size: 22px;color:grey">Machine Learning</em>
+    </h1>
 </div>
 
 This repository contains the code for training a machine learning model for phishing URL detection.
@@ -22,7 +22,7 @@ The model architecture consists of a TF-IDF (character n-grams + word n-grams) f
 
 :white_check_mark: **Works Offline**: The use of URL tokens alone enables usage without an internet connection.
 
-On the other hand, it could be less efficient than more complex models or those using external characteristics.
+On the other hand, it could be less efficient than more complex models or those using external features.
 
 ## Reproduce The Model
 

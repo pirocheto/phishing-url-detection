@@ -67,8 +67,8 @@ sess = onnxruntime.InferenceSession(
 )
 
 urls = [
-    "https://en.wikipedia.org/wiki/Phishing",
-    "http//weird-website.com",
+    "https://clubedemilhagem.com/home.php",
+    "http://www.medicalnewstoday.com/articles/188939.php",
 ]
 inputs = np.array(urls, dtype="str")
 
@@ -98,8 +98,8 @@ async function main() {
         const session = await ort.InferenceSession.create(model_path);
 
         const urls = [
-            "https://en.wikipedia.org/wiki/Phishing",
-            "http//weird-website.com",
+            "https://clubedemilhagem.com/home.php",
+            "http://www.medicalnewstoday.com/articles/188939.php",
         ]
         
         // Creating an ONNX tensor from the input data
@@ -148,8 +148,8 @@ main();
           const session = await ort.InferenceSession.create(model_path);
 
           const urls = [
-            "https://en.wikipedia.org/wiki/Phishing",
-            "http//weird-website.com",
+          "https://clubedemilhagem.com/home.php",
+          "http://www.medicalnewstoday.com/articles/188939.php",
           ];
 
           // Creating an ONNX tensor from the input data
@@ -195,8 +195,8 @@ FILENAME = "model.pkl"
 model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
 
 urls = [
-    "https://en.wikipedia.org/wiki/Phishing",
-    "http//weird-website.com",
+    "https://clubedemilhagem.com/home.php",
+    "http://www.medicalnewstoday.com/articles/188939.php",
 ]
 
 # Load the downloaded model using joblib

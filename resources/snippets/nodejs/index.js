@@ -9,8 +9,8 @@ async function main() {
         const session = await ort.InferenceSession.create(model_path);
 
         const urls = [
-            "https://en.wikipedia.org/wiki/Phishing",
-            "http//weird-website.com",
+            "https://clubedemilhagem.com/home.php",
+            "http://www.medicalnewstoday.com/articles/188939.php",
         ]
         
         // Creating an ONNX tensor from the input data

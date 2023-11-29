@@ -17,6 +17,7 @@ def format_hyperparams(params):
         "tfidf__char__lowercase": params["lowercase"],
         "tfidf__word__use_idf": params["use_idf"],
         "tfidf__char__use_idf": params["use_idf"],
+        "cls__method": params["calibration"],
         "cls__estimator__C": params["C"],
         "cls__estimator__loss": params["loss"],
         "cls__estimator__tol": params["tol"],

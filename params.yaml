@@ -10,6 +10,7 @@ hyperparams:
   max_ngram_word: 2
   tol: 0.0003837000703754547
   use_idf: false
+  calibration: isotonic
 
 model:
   pickle: live/model/model.pkl

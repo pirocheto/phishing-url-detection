@@ -9,8 +9,8 @@ stages:
       size: 788989
     - path: src/train.py
       hash: md5
-      md5: 44798d6b9d81b269a22f5a7afbe2d733
-      size: 1390
+      md5: dac27f210909c00d6e36eb0ab9df2030
+      size: 1416
     params:
       params.yaml:
         data.train: data/train.parquet
@@ -22,12 +22,13 @@ stages:
           max_ngram_word: 2
           tol: 0.0003837000703754547
           use_idf: false
+          calibration: isotonic
         model.pickle: live/model/model.pkl
     outs:
     - path: live/model/model.pkl
       hash: md5
-      md5: bdb128d5e16160d1bbcdb40cdedbfc39
-      size: 7537528
+      md5: 1d53084b5058f22ca408eda287f9c2df
+      size: 7537526
   optimize:
     cmd: python src/train.py
     deps:
@@ -51,8 +52,8 @@ stages:
       size: 174
     - path: resources/snippets
       hash: md5
-      md5: 696d219065b586c2c913007ee430fcd7.dir
-      size: 4582
+      md5: f836043f98b4420789579aa9feb05a7a.dir
+      size: 4486
       nfiles: 5
     - path: resources/templates/modelcard.md.j2
       hash: md5
@@ -65,8 +66,8 @@ stages:
     outs:
     - path: live/model/README.md
       hash: md5
-      md5: 1df782270634cc744cafcf3271a5d121
-      size: 6095
+      md5: 0b32014104dce4cd1705788de45aedd4
+      size: 6195
   evaluate:
     cmd: python src/evaluate.py
     deps:
@@ -76,8 +77,8 @@ stages:
       size: 430668
     - path: live/model/model.pkl
       hash: md5
-      md5: bdb128d5e16160d1bbcdb40cdedbfc39
-      size: 7537528
+      md5: 1d53084b5058f22ca408eda287f9c2df
+      size: 7537526
     - path: src/evaluate.py
       hash: md5
       md5: bb280fbd2bef14c3057217da2c78c577
@@ -89,8 +90,8 @@ stages:
     outs:
     - path: live/images
       hash: md5
-      md5: a9610f06503a6faeffb8da4cdbdfd62f.dir
-      size: 122020
+      md5: 4bd593b202c15b9c44d1dacc17f58fb8.dir
+      size: 122012
       nfiles: 5
     - path: live/metrics.json
       hash: md5
@@ -127,8 +128,8 @@ stages:
     deps:
     - path: live/model/model.pkl
       hash: md5
-      md5: bdb128d5e16160d1bbcdb40cdedbfc39
-      size: 7537528
+      md5: 1d53084b5058f22ca408eda287f9c2df
+      size: 7537526
     - path: src/create_onnx.py
       hash: md5
       md5: 76884a3a4f4a4c93a9183afe5c060220
@@ -136,5 +137,5 @@ stages:
     outs:
     - path: live/model/model.onnx
       hash: md5
-      md5: e72cd37968d0e92fbad406cd53feae0a
+      md5: daab405a10ad61630744f449c22c0bb9
       size: 11651872

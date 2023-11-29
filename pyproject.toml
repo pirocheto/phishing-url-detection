@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "phishing-url-detection"
 version = "0.1.0"
-description = ""
+description = "Train a machine learning model for phishing URL detection. "
 authors = ["pirocheto"]
 readme = "README.md"
 
@@ -37,7 +37,6 @@ optional = true
 xgboost = "^2.0.2"
 lightgbm = "^4.1.0"
 coverage = "^7.3.2"
-black = "^23.11.0"
 isort = "^5.12.0"
 pylint = "^3.0.2"
 flake8 = "^6.1.0"
@@ -46,6 +45,7 @@ optuna = { extras = ["plotly"], version = "^3.4.0" }
 plotly = "^5.18.0"
 nbformat = "^5.9.2"
 optuna-dashboard = "^0.13.0"
+black = "^23.11.0"
 
 [tool.poetry.group.dev]
 optional = true
