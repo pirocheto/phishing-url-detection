@@ -1,6 +1,7 @@
 """
 Module for training a machine learning model with specified hyperparameters.
 """
+# TODO: add comments
 
 from functools import partial
 from pathlib import Path
@@ -12,10 +13,6 @@ import yaml
 from optuna.storages import JournalFileStorage, JournalStorage
 
 from helper import create_model, load_data, score_model
-
-N_TRIALS = 40
-N_JOBS = 5
-SEED = 796856567
 
 
 def get_hyperparams(trial: optuna.Trial, space: dict) -> dict:
@@ -90,7 +87,7 @@ def optimize():
     storage = JournalStorage(JournalFileStorage("optuna-journal.log"))
     study = optuna.create_study(
         direction="maximize",
-        sampler=optuna.samplers.TPESampler(seed=SEED),
+        sampler=optuna.samplers.TPESampler(seed=4242),
         storage=storage,
     )
 

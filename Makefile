@@ -1,6 +1,10 @@
 # Download data using DVC
 download_data:
-	dvc repro download_data
+	dvc repro -s download_data
+
+# Train model using DVC
+train:
+	dvc repro -s train
 
 # Pull the pickled model and ONNX model using DVC
 pull_model:
