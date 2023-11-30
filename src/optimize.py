@@ -103,7 +103,6 @@ def optimize():
     study.optimize(
         objective_with_data,
         n_trials=params["train"]["n_trials"],
-        n_jobs=params["train"]["n_jobs"],
         show_progress_bar=True,
     )
 

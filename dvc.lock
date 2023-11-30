@@ -9,8 +9,8 @@ stages:
       size: 788989
     - path: live/hyperparams.yaml
       hash: md5
-      md5: 7299245d703fb3bf97a6cdbcc1bf4dee
-      size: 350
+      md5: c6ffe7e77a4511a3bb8f709a5557af34
+      size: 341
     - path: src/train.py
       hash: md5
       md5: b4c749910f9244adbe37ce18fb691573
@@ -50,8 +50,8 @@ stages:
     outs:
     - path: live/model/model.pkl
       hash: md5
-      md5: 0b2d8d88fb08d33dd7004630841e5312
-      size: 3720535
+      md5: b8bdb34d1d85c08b66c54a5c63d69c04
+      size: 6438990
   optimize:
     cmd: python src/optimize.py
     deps:
@@ -61,14 +61,13 @@ stages:
       size: 788989
     - path: src/optimize.py
       hash: md5
-      md5: 1d583d1950a7f3fa96bfb18bbf3a4c11
-      size: 3634
+      md5: dfe85032bbf76d58c028e95435607b31
+      size: 3672
     params:
       params.yaml:
         data.train: data/train.parquet
         train:
           n_trials: 5
-          n_jobs: -1
           hyperparams:
             max_ngram_word:
               low: 1
@@ -97,14 +96,14 @@ stages:
     outs:
     - path: live/hyperparams.yaml
       hash: md5
-      md5: 7299245d703fb3bf97a6cdbcc1bf4dee
-      size: 350
+      md5: b206b887e33d90a344e80fcac77892db
+      size: 342
   modelcard:
     cmd: python src/modelcard.py
     deps:
     - path: live/metrics.json
       hash: md5
-      md5: 79ad315b19278ce0dde0f29cd2a390e3
+      md5: d7fdd2a87827cb8ddc368c5dd6a22e94
       size: 174
     - path: resources/snippets
       hash: md5
@@ -122,7 +121,7 @@ stages:
     outs:
     - path: live/model/README.md
       hash: md5
-      md5: 874996fd0a69a4d85780b58e9ebc9d16
+      md5: 4e47cdfe4cb83de6984c095fdc981e67
       size: 6195
   evaluate:
     cmd: python src/evaluate.py
@@ -133,8 +132,8 @@ stages:
       size: 430668
     - path: live/model/model.pkl
       hash: md5
-      md5: 0b2d8d88fb08d33dd7004630841e5312
-      size: 3720535
+      md5: b8bdb34d1d85c08b66c54a5c63d69c04
+      size: 6438990
     - path: src/evaluate.py
       hash: md5
       md5: bb280fbd2bef14c3057217da2c78c577
@@ -146,12 +145,12 @@ stages:
     outs:
     - path: live/images
       hash: md5
-      md5: f78de1fc543ba20ae4c63a2eb9e922fc.dir
-      size: 127744
+      md5: 8f62bf74a209741ec81fdec89997cf77.dir
+      size: 123809
       nfiles: 5
     - path: live/metrics.json
       hash: md5
-      md5: 79ad315b19278ce0dde0f29cd2a390e3
+      md5: d7fdd2a87827cb8ddc368c5dd6a22e94
       size: 174
   download_data:
     cmd:
@@ -184,8 +183,8 @@ stages:
     deps:
     - path: live/model/model.pkl
       hash: md5
-      md5: 0b2d8d88fb08d33dd7004630841e5312
-      size: 3720535
+      md5: b8bdb34d1d85c08b66c54a5c63d69c04
+      size: 6438990
     - path: src/create_onnx.py
       hash: md5
       md5: 76884a3a4f4a4c93a9183afe5c060220
@@ -193,5 +192,5 @@ stages:
     outs:
     - path: live/model/model.onnx
       hash: md5
-      md5: 14088ecadadfb428e34dbed80f170cd4
-      size: 3885928
+      md5: 5120c6b18417ee04c74399d24abe99f4
+      size: 6733643

@@ -1,11 +1,11 @@
-cls__estimator__C: 0.03051588376451007
-cls__estimator__loss: squared_hinge
-cls__estimator__tol: 0.0003389577702603486
+cls__estimator__C: 0.6819892127612676
+cls__estimator__loss: hinge
+cls__estimator__tol: 1.3809449966116941e-05
 cls__method: isotonic
 tfidf__char__lowercase: true
 tfidf__char__ngram_range: !!python/tuple
 - 1
-- 2
+- 4
 tfidf__char__use_idf: true
 tfidf__word__lowercase: true
 tfidf__word__ngram_range: !!python/tuple

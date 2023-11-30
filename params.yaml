@@ -15,13 +15,9 @@ data:
 train:
   # Number of hyperparameter optimization trials
   n_trials: 5
-
-  # Number of parallel jobs, -1 for using all available processors
-  n_jobs: -1
   
   # Hyperparameter ranges for the model
   hyperparams:
-
     # Maximim n-grams for the first TF-IDF component (word)
     max_ngram_word:
       low: 1

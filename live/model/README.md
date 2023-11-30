@@ -31,11 +31,11 @@ To understand what phishing is, refer to the Wikipedia page:
 
 | Metric    |    Value |
 |-----------|----------|
-| roc_auc   | 0.963362 |
-| accuracy  | 0.900053 |
-| f1        | 0.900291 |
-| precision | 0.898153 |
-| recall    | 0.902439 |
+| roc_auc   | 0.970012 |
+| accuracy  | 0.927359 |
+| f1        | 0.926026 |
+| precision | 0.943344 |
+| recall    | 0.909332 |
 
 # How to Get Started with the Model
 

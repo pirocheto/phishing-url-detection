@@ -64,7 +64,7 @@ def score_model(model, X_train, y_train, train_score=False) -> dict:
         X_train,
         y_train,
         cv=5,
-        n_jobs=1,
+        n_jobs=-1,
         return_train_score=train_score,
         scoring=scoring,
     )
