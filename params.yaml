@@ -16,7 +16,7 @@ train:
   # Number of hyperparameter optimization trials
   n_trials: 40
   
-  # Hyperparameter ranges for the model
+  # Hyperparameter ranges for Optuna
   hyperparams:
     # Maximim n-grams for the first TF-IDF component (word)
     max_ngram_word:

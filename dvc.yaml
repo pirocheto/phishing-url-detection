@@ -24,8 +24,8 @@ stages:
       - src/optimize.py
       - ${data.train}
     plots:
-    - live/images/optimization_history.png:
-        cache: false
+      - live/images/optimization_history.png:
+          cache: false
     outs:
       - live/hyperparams.yaml:
           cache: False
@@ -53,19 +53,19 @@ stages:
       - src/evaluate.py
       - ${data.test}
     plots:
-    - live/images/calibration_curve.png:
-        cache: false
-    - live/images/confusion_matrix.png:
-        cache: false
-    - live/images/precision_recall_curve.png:
-        cache: false
-    - live/images/roc_curve.png:
-        cache: false
-    - live/images/score_distribution.png:
-        cache: false
+      - live/images/calibration_curve.png:
+          cache: false
+      - live/images/confusion_matrix.png:
+          cache: false
+      - live/images/precision_recall_curve.png:
+          cache: false
+      - live/images/roc_curve.png:
+          cache: false
+      - live/images/score_distribution.png:
+          cache: false
     metrics:
-    - live/metrics.json:
-        cache: false
+      - live/metrics.json:
+          cache: false
 
   create_onnx:
     cmd: python src/create_onnx.py
