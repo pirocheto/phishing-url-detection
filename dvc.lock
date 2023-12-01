@@ -9,8 +9,8 @@ stages:
       size: 788989
     - path: live/hyperparams.yaml
       hash: md5
-      md5: c6ffe7e77a4511a3bb8f709a5557af34
-      size: 341
+      md5: e125bfde9dccd6ad394c8f649fd660ad
+      size: 340
     - path: src/train.py
       hash: md5
       md5: b4c749910f9244adbe37ce18fb691573
@@ -20,8 +20,7 @@ stages:
         data.train: data/train.parquet
         model.pickle: live/model/model.pkl
         train:
-          n_trials: 5
-          n_jobs: -1
+          n_trials: 40
           hyperparams:
             max_ngram_word:
               low: 1
@@ -50,8 +49,8 @@ stages:
     outs:
     - path: live/model/model.pkl
       hash: md5
-      md5: b8bdb34d1d85c08b66c54a5c63d69c04
-      size: 6438990
+      md5: d3f44ce570a1faec1e3c6233cf5178d8
+      size: 17066252
   optimize:
     cmd: python src/optimize.py
     deps:
@@ -61,13 +60,13 @@ stages:
       size: 788989
     - path: src/optimize.py
       hash: md5
-      md5: dfe85032bbf76d58c028e95435607b31
-      size: 3672
+      md5: 6616ddde830212097b3a5e6f376e7374
+      size: 3607
     params:
       params.yaml:
         data.train: data/train.parquet
         train:
-          n_trials: 5
+          n_trials: 40
           hyperparams:
             max_ngram_word:
               low: 1
@@ -96,14 +95,18 @@ stages:
     outs:
     - path: live/hyperparams.yaml
       hash: md5
-      md5: b206b887e33d90a344e80fcac77892db
-      size: 342
+      md5: e125bfde9dccd6ad394c8f649fd660ad
+      size: 340
+    - path: live/images/optimization_history.png
+      hash: md5
+      md5: 61891d211e98809fa328c3ac37de5bd6
+      size: 26091
   modelcard:
     cmd: python src/modelcard.py
     deps:
     - path: live/metrics.json
       hash: md5
-      md5: d7fdd2a87827cb8ddc368c5dd6a22e94
+      md5: ad399af0114f75fe824bf7894ec67e8a
       size: 174
     - path: resources/snippets
       hash: md5
@@ -121,7 +124,7 @@ stages:
     outs:
     - path: live/model/README.md
       hash: md5
-      md5: 4e47cdfe4cb83de6984c095fdc981e67
+      md5: 600066518eb748bb2d33b1fe81c2b797
       size: 6195
   evaluate:
     cmd: python src/evaluate.py
@@ -132,8 +135,8 @@ stages:
       size: 430668
     - path: live/model/model.pkl
       hash: md5
-      md5: b8bdb34d1d85c08b66c54a5c63d69c04
-      size: 6438990
+      md5: d3f44ce570a1faec1e3c6233cf5178d8
+      size: 17066252
     - path: src/evaluate.py
       hash: md5
       md5: bb280fbd2bef14c3057217da2c78c577
@@ -143,14 +146,29 @@ stages:
         data.test: data/test.parquet
         model.pickle: live/model/model.pkl
     outs:
-    - path: live/images
+    - path: live/images/calibration_curve.png
       hash: md5
-      md5: 8f62bf74a209741ec81fdec89997cf77.dir
-      size: 123809
-      nfiles: 5
+      md5: adc08c7526fb8e5d53a3ba108ef4c37f
+      size: 30019
+    - path: live/images/confusion_matrix.png
+      hash: md5
+      md5: 6ef0464a930778eef08cd146149a7123
+      size: 12866
+    - path: live/images/precision_recall_curve.png
+      hash: md5
+      md5: 1d86dcd81708c437e5efa7c5a58c4366
+      size: 22575
+    - path: live/images/roc_curve.png
+      hash: md5
+      md5: 21a5d11172382eb9090d63c0f62bfb4b
+      size: 36462
+    - path: live/images/score_distribution.png
+      hash: md5
+      md5: e493c52ee961fc4fc23d5108615f439f
+      size: 20059
     - path: live/metrics.json
       hash: md5
-      md5: d7fdd2a87827cb8ddc368c5dd6a22e94
+      md5: ad399af0114f75fe824bf7894ec67e8a
       size: 174
   download_data:
     cmd:
@@ -183,8 +201,8 @@ stages:
     deps:
     - path: live/model/model.pkl
       hash: md5
-      md5: b8bdb34d1d85c08b66c54a5c63d69c04
-      size: 6438990
+      md5: d3f44ce570a1faec1e3c6233cf5178d8
+      size: 17066252
     - path: src/create_onnx.py
       hash: md5
       md5: 76884a3a4f4a4c93a9183afe5c060220
@@ -192,5 +210,5 @@ stages:
     outs:
     - path: live/model/model.onnx
       hash: md5
-      md5: 5120c6b18417ee04c74399d24abe99f4
-      size: 6733643
+      md5: 7d7fdedf81ae1803a15a966f17975782
+      size: 23547864

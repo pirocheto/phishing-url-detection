@@ -1,22 +1,23 @@
 """
-Module for training a machine learning model with specified hyperparameters.
+Module for hyperparameter optimization.
 """
-# TODO: add comments
 
 from functools import partial
 from pathlib import Path
 
 import dvc.api
+import matplotlib.pyplot as plt
 import numpy as np
 import optuna
 import yaml
 from optuna.storages import JournalFileStorage, JournalStorage
 
 from helper import create_model, load_data, score_model
+from plots import plot_optimization_history
 
 
 def get_hyperparams(trial: optuna.Trial, space: dict) -> dict:
-    """..."""
+    """Generate hyperparameters based on the search space."""
 
     # For TF-IDF
     max_ngram_word = trial.suggest_int("max_ngram_word", **space["max_ngram_word"])
@@ -49,7 +50,7 @@ def get_hyperparams(trial: optuna.Trial, space: dict) -> dict:
 
 
 def objective(X_train, y_train, space, trial: optuna.Trial):
-    """..."""
+    """Objective function for Optuna optimization."""
 
     # Get hyperparameters from Optuna trial
     hyperparams = get_hyperparams(trial, space)
@@ -74,12 +75,8 @@ def objective(X_train, y_train, space, trial: optuna.Trial):
 
 
 def optimize():
-    """
-    Train a machine learning model with specified hyperparameters and save the model.
+    """Perform hyperparameter optimization using Optuna."""
 
-    Reads hyperparameters and data paths from DVC parameters, creates a model,
-    trains the model, and saves the trained model to a specified file.
-    """
     params = dvc.api.params_show()
     X_train, y_train = load_data(params["data"]["train"])
 
@@ -105,6 +102,9 @@ def optimize():
         n_trials=params["train"]["n_trials"],
         show_progress_bar=True,
     )
+
+    plot_optimization_history(study.trials)
+    plt.savefig("live/images/optimization_history.png")
 
     hyperparams = get_hyperparams(
         study.best_trial,

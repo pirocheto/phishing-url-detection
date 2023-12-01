@@ -14,7 +14,7 @@ data:
 # Training configuration
 train:
   # Number of hyperparameter optimization trials
-  n_trials: 5
+  n_trials: 40
   
   # Hyperparameter ranges for the model
   hyperparams:

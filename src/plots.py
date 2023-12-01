@@ -7,6 +7,7 @@ calibration curve, ROC curve, and precision-recall curve.
 
 import matplotlib.pyplot as plt
 import numpy as np
+import optuna
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 from sklearn.calibration import calibration_curve
@@ -19,6 +20,26 @@ from sklearn.metrics import (
 )
 
 plt.style.use("Solarize_Light2")
+
+
+def plot_optimization_history(trials: list[optuna.trial.FrozenTrial], ax=None):
+    """Plot optimization history"""
+
+    # If ax is not provided, create a new axis
+    if ax is None:
+        ax = plt.gca()
+
+    values = [trial.value for trial in trials]
+    best_values = np.maximum.accumulate(values)
+
+    ax.plot(values, "o", label="Objective value")
+    ax.plot(best_values, label="Best Value")
+
+    ax.legend(framealpha=0.4)
+
+    ax.tick_params(axis="both", which="both", length=0)
+    ax.set_title("Optimization history", fontweight="bold", fontsize=12)
+    return ax
 
 
 def plot_score_distribution(y_true, y_scores, labels=(0, 1), ax=None):
