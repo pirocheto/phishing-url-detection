@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phishing Site Checker</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+  </head>
+  <body class="flex justify-center items-center h-screen bg-gray-100">
+    <div class="checker-container text-center w-2/3 flex flex-col items-center">
+      <h1 class="text-3xl text-black mb-20">Phishing Checker</h1>
+      <p class="mb-4">Enter the URL to check:</p>
+      <div class="flex items-center mb-10">
+        <input
+          type="text"
+          id="urlInput"
+          placeholder="Enter URL"
+          class="px-4 py-2 text-lg border border-gray-300 rounded-none"
+        />
+        <button
+          onclick="checkPhishing()"
+          class="px-6 py-2 ml-2 text-white bg-blue-500 rounded-none cursor-pointer"
+        >
+          Check
+        </button>
+      </div>
+      <div
+        id="loader"
+        class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 justify-center items-center"
+      >
+        <div
+          class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"
+        ></div>
+      </div>
+      <p id="result"></p>
+      <!-- Ajout de la balise pour afficher la probabilité -->
+      <p id="probability" class="mt-2 text-green-500 font-bold"></p>
+      <p class="mt-4 mb-2">
+        <a
+          href="URL_DU_REPOSITORY"
+          target="_blank"
+          class="text-blue-500 hover:underline"
+          >GitHub Repository</a
+        >
+      </p>
+      <p class="mb-2">
+        <a
+          href="URL_DU_MODELE_HUGGINGFACE"
+          target="_blank"
+          class="text-blue-500 hover:underline"
+          >Hugging Face Model</a
+        >
+      </p>
+      <p class="mb-4">
+        <a
+          href="URL_DU_DATASET_HUGGINGFACE"
+          target="_blank"
+          class="text-blue-500 hover:underline"
+          >Hugging Face Dataset</a
+        >
+      </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
