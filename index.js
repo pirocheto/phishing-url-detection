@@ -1,44 +1,57 @@
+// Get references to HTML elements
+const ortSessionLoader = document.getElementById("session-loader");
+const ortForm = document.getElementById("form");
 let ortSession = null;
 
-async function instantiateSess() {
-  document.getElementById("session-loader").style.display = "flex";
+// Asynchronously instantiate the ONNX session
+async function instantiateSession() {
+  // Hide form and display session loader while initializing
+  ortSessionLoader.classList.remove("d-none");
+  ortForm.classList.add("d-none");
+
   try {
-    const model_path =
+    // Model path for the ONNX model
+    const modelPath =
       "https://huggingface.co/pirocheto/phishing-url-detection/resolve/main/model.onnx";
-    ortSession = await ort.InferenceSession.create(model_path);
-  } catch (e) {
-    document.write(`failed to instantiate ONNX model: ${e}.`);
+
+    // Create the ONNX inference session
+    ortSession = await ort.InferenceSession.create(modelPath);
+  } catch (error) {
+    // Log and display an error message if instantiation fails
+    console.error(`Failed to instantiate ONNX model: ${error}`);
+    document.write(`Failed to instantiate ONNX model: ${error}.`);
   } finally {
-    document.getElementById("session-loader").style.display = "none";
+    // Hide session loader and display the form after initialization
+    ortSessionLoader.classList.add("d-none");
+    ortForm.classList.remove("d-none");
   }
 }
 
+// Asynchronously perform prediction using the ONNX model
 async function predict(url) {
-  document.getElementById("check-button").disabled = true;
-  document.getElementById("check-button").classList.add("opacity-50");
-  document.getElementById("check-loader").style.display = "flex";
-  document.getElementById("check-text").style.display = "none";
-
   try {
+    // Instantiate the session if not already initialized
     if (!ortSession) {
-      await instantiateSess();
+      await instantiateSession();
     }
 
+    // Create a tensor for the input URL
     const tensor = new ort.Tensor("string", [url], [1]);
+
+    // Run the session and get the results
     const results = await ortSession.run({ inputs: tensor });
     const probas = results["probabilities"].data;
+
+    // Return the predicted probability for phishing
     return probas[1];
-  } catch (e) {
-    document.write(`failed to perform inference with ONNX model: ${e}.`);
+  } catch (error) {
+    // Log and display an error message if prediction fails
+    console.error(`Failed to perform inference with ONNX model: ${error}`);
     return null;
-  } finally {
-    document.getElementById("check-loader").style.display = "none";
-    document.getElementById("check-button").classList.remove("opacity-50");
-    document.getElementById("check-text").style.display = "flex";
-    document.getElementById("check-button").disabled = false;
   }
 }
 
+// Check if the input is a valid URL
 function isValidURL(input) {
   try {
     new URL(input);
@@ -48,42 +61,63 @@ function isValidURL(input) {
   }
 }
 
+// Set the input field with an example URL
+function selectExample(element) {
+  document.getElementById("url-input").value = element.value;
+}
+
+// Clear any previous results or error messages
+function clear() {
+  document.getElementById("url-input").classList.remove("is-invalid");
+  document.getElementById("url-invalid").classList.add("d-none");
+  document.getElementById("alert-safe").classList.add("d-none");
+  document.getElementById("alert-danger").classList.add("d-none");
+  document.getElementById("result").classList.add("d-none");
+}
+
+// Perform phishing check when the user submits the form
 async function checkPhishing() {
-  var urlInput = document.getElementById("urlInput").value;
-  var resultElement = document.getElementById("result");
-  var urlElement = document.getElementById("url");
-  var scoreElement = document.getElementById("score");
-  var messageElement = document.getElementById("message");
+  // Clear any previous results or error messages
+  clear();
+
+  // Get the input URL from the user
+  const urlInput = document.getElementById("url-input").value;
 
   // Validate the input URL
   if (!isValidURL(urlInput)) {
-    resultElement.innerText = "Invalid URL. Please enter a valid URL.";
+    // Display an error message if the URL is invalid
+    document.getElementById("url-input").classList.add("is-invalid");
+    document.getElementById("url-input").select();
+    document.getElementById("url-invalid").classList.remove("d-none");
+
     return;
   }
 
-  // Perform the phishing check
-  var probability = await predict(urlInput);
+  // Get references to HTML elements for displaying results
+  const result = document.getElementById("result");
+  const positive = document.getElementById("positive-proba");
+  const positiveProgress = document.getElementById("positive-proba-progress");
+  const negative = document.getElementById("negative-proba");
+  const negativeProgress = document.getElementById("negative-proba-progress");
 
-  const warningMessage = `
-    <span class="flex items-center">
-      can be dangerous
-      <img src="assets/warning.svg" class="h-4 w-4 ml-2" /> 
-    </span>`;
+  // Perform prediction and get the phishing probability
+  const probability = await predict(urlInput);
 
-  const safeMessage = `
-    <span class="flex items-center">
-      seems to be safe
-      <img src="assets/safe.svg" class="h-4 w-4 ml-2" /> 
-    </span>`;
+  // Update the UI with the prediction results
+  positive.textContent = (1 - probability).toFixed(3);
+  positiveProgress.style.width = `${(1 - probability) * 100}%`;
+  negative.textContent = probability.toFixed(3);
+  negativeProgress.style.width = `${probability * 100}%`;
 
-  const message = probability > 0.5 ? safeMessage : warningMessage;
+  // Determine the alert to display based on the phishing probability
+  const alertId = probability > 0.5 ? "alert-danger" : "alert-safe";
+  document.getElementById(alertId).classList.remove("d-none");
 
-  urlElement.innerText = urlInput;
-  scoreElement.innerText = probability.toFixed(2);
-  messageElement.innerHTML = message;
-  resultElement.style.display = "block";
+  // Display the result section
+  result.classList.remove("d-none");
 }
 
+// Check if the ONNX session is not already initialized and instantiate it
 if (!ortSession) {
-  instantiateSess();
+  instantiateSession();
 }
