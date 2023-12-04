@@ -12,7 +12,9 @@ The dataset used and the latest model are hosted on Hugging Face:
 - Dataset: https://huggingface.co/datasets/pirocheto/phishing-url
 - Model: https://huggingface.co/pirocheto/phishing-url-detection
 
-> ℹ️ You can test the model on the demo page [here](https://pirocheto.github.io/phishing-url-detection/).## Consideration Regarding The Model
+> ℹ️ You can test the model on the demo page [here](https://pirocheto.github.io/phishing-url-detection/).
+
+## Consideration Regarding The Model
 
 The model architecture consists of a TF-IDF (character n-grams + word n-grams) for vectorization and a linear SVM for classification.
 
