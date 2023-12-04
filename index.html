@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Document metadata -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Demo for Phishing URL Checker</title>
+    <!-- Bootstrap CSS link -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -13,44 +15,55 @@
   </head>
 
   <body class="d-flex flex-column vh-100">
+    <!-- Navigation bar -->
     <nav class="navbar navbar-expand-sm bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Demo Phishing URL Checker</a>
+        <!-- Brand and toggle button -->
+        <a class="navbar-brand" href="#" target="_blank"
+          >Demo Phishing URL Checker</a
+        >
         <button
           class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarNavDropdown"
-          aria-controls="navbarNavDropdown"
+          data-bs-target="#navbar-nav-dropdown"
+          aria-controls="navbar-nav-dropdown"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <!-- Navigation links -->
+        <div class="collapse navbar-collapse" id="navbar-nav-dropdown">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
+              <!-- Dataset link -->
               <a
                 class="nav-link"
                 href="https://huggingface.co/datasets/pirocheto/phishing-url"
+                target="_blank"
               >
                 Dataset
                 <img width="13" src="assets/external.svg" />
               </a>
             </li>
             <li class="nav-item">
+              <!-- Repository link -->
               <a
                 class="nav-link"
                 href="https://github.com/pirocheto/phishing-url-detection"
+                target="_blank"
               >
                 Repository
                 <img width="13" src="assets/external.svg"
               /></a>
             </li>
             <li class="nav-item">
+              <!-- Model link -->
               <a
                 class="nav-link"
                 href="https://huggingface.co/pirocheto/phishing-url-detection#how-to-get-started-with-the-model"
+                target="_blank"
               >
                 Model
                 <img width="13" src="assets/external.svg" />
@@ -61,12 +74,16 @@
       </div>
     </nav>
 
+    <!-- Main content container -->
     <div
       class="container-fluid d-flex flex-md-row flex-column-reverse justify-content-center align-items-center align-items-md-start p-md-5 p-2"
     >
+      <!-- Left column with information -->
       <div class="col-md-6 m-2">
+        <!-- Welcome section -->
         <h5>Welcome</h5>
         <p>
+          <!-- Description of the demo -->
           Here you can test the final model trained to predict the likelihood of
           a URL being a phishing site. You can choose an example or enter a URL
           of your choice. This demo uses ONNX model stored in your browser, so
@@ -77,47 +94,68 @@
           implementations for some model components. Rest assured, these
           differences are very minimal and can be overlooked.
         </p>
+        <!-- Version section -->
         <h5>Version</h5>
         <p>
+          <!-- Information about the demo version -->
           The demo uses the latest version of the model hosted on Hugging Face.
           You can see the details
-          <a href="https://huggingface.co/pirocheto/phishing-url-detection"
+          <a
+            href="https://huggingface.co/pirocheto/phishing-url-detection"
+            target="_blank"
             >here</a
           >.
         </p>
+        <!-- Performances section -->
         <h5>Performances</h5>
         <p>
+          <!-- Link to model card with performance details -->
           The details about performances are in the
           <a
             href="https://huggingface.co/pirocheto/phishing-url-detection#evaluation"
+            target="_blank"
             >model card.</a
           >
         </p>
+        <!-- Test the model section -->
         <h5>Test the model in local model</h5>
         <p>
+          <!-- Information about testing the model locally -->
           You can also download the model to test the model directly in local
           model. You will find code snippets in the
           <a
             href="https://huggingface.co/pirocheto/phishing-url-detection#how-to-get-started-with-the-model"
+            target="_blank"
             >model card</a
           >.
         </p>
+        <!-- Reproduce the model section -->
         <h5>Reproduce the model</h5>
         <p>
+          <!-- Information about reproducing the model -->
           You can reproduce the model by cloning the repository containing the
           code and following the instructions
-          <a href="https://github.com/pirocheto/phishing-url-detection">here</a
+          <a
+            href="https://github.com/pirocheto/phishing-url-detection"
+            target="_blank"
+            >here</a
           >.
         </p>
+        <!-- Dataset section -->
         <h5>Dataset</h5>
         <p>
+          <!-- Link to the dataset on Hugging Face -->
           The dataset is available on
-          <a href="https://huggingface.co/datasets/pirocheto/phishing-url"
-            >Hagging Face</a
+          <a
+            href="https://huggingface.co/datasets/pirocheto/phishing-url"
+            target="_blank"
+            >Hugging Face</a
           >.
         </p>
       </div>
+      <!-- Right column with form and results -->
       <div class="col-md-6 ms-md-5 m-2" style="max-width: 400px">
+        <!-- Form and loading section -->
         <div class="border px-3 py-3">
           <div
             id="session-loader"
@@ -131,7 +169,7 @@
               <div
                 class="progress-bar progress-bar-striped progress-bar-animated"
                 role="progressbar"
-                aria-label="Animated striped"
+                aria-label="Progress bar for Model Downloading"
                 aria-valuenow="100"
                 aria-valuemin="0"
                 aria-valuemax="100"
@@ -139,12 +177,14 @@
               ></div>
             </div>
           </div>
+          <!-- Form section -->
           <div id="form" class="d-none">
             <span
               class="fs-5 text-secondary fst-italic fs-6"
               style="--bs-text-opacity: 0.6"
               >Select an example</span
             >
+            <!-- Select example dropdown -->
             <select
               class="form-select"
               onchange="selectExample(this)"
@@ -162,6 +202,7 @@
               <option value="http://h.23yue.cn/">http://h.23yue.cn/</option>
             </select>
 
+            <!-- Or separator -->
             <div
               class="my-1 col-12 d-flex align-items-center text-center fst-italic fs-5 fs-6 text-secondary"
               style="--bs-text-opacity: 0.6"
@@ -176,19 +217,22 @@
               style="--bs-text-opacity: 0.6"
               >Enter your own url</span
             >
+            <!-- URL input textarea -->
             <textarea
               class="form-control p-2"
               type="text"
-              placeholder="Enter a url"
+              placeholder="Enter a URL"
               id="url-input"
               style="height: 100px"
             >
   http://h.23yue.cn/</textarea
             >
+            <!-- URL invalid feedback -->
             <div class="invalid-feedback d-none" id="url-invalid">
               Url is invalid.
             </div>
 
+            <!-- Check button -->
             <button
               class="btn btn-outline-secondary w-100 mb-0 mt-3"
               type="button"
@@ -199,18 +243,19 @@
           </div>
         </div>
 
+        <!-- Result section -->
         <div id="result" class="px-3 py-3 d-none">
           <div class="d-flex justify-content-between">
             <span class="text-muted">legitimate</span>
             <span id="positive-proba"></span>
           </div>
+          <!-- Positive probability progress bar -->
           <div class="progress mb-3" style="height: 5px">
             <div
               id="positive-proba-progress"
               class="placeholder progress-bar progress-bar-striped bg-dark"
               role="progressbar"
-              aria-label="Example with label"
-              aria-valuenow="90"
+              aria-label="Positive Probability"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -220,18 +265,20 @@
             <span class="text-muted">phishing</span>
             <span id="negative-proba"></span>
           </div>
+          <!-- Negative probability progress bar -->
           <div class="progress mb-3" style="height: 5px">
             <div
               class="placeholder progress-bar progress-bar-striped bg-dark"
               id="negative-proba-progress"
               role="progressbar"
-              aria-label="Example with label"
+              aria-label="Negative Probability"
               aria-valuenow="19"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
           </div>
 
+          <!-- Danger alert -->
           <div
             id="alert-danger"
             class="alert alert-danger d-none mt-4 mb-0 d-none"
@@ -241,6 +288,7 @@
             could be dangerous. Be careful!
           </div>
 
+          <!-- Safe alert -->
           <div
             id="alert-safe"
             class="alert alert-success mt-4 mb-0"
@@ -253,9 +301,11 @@
       </div>
     </div>
 
+    <!-- Footer -->
     <footer class="container-fluid mt-auto py-3 bg-dark text-center">
       <span class="text-muted text">© 2023 pirocheto</span>
     </footer>
+    <!-- Bootstrap and script links -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
