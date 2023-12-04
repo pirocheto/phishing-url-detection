@@ -24,6 +24,8 @@ The model architecture consists of a TF-IDF (character n-grams + word n-grams) f
 
 On the other hand, it could be less efficient than more complex models or those using external features.
 
+> ℹ️ You can test the model on the demo page [here](https://pirocheto.github.io/phishing-url-detection/).
+
 ## Reproduce The Model
 
 ```bash
