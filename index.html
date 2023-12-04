@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Phishing URL Checker</title>
+    <title>Demo for Phishing URL Checker</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -15,7 +15,7 @@
   <body class="d-flex flex-column vh-100">
     <nav class="navbar navbar-expand-sm bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Phishing URL Checker</a>
+        <a class="navbar-brand" href="#">Demo Phishing URL Checker</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -30,19 +30,28 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a
+                class="nav-link"
+                href="https://huggingface.co/datasets/pirocheto/phishing-url"
+              >
                 Dataset
                 <img width="13" src="assets/external.svg" />
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a
+                class="nav-link"
+                href="https://github.com/pirocheto/phishing-url-detection"
+              >
                 Repository
                 <img width="13" src="assets/external.svg"
               /></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a
+                class="nav-link"
+                href="https://huggingface.co/pirocheto/phishing-url-detection#how-to-get-started-with-the-model"
+              >
                 Model
                 <img width="13" src="assets/external.svg" />
               </a>
@@ -52,9 +61,64 @@
       </div>
     </nav>
 
-    <div class="container d-flex justify-content-center py-5">
-      <div class="border" style="width: 400px">
-        <div class="px-3 py-3">
+    <div
+      class="container-fluid d-flex flex-md-row flex-column-reverse justify-content-center align-items-center align-items-md-start p-md-5 p-2"
+    >
+      <div class="col-md-6 m-2">
+        <h5>Welcome</h5>
+        <p>
+          Here you can test the final model trained to predict the likelihood of
+          a URL being a phishing site. You can choose an example or enter a URL
+          of your choice. This demo uses ONNX model stored in your browser, so
+          the inference speed depends on your computer. Normally this should not
+          exceed one second. If you perform the same tests with the pickle
+          format model, you may see slight differences in scores. These
+          variations are due to conversion, as the ONNX format uses different
+          implementations for some model components. Rest assured, these
+          differences are very minimal and can be overlooked.
+        </p>
+        <h5>Version</h5>
+        <p>
+          The demo uses the latest version of the model hosted on Hugging Face.
+          You can see the details
+          <a href="https://huggingface.co/pirocheto/phishing-url-detection"
+            >here</a
+          >.
+        </p>
+        <h5>Performances</h5>
+        <p>
+          The details about performances are in the
+          <a
+            href="https://huggingface.co/pirocheto/phishing-url-detection#evaluation"
+            >model card.</a
+          >
+        </p>
+        <h5>Test the model in local model</h5>
+        <p>
+          You can also download the model to test the model directly in local
+          model. You will find code snippets in the
+          <a
+            href="https://huggingface.co/pirocheto/phishing-url-detection#how-to-get-started-with-the-model"
+            >model card</a
+          >.
+        </p>
+        <h5>Reproduce the model</h5>
+        <p>
+          You can reproduce the model by cloning the repository containing the
+          code and following the instructions
+          <a href="https://github.com/pirocheto/phishing-url-detection">here</a
+          >.
+        </p>
+        <h5>Dataset</h5>
+        <p>
+          The dataset is available on
+          <a href="https://huggingface.co/datasets/pirocheto/phishing-url"
+            >Hagging Face</a
+          >.
+        </p>
+      </div>
+      <div class="col-md-6 ms-md-5 m-2" style="max-width: 400px">
+        <div class="border px-3 py-3">
           <div
             id="session-loader"
             class="text-center fst-italic fw-light d-none"
@@ -76,24 +140,42 @@
             </div>
           </div>
           <div id="form" class="d-none">
-            <div class="mb-3">
-              <select
-                class="form-select"
-                onchange="selectExample(this)"
-                aria-label="Example"
+            <span
+              class="fs-5 text-secondary fst-italic fs-6"
+              style="--bs-text-opacity: 0.6"
+              >Select an example</span
+            >
+            <select
+              class="form-select"
+              onchange="selectExample(this)"
+              aria-label="Example"
+            >
+              <option value="" disabled selected>exemples</option>
+              <option value="https://clubedemilhagem.com/home.php">
+                https://clubedemilhagem.com/home.php
+              </option>
+              <option
+                value="http://www.medicalnewstoday.com/articles/188939.php"
               >
-                <option value="" disabled selected>exemples</option>
-                <option value="https://clubedemilhagem.com/home.php">
-                  https://clubedemilhagem.com/home.php
-                </option>
-                <option
-                  value="http://www.medicalnewstoday.com/articles/188939.php"
-                >
-                  http://www.medicalnewstoday.com/articles/188939.php
-                </option>
-                <option value="http://h.23yue.cn/">http://h.23yue.cn/</option>
-              </select>
+                http://www.medicalnewstoday.com/articles/188939.php
+              </option>
+              <option value="http://h.23yue.cn/">http://h.23yue.cn/</option>
+            </select>
+
+            <div
+              class="my-1 col-12 d-flex align-items-center text-center fst-italic fs-5 fs-6 text-secondary"
+              style="--bs-text-opacity: 0.6"
+            >
+              <div class="flex-grow-1 border-bottom"></div>
+              <p class="m-0 px-3">Or</p>
+              <div class="flex-grow-1 border-bottom"></div>
             </div>
+
+            <span
+              class="align-items-center text-center fst-italic fs-5 fs-6 text-secondary"
+              style="--bs-text-opacity: 0.6"
+              >Enter your own url</span
+            >
             <textarea
               class="form-control p-2"
               type="text"
@@ -101,10 +183,10 @@
               id="url-input"
               style="height: 100px"
             >
-http://h.23yue.cn/</textarea
+  http://h.23yue.cn/</textarea
             >
             <div class="invalid-feedback d-none" id="url-invalid">
-              Invalid Url.
+              Url is invalid.
             </div>
 
             <button
@@ -116,8 +198,6 @@ http://h.23yue.cn/</textarea
             </button>
           </div>
         </div>
-
-        <hr class="m-0" />
 
         <div id="result" class="px-3 py-3 d-none">
           <div class="d-flex justify-content-between">
@@ -172,6 +252,7 @@ http://h.23yue.cn/</textarea
         </div>
       </div>
     </div>
+
     <footer class="container-fluid mt-auto py-3 bg-dark text-center">
       <span class="text-muted text">© 2023 pirocheto</span>
     </footer>
